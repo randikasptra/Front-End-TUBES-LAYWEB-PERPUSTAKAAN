@@ -31,65 +31,76 @@ const Register = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-bold text-center mb-4">Register</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Nama Lengkap"
-            className="w-full p-2 border rounded mb-2"
-            onChange={handleChange}
-            required
+    <div className="flex justify-center items-center min-h-screen bg-gray-900 text-gray-300">
+      <div className="flex flex-col w-full max-w-lg bg-gray-800 rounded-lg shadow-lg md:flex-row md:max-w-4xl">
+        <div className="w-full p-6 md:w-1/2 md:px-8 lg:px-12">
+          <h2 className="mb-4 text-xl font-bold text-center text-white">Register</h2>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="name"
+              placeholder="Nama Lengkap"
+              className="w-full p-2 text-sm text-white bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 mb-4"
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              className="w-full p-2 text-sm text-white bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 mb-4"
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="text"
+              name="idNumber"
+              placeholder="NIM/NID"
+              className="w-full p-2 text-sm text-white bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 mb-4"
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              className="w-full p-2 text-sm text-white bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 mb-4"
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Konfirmasi Password"
+              className="w-full p-2 text-sm text-white bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 mb-4"
+              onChange={handleChange}
+              required
+            />
+            <button
+              type="submit"
+              className="w-full p-2 text-sm font-semibold text-white transition bg-orange-600 rounded-lg hover:bg-orange-700"
+            >
+              Daftar
+            </button>
+          </form>
+          <p className="text-sm text-center mt-4">
+            Sudah punya akun?{" "}
+            <a href="/" className="text-blue-500">
+              Login di sini
+            </a>
+          </p>
+
+        </div>
+        <div className="hidden w-full p-6 md:block md:w-1/2">
+          <img
+            src="../assets/fotoBukuPerpus.jpg"
+            alt="Ilustrasi Login"
+            className="object-contain w-full h-full"
           />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            className="w-full p-2 border rounded mb-2"
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="idNumber"
-            placeholder="NIM/NID"
-            className="w-full p-2 border rounded mb-2"
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            className="w-full p-2 border rounded mb-2"
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Konfirmasi Password"
-            className="w-full p-2 border rounded mb-4"
-            onChange={handleChange}
-            required
-          />
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-          >
-            Daftar
-          </button>
-        </form>
-        <p className="text-sm text-center mt-4">
-          Sudah punya akun?{" "}
-          <a href="/" className="text-blue-500">
-            Login di sini
-          </a>
-        </p>
+        </div>
       </div>
     </div>
+
   );
 };
 

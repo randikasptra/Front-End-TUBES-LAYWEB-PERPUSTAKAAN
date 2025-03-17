@@ -30,7 +30,7 @@ const LoginPage = () => {
             <div className="flex flex-col w-full max-w-lg bg-gray-800 rounded-lg shadow-lg md:flex-row md:max-w-4xl">
                 
                 <div className="w-full p-6 md:w-1/2 md:px-8 lg:px-12">
-                    <h2 className="mb-4 text-xl font-bold text-center text-white">Login</h2>
+                    <h2 className="mb-4 text-2xl font-bold text-center text-white">Login Perpustakaan <br />Universitas Sariwangi</h2>
                     
                     {errorMessage && (
                         <div className="mb-4 text-sm text-center text-red-500">
