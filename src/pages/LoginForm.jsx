@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -91,7 +91,7 @@ const LoginPage = () => {
                         
                         <div className="mt-2 text-center">
                             <span className="text-sm text-gray-400">Belum punya akun? </span>
-                            <a href="/register" className="text-sm text-blue-600 hover:underline">Register</a>
+                            <Link to="/register" className="text-sm text-blue-600 hover:underline">Register</Link>
                         </div>            
                     </form>
                 </div>
