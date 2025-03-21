@@ -1,12 +1,16 @@
 import { BookOpenText, House, LogOut, Search, Settings, ShoppingCart, SquareLibrary, Star } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const LibrarySidebarNavbar = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
 
     const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
+    const location = useLocation();
+
+    // Function buat cek halaman aktif
+    const isActive = (path) => location.pathname === path ? "border-b-2 border-white font-bold" : "";
 
     return (
         <>
@@ -48,30 +52,30 @@ const LibrarySidebarNavbar = () => {
                     <h2 className="mb-4 text-lg font-semibold">Menu</h2>
 
                     {/* Menu utama */}
-                    <ul className="flex-1"> {/* flex-1 biar isi utama mengisi ruang tersisa */}
-                        <li className="p-2 hover:bg-blue-700 cursor-pointer mt-8">
+                    <ul className="flex-1">
+                        <li className={`p-2 hover:bg-blue-700 cursor-pointer mt-8 ${isActive("/dashboard")}`}>
                             <Link to="/dashboard" className="flex"><House className="mr-2" /> Beranda</Link>
                         </li>
-                        <li className="p-2 hover:bg-blue-700 cursor-pointer">
+                        <li className={`p-2 hover:bg-blue-700 cursor-pointer ${isActive("/search")}`}>
                             <Link to="/search" className="flex"><SquareLibrary className="mr-2" /> Library</Link>
                         </li>
-                        <li className="p-2 hover:bg-blue-700 cursor-pointer">
+                        <li className={`p-2 hover:bg-blue-700 cursor-pointer ${isActive("/my-books")}`}>
                             <Link to="/my-books" className="flex"><BookOpenText className="mr-2" /> Koleksi Saya</Link>
                         </li>
-                        <li className="p-2 hover:bg-blue-700 cursor-pointer">
+                        <li className={`p-2 hover:bg-blue-700 cursor-pointer ${isActive("/settings")}`}>
                             <Link to="/settings" className="flex"><ShoppingCart className="mr-2" /> Pinjam</Link>
                         </li>
-                        <li className="p-2 hover:bg-blue-700 cursor-pointer">
+                        <li className={`p-2 hover:bg-blue-700 cursor-pointer ${isActive("/categories")}`}>
                             <Link to="/categories" className="flex"><Star className="mr-2" /> Favorit</Link>
                         </li>
                     </ul>
 
                     {/* Bagian bawah */}
                     <ul>
-                        <li className="p-2 hover:bg-blue-700 cursor-pointer">
+                        <li className={`p-2 hover:bg-blue-700 cursor-pointer ${isActive("/settings")}`}>
                             <Link to="/settings" className="flex"><Settings className="mr-2" /> Pengaturan</Link>
                         </li>
-                        <li className="p-2 text-red-500 hover:bg-blue-700 cursor-pointer">
+                        <li className={`p-2 text-red-500 hover:bg-blue-700 cursor-pointer ${isActive("/logout")}`}>
                             <Link to="/logout" className="flex"><LogOut className="mr-2" /> Logout</Link>
                         </li>
                     </ul>

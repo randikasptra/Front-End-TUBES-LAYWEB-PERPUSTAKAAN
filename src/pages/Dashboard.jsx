@@ -1,5 +1,5 @@
 import React from "react";
-import SideNavbar from "./SideNavbar";
+import SideNavbar from "../components/SideNavbar";
 
 const Dashboard = () => {
     return (
