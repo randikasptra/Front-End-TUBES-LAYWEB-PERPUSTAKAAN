@@ -4,6 +4,7 @@ import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
 import Reservation from "../pages/Reservation";
 import History from "../pages/History";
+import Library from "../pages/Library";
 
 const AppRouter = () => {
   return (
@@ -15,6 +16,7 @@ const AppRouter = () => {
         <Route path="/reservation" element={<Reservation />} />
         <Route path="/history" element={<History />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/library" element={<Library />} />
       </Routes>
     </Router>
   );

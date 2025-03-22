@@ -56,8 +56,8 @@ const LibrarySidebarNavbar = () => {
                         <li className={`p-2 hover:bg-blue-700 cursor-pointer mt-8 ${isActive("/dashboard")}`}>
                             <Link to="/dashboard" className="flex"><House className="mr-2" /> Beranda</Link>
                         </li>
-                        <li className={`p-2 hover:bg-blue-700 cursor-pointer ${isActive("/search")}`}>
-                            <Link to="/search" className="flex"><SquareLibrary className="mr-2" /> Library</Link>
+                        <li className={`p-2 hover:bg-blue-700 cursor-pointer ${isActive("/Library")}`}>
+                            <Link to="/Library" className="flex"><SquareLibrary className="mr-2" /> Library</Link>
                         </li>
                         <li className={`p-2 hover:bg-blue-700 cursor-pointer ${isActive("/my-books")}`}>
                             <Link to="/my-books" className="flex"><BookOpenText className="mr-2" /> Koleksi Saya</Link>

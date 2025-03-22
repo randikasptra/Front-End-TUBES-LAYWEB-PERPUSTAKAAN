@@ -1,9 +1,13 @@
 import React from 'react'
+import SideNavbar from '../components/SideNavbar'
 
 const Library = () => {
-  return (
-    <div>Library</div>
-  )
+    return (
+        <>
+            <SideNavbar />
+            <div>Library</div>
+        </>
+    )
 }
 
 export default Library
