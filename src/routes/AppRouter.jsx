@@ -5,6 +5,7 @@ import Dashboard from "../pages/Dashboard";
 import Reservation from "../pages/Reservation";
 import History from "../pages/History";
 import Library from "../pages/Library";
+import ErrorPages from "../pages/404";
 
 const AppRouter = () => {
   return (
@@ -17,6 +18,7 @@ const AppRouter = () => {
         <Route path="/history" element={<History />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/library" element={<Library />} />
+        <Route path="*" element={<ErrorPages />} />
       </Routes>
     </Router>
   );
