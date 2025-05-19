@@ -1,7 +1,10 @@
 import React from "react";
-import { Card, CardContent } from "/src/component/ui/card";
-import { Button } from "/src/component/ui/button";
+// import { Card, CardContent } from "/src/component/ui/card";
+// import { Button } from "/src/component/ui/button";
 
+import { Card, CardContent } from "../component/ui/card";
+import { Button } from "../component/ui/buttons";
+import { Sidebar } from "lucide-react";
 
 
 
@@ -34,17 +37,7 @@ const Dashboard = () => {
     return (
         <div className="min-h-screen flex bg-gradient-to-br from-slate-900 to-blue-950">
             {/* Sidebar */}
-            <aside className="w-64 p-6 bg-slate-800 text-white flex flex-col justify-between">
-                <div className="space-y-6">
-                    <div className="text-xl font-bold text-center">📚 Perpustakaan</div>
-                    <nav className="flex flex-col gap-4">
-                        <a href="#" className="hover:text-blue-300">Beranda</a>
-                        <a href="#" className="hover:text-blue-300">Perpustakaan</a>
-                        <a href="#" className="hover:text-blue-300">History</a>
-                    </nav>
-                </div>
-                <button className="text-red-400 hover:text-red-200">Logout</button>
-            </aside>
+         <Sidebar />
 
             {/* Main content */}
             <main className="flex-1 p-10 overflow-y-auto">
