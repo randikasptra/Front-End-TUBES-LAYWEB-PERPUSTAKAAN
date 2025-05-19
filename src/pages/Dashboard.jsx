@@ -1,6 +1,8 @@
 import React from "react";
-import { Card, CardContent } from "../components/ui/card";
-import { Button } from "../components/ui/button";
+import { Card, CardContent } from "/src/component/ui/card";
+import { Button } from "/src/component/ui/button";
+
+
 
 
 const books = [
