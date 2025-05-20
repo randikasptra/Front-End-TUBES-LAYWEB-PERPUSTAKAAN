@@ -37,7 +37,8 @@ const Dashboard = () => {
 
 
             {/* Main content */}
-            <main className="ml-64 flex-1 p-8 overflow-y-auto">
+           <main className="sm:ml-64 flex-1 p-8 overflow-y-auto">
+
                 {/* Banner */}
                 <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white rounded-3xl p-8 mb-10 shadow-xl">
                     <h1 className="text-3xl font-bold mb-2">Pinjam Buku Tanpa Ribet. Ambil Sesuai Jadwal.</h1>
