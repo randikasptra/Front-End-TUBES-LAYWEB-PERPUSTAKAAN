@@ -1,7 +1,7 @@
 import React from "react";
-import { Card, CardContent } from "../component/ui/card";
-import { Button } from "../component/ui/buttons";
-import SideNavbar from "../component/ui/SideNavbar"; // asumsi nama component & path-nya bener
+import SideNavbar from "../component/ui/SideNavbar";
+import BookCard from "../component/ui/BookCard";
+
 
 const books = [
     { id: 1, title: "Buku Pemrograman", author: "John Doe" },
@@ -12,32 +12,15 @@ const books = [
     { id: 6, title: "Sistem Informasi", author: "Rina Tan" },
 ];
 
-const BookCard = ({ title, author }) => {
-    return (
-        <Card className="w-full max-w-xs rounded-3xl shadow-xl bg-gradient-to-tr from-indigo-800 via-blue-800 to-blue-900 text-white hover:scale-[1.02] transition-transform duration-300 ease-in-out">
-            <CardContent className="p-5 flex flex-col gap-3">
-                <div className="h-36 bg-gray-200 rounded-xl mb-3 flex items-center justify-center">
-                    <span className="text-sm text-gray-700">[Foto Buku Dummy]</span>
-                </div>
-                <h3 className="text-lg font-semibold">{title}</h3>
-                <p className="text-sm text-gray-200">{author}</p>
-                <Button className="mt-auto bg-white text-blue-700 hover:bg-blue-200 font-semibold transition duration-200">
-                    Pinjam
-                </Button>
-            </CardContent>
-        </Card>
-    );
-};
+
 
 const Dashboard = () => {
     return (
         <div className="min-h-screen flex bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white">
-            {/* Sidebar */}
             <SideNavbar />
 
 
-            {/* Main content */}
-           <main className="sm:ml-64 flex-1 p-8 overflow-y-auto">
+            <main className="sm:ml-64 flex-1 p-8 overflow-y-auto">
 
                 {/* Banner */}
                 <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white rounded-3xl p-8 mb-10 shadow-xl">
