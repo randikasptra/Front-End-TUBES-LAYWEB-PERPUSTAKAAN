@@ -49,11 +49,12 @@ const LibrarySidebarNavbar = () => {
       </nav>
 
       {/* Sidebar */}
-      <aside
-        className={`fixed top-0 left-0 z-40 h-full w-64 bg-slate-900 text-white transform transition-transform duration-300 ease-in-out ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } sm:translate-x-0 sm:static sm:block pt-16`}
-      >
+   <aside
+  className={`fixed top-0 left-0 z-40 pt-16 h-screen w-64 bg-slate-900 text-white transform transition-transform duration-300 ease-in-out ${
+    isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+  } sm:translate-x-0 sm:block`}
+>
+
         <div className="p-4 flex flex-col h-full">
           <h2 className="mb-6 text-lg font-bold text-white">Navigasi</h2>
           <ul className="space-y-2 flex-1">
