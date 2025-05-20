@@ -1,96 +1,97 @@
-import { BookOpenText, House, LogOut, Search, Settings, ShoppingCart, SquareLibrary, Star } from "lucide-react";
+import {
+  BookOpenText,
+  House,
+  LogOut,
+  Settings,
+  ShoppingCart,
+  SquareLibrary,
+  Star,
+} from "lucide-react";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Link, useLocation } from "react-router-dom";
 
 const LibrarySidebarNavbar = () => {
-    const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
 
-    const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
-    const location = useLocation();
+  const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
+  const isActive = (path) =>
+    location.pathname === path
+      ? "bg-blue-700 text-white font-semibold"
+      : "text-slate-300";
 
-    // Function buat cek halaman aktif
-    const isActive = (path) => location.pathname === path ? "border-b-2 border-white font-bold" : "";
+  return (
+    <>
+      {/* Navbar */}
+      <nav className="fixed top-0 z-50 w-full bg-gradient-to-r from-slate-900 to-blue-950 border-b border-blue-800 px-4 py-3 flex justify-between items-center">
+        <h1 className="text-xl font-bold text-white">📚 Perpustakaan Digital</h1>
 
-    return (
-        <>
-            {/* Navbar */}
-            <nav className="fixed top-0 z-50 w-full bg-gray-900 border-b border-gray-700">
-                <div className="flex items-center justify-between p-4">
-                    {/* Nama Perpustakaan di Kiri */}
-                    <h1 className="text-xl font-semibold text-white">Perpustakaan Digital</h1>
+        {/* Toggle Sidebar (Mobile Only) */}
+        <button
+          onClick={toggleSidebar}
+          className="text-white sm:hidden p-2 rounded hover:bg-blue-700"
+        >
+          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
+            />
+          </svg>
+        </button>
 
-                    {/* Tombol Menu untuk Mobile */}
-                    <button
-                        onClick={toggleSidebar}
-                        className="p-2 text-white rounded-lg sm:hidden hover:bg-blue-700"
-                    >
-                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" clipRule="evenodd"
-                                d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
-                            />
-                        </svg>
-                    </button>
+        {/* Profile */}
+        <img
+          src="https://via.placeholder.com/40"
+          alt="Profile"
+          className="w-10 h-10 rounded-full hidden sm:block"
+        />
+      </nav>
 
-                    {/* Ikon Profil di Kanan */}
-                    <div className="relative">
-                        <img
-                            src="https://via.placeholder.com/40" // Ganti dengan foto profil user
-                            alt="Profile"
-                            className="w-10 h-10 rounded-full cursor-pointer"
-                        />
-                    </div>
-                </div>
-            </nav>
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-0 left-0 z-40 h-full w-64 bg-slate-900 text-white transform transition-transform duration-300 ease-in-out ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } sm:translate-x-0 sm:static sm:block pt-16`}
+      >
+        <div className="p-4 flex flex-col h-full">
+          <h2 className="mb-6 text-lg font-bold text-white">Navigasi</h2>
+          <ul className="space-y-2 flex-1">
+            <NavItem icon={<House />} label="Beranda" to="/dashboard" isActive={isActive} />
+            <NavItem icon={<SquareLibrary />} label="Library" to="/Library" isActive={isActive} />
+            <NavItem icon={<BookOpenText />} label="Koleksi Saya" to="/my-books" isActive={isActive} />
+            <NavItem icon={<ShoppingCart />} label="Pinjam" to="/settings" isActive={isActive} />
+            <NavItem icon={<Star />} label="Favorit" to="/categories" isActive={isActive} />
+          </ul>
+          <div className="space-y-2">
+            <NavItem icon={<Settings />} label="Pengaturan" to="/settings" isActive={isActive} />
+            <NavItem icon={<LogOut />} label="Logout" to="/logout" isActive={isActive} className="text-red-500" />
+          </div>
+        </div>
+      </aside>
 
-            {/* Sidebar */}
-            <aside
-                className={`fixed top-0 left-0 z-40 w-64 h-full bg-gray-800 transform transition-transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-                    } md:translate-x-0 md:fixed md:block`}
-            >
-                <div className="p-4 text-white flex flex-col h-full">
-                    <h2 className="mb-4 text-lg font-semibold">Menu</h2>
-
-                    {/* Menu utama */}
-                    <ul className="flex-1">
-                        <li className={`p-2 hover:bg-blue-700 cursor-pointer mt-8 ${isActive("/dashboard")}`}>
-                            <Link to="/dashboard" className="flex"><House className="mr-2" /> Beranda</Link>
-                        </li>
-                        <li className={`p-2 hover:bg-blue-700 cursor-pointer ${isActive("/Library")}`}>
-                            <Link to="/Library" className="flex"><SquareLibrary className="mr-2" /> Library</Link>
-                        </li>
-                        <li className={`p-2 hover:bg-blue-700 cursor-pointer ${isActive("/my-books")}`}>
-                            <Link to="/my-books" className="flex"><BookOpenText className="mr-2" /> Koleksi Saya</Link>
-                        </li>
-                        <li className={`p-2 hover:bg-blue-700 cursor-pointer ${isActive("/settings")}`}>
-                            <Link to="/settings" className="flex"><ShoppingCart className="mr-2" /> Pinjam</Link>
-                        </li>
-                        <li className={`p-2 hover:bg-blue-700 cursor-pointer ${isActive("/categories")}`}>
-                            <Link to="/categories" className="flex"><Star className="mr-2" /> Favorit</Link>
-                        </li>
-                    </ul>
-
-                    {/* Bagian bawah */}
-                    <ul>
-                        <li className={`p-2 hover:bg-blue-700 cursor-pointer ${isActive("/settings")}`}>
-                            <Link to="/settings" className="flex"><Settings className="mr-2" /> Pengaturan</Link>
-                        </li>
-                        <li className={`p-2 text-red-500 hover:bg-blue-700 cursor-pointer ${isActive("/logout")}`}>
-                            <Link to="/logout" className="flex"><LogOut className="mr-2" /> Logout</Link>
-                        </li>
-                    </ul>
-                </div>
-            </aside>
-
-            {/* Overlay Saat Sidebar Dibuka */}
-            {isSidebarOpen && (
-                <div
-                    className="fixed inset-0 z-30 bg-black bg-opacity-50 md:hidden"
-                    onClick={toggleSidebar}
-                ></div>
-            )}
-        </>
-    );
+      {/* Overlay for Mobile */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 sm:hidden"
+          onClick={toggleSidebar}
+        />
+      )}
+    </>
+  );
 };
+
+// Komponen item navigasi terpisah buat rapi
+const NavItem = ({ icon, label, to, isActive, className = "" }) => (
+  <li>
+    <Link
+      to={to}
+      className={`flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-700 transition ${isActive(to)} ${className}`}
+    >
+      {icon}
+      <span>{label}</span>
+    </Link>
+  </li>
+);
 
 export default LibrarySidebarNavbar;
