@@ -49,11 +49,10 @@ const LibrarySidebarNavbar = () => {
       </nav>
 
       {/* Sidebar */}
-   <aside
-  className={`fixed top-0 left-0 z-40 pt-16 h-screen w-64 bg-slate-900 text-white transform transition-transform duration-300 ease-in-out ${
-    isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-  } sm:translate-x-0 sm:block`}
->
+      <aside
+        className={`fixed top-0 left-0 z-40 pt-16 h-screen w-64 bg-slate-900 text-white transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } sm:translate-x-0 sm:block`}
+      >
 
         <div className="p-4 flex flex-col h-full">
           <h2 className="mb-6 text-lg font-bold text-white">Navigasi</h2>
@@ -66,7 +65,12 @@ const LibrarySidebarNavbar = () => {
           </ul>
           <div className="space-y-2">
             <NavItem icon={<Settings />} label="Pengaturan" to="/settings" isActive={isActive} />
-            <NavItem icon={<LogOut />} label="Logout" to="/logout" isActive={isActive} className="text-red-500" />
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </aside>
