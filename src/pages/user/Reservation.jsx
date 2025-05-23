@@ -20,8 +20,6 @@ const Reservation = () => {
     }
 
     console.log("Reservasi dikirim:", formData);
-
-    // TODO: Kirim data ke backend di sini
     alert("Reservasi berhasil!");
   };
 
@@ -30,7 +28,6 @@ const Reservation = () => {
       <div className="bg-white p-8 rounded-lg shadow-lg w-96">
         <h2 className="text-2xl font-bold text-center mb-4">Reservasi Buku</h2>
         <form onSubmit={handleSubmit}>
-          {/* Pilih Buku */}
           <label className="block mb-2 text-sm font-medium text-gray-700">
             Pilih Buku
           </label>
@@ -47,7 +44,6 @@ const Reservation = () => {
             <option value="Buku 3">Buku 3</option>
           </select>
 
-          {/* Tanggal Pengambilan */}
           <label className="block mb-2 text-sm font-medium text-gray-700">
             Tanggal Pengambilan
           </label>
@@ -60,7 +56,6 @@ const Reservation = () => {
             required
           />
 
-          {/* Jumlah Buku */}
           <label className="block mb-2 text-sm font-medium text-gray-700">
             Jumlah Buku (Max 3)
           </label>
@@ -75,7 +70,6 @@ const Reservation = () => {
             required
           />
 
-          {/* Tombol Reservasi */}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
