@@ -1,20 +1,27 @@
 import {
-  BookOpenText,
   House,
-  LogOut,
+  Library,
+  History,
   Settings,
-  ShoppingCart,
-  SquareLibrary,
-  Star,
+  LogOut
 } from "lucide-react";
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+
+
 
 const LibrarySidebarNavbar = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    window.location.href = "/"; // redirect ke halaman login
+  };
   const isActive = (path) =>
     location.pathname === path
       ? "bg-blue-700 text-white font-semibold"
@@ -58,21 +65,22 @@ const LibrarySidebarNavbar = () => {
           <h2 className="mb-6 text-lg font-bold text-white">Navigasi</h2>
           <ul className="space-y-2 flex-1">
             <NavItem icon={<House />} label="Beranda" to="/dashboard" isActive={isActive} />
-            <NavItem icon={<SquareLibrary />} label="Library" to="/Library" isActive={isActive} />
-            <NavItem icon={<BookOpenText />} label="Koleksi Saya" to="/my-books" isActive={isActive} />
-            <NavItem icon={<ShoppingCart />} label="Pinjam" to="/settings" isActive={isActive} />
-            <NavItem icon={<Star />} label="Favorit" to="/categories" isActive={isActive} />
+            <NavItem icon={<Library />} label="Perpustakaan" to="/Library" isActive={isActive} />
+            <NavItem icon={<History />} label="Sejarah" to="/my-books" isActive={isActive} />
           </ul>
           <div className="space-y-2">
             <NavItem icon={<Settings />} label="Pengaturan" to="/settings" isActive={isActive} />
             <button
+
               onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded"
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded flex items-center gap-2"
             >
-              Logout
+              
+              <LogOut/> Logout
             </button>
           </div>
         </div>
+
       </aside>
 
       {/* Overlay for Mobile */}
