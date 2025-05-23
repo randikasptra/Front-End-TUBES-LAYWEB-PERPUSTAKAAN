@@ -3,7 +3,7 @@ import { Home, Library, History } from "lucide-react";
 
 const Footer = () => {
     return (
-        <footer className="bg-slate-800 text-slate-100 py-10 px-6">
+        <footer className="bg-slate-800 text-slate-100 py-10 px-6 w-full">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
                 {/* Kolom 1 */}
                 <div>
