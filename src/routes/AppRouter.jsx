@@ -9,6 +9,7 @@ import HistoryPage from "../pages/user/HistoryPage";
 import SettingsPage from "../pages/user/SettingsPage";
 import AdminBookPage from "../pages/admin/AdminBookPage";
 import AdminBorrowPage from "../pages/admin/AdminBorrowPage";
+import AdminAccountPage from "../pages/admin/AdminAccountPage";
 
 const AppRouter = () => {
   return (
@@ -80,6 +81,14 @@ const AppRouter = () => {
           element={
             <PrivateRoute>
               <AdminBorrowPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/adminaccountpage"
+          element={
+            <PrivateRoute>
+              <AdminAccountPage />
             </PrivateRoute>
           }
         />
