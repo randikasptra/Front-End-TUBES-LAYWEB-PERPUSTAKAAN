@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Button } from "@/component/ui/buttons"; // <- plural "buttons" sesuai file kamu
-// import { Input } from "@/component/ui/input";
-// import { Card } from "@/component/ui/card";
+import { Input } from "@/component/ui/input";
+import { Card } from "@/component/card";
 import { Pencil, Trash2, Eye } from "lucide-react";
+import SidebarAdmin from "../../component/ui/SidebarAdmin";
 
 const dummyBooks = [
     {
@@ -37,6 +38,7 @@ const AdminBookPage = () => {
 
     return (
         <div className="ml-64 p-8 text-white min-h-screen bg-[#1c1f2b]">
+            <SidebarAdmin />
             <div className="flex items-center justify-between mb-6">
                 <Input
                     className="max-w-sm rounded-lg"
