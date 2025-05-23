@@ -16,7 +16,7 @@ const SidebarAdmin = () => {
                 <Link to="/adminbookpage" className="flex items-center gap-3 text-white hover:text-blue-300 transition-colors">
                     <Book size={20} /> Data Buku
                 </Link>
-                <Link to="adminborrowpage" className="flex items-center gap-3 text-white hover:text-blue-300 transition-colors">
+                <Link to="/adminborrowpage" className="flex items-center gap-3 text-white hover:text-blue-300 transition-colors">
                     <Layers size={20} /> Data Peminjaman
                 </Link>
                 <Link to="/admin/users" className="flex items-center gap-3 text-white hover:text-blue-300 transition-colors">
