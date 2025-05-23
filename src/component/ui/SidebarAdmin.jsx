@@ -10,10 +10,10 @@ const SidebarAdmin = () => {
                 Admin Panel
             </div>
             <nav className="p-4 space-y-4">
-                <Link to="/admin/dashboard" className="flex items-center gap-3 text-white hover:text-blue-300 transition-colors">
+                <Link to="/dashboard/admin" className="flex items-center gap-3 text-white hover:text-blue-300 transition-colors">
                     <Home size={20} /> Dashboard
                 </Link>
-                <Link to="/admin/books" className="flex items-center gap-3 text-white hover:text-blue-300 transition-colors">
+                <Link to="/adminbookpage" className="flex items-center gap-3 text-white hover:text-blue-300 transition-colors">
                     <Book size={20} /> Data Buku
                 </Link>
                 <Link to="/admin/loans" className="flex items-center gap-3 text-white hover:text-blue-300 transition-colors">

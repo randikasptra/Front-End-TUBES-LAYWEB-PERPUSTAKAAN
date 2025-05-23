@@ -7,6 +7,7 @@ import PerpustakaanPages from "../pages/user/PerpustakaanPages"; // ✅ Tambahan
 import PrivateRoute from "../component/PrivateRoute";
 import HistoryPage from "../pages/user/HistoryPage";
 import SettingsPage from "../pages/user/SettingsPage";
+import AdminBookPage from "../pages/admin/AdminBookPage";
 
 const AppRouter = () => {
   return (
@@ -21,14 +22,6 @@ const AppRouter = () => {
           element={
             <PrivateRoute>
               <DashboardMahasiswa />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/dashboard/admin"
-          element={
-            <PrivateRoute>
-              <DashboardAdmin />
             </PrivateRoute>
           }
         />
@@ -61,6 +54,23 @@ const AppRouter = () => {
           element={
             <PrivateRoute>
               <SettingsPage />
+            </PrivateRoute>
+          }
+        />
+        {/* Untuk Admin Disini */}
+        <Route
+          path="/dashboard/admin"
+          element={
+            <PrivateRoute>
+              <DashboardAdmin />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/adminbookpage"
+          element={
+            <PrivateRoute>
+              <AdminBookPage />
             </PrivateRoute>
           }
         />
