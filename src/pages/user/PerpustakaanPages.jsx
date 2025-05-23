@@ -25,7 +25,7 @@ const PerpustakaanPages = () => {
         <div className="min-h-screen flex bg-gradient-to-r from-[#1e293b] via-[#334155] to-[#60a5fa] text-white">
             <SideNavbar />
 
-            <main className="sm:ml-64 flex-1 p-8 overflow-y-auto">
+            <main className="sm:ml-64 flex-1 p-8 overflow-y-auto  my-24">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
                     <div className="flex flex-1 items-center gap-2">
                         <input
