@@ -6,6 +6,7 @@ import Reservation from "../pages/user/Reservation";
 import PerpustakaanPages from "../pages/user/PerpustakaanPages"; // ✅ Tambahan
 import PrivateRoute from "../component/PrivateRoute";
 import HistoryPage from "../pages/user/HistoryPage";
+import SettingsPage from "../pages/user/SettingsPage";
 
 const AppRouter = () => {
   return (
@@ -52,6 +53,14 @@ const AppRouter = () => {
           element={
             <PrivateRoute>
               <HistoryPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <PrivateRoute>
+              <SettingsPage />
             </PrivateRoute>
           }
         />
