@@ -5,6 +5,7 @@ import DashboardAdmin from "../pages/admin/DashboardAdmin";
 import Reservation from "../pages/user/Reservation";
 import PerpustakaanPages from "../pages/user/PerpustakaanPages"; // ✅ Tambahan
 import PrivateRoute from "../component/PrivateRoute";
+import HistoryPage from "../pages/user/HistoryPage";
 
 const AppRouter = () => {
   return (
@@ -43,6 +44,14 @@ const AppRouter = () => {
           element={
             <PrivateRoute>
               <PerpustakaanPages />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/sejarah"
+          element={
+            <PrivateRoute>
+              <HistoryPage />
             </PrivateRoute>
           }
         />

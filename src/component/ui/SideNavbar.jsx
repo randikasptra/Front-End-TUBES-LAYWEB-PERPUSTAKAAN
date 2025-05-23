@@ -72,7 +72,7 @@ const LibrarySidebarNavbar = () => {
               isActive={isActive}
             />
 
-            <NavItem icon={<History />} label="Sejarah" to="/my-books" isActive={isActive} />
+            <NavItem icon={<History />} label="Sejarah" to="/sejarah" isActive={isActive} />
           </ul>
           <div className="space-y-2">
             <NavItem icon={<Settings />} label="Pengaturan" to="/settings" isActive={isActive} />
