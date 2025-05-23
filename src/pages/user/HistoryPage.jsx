@@ -8,24 +8,36 @@ const historyData = [
         title: "Algoritma Dasar",
         status: "Dipinjam",
         tanggal: "2025-05-10",
+        image: "/book-placeholder.jpg",
+        waktuAmbil: "2025-05-10",
+        waktuKembali: "2025-05-17",
     },
     {
         id: 2,
         title: "Manajemen Proyek",
         status: "Dikembalikan",
         tanggal: "2025-04-30",
+        image: "/book-placeholder.jpg",
+        waktuAmbil: "2025-04-23",
+        waktuKembali: "2025-04-30",
     },
     {
         id: 3,
         title: "Hukum Siber",
         status: "Belum Dikembalikan",
         tanggal: "2025-05-01",
+        image: "/book-placeholder.jpg",
+        waktuAmbil: "2025-04-24",
+        waktuKembali: "Seharusnya 2025-05-01",
     },
     {
         id: 4,
         title: "Database Modern",
         status: "Reservasi",
         tanggal: "2025-05-21",
+        image: "/book-placeholder.jpg",
+        waktuAmbil: "-",
+        waktuKembali: "-",
     },
 ];
 
@@ -47,10 +59,10 @@ const HistoryPage = () => {
     return (
         <div className="min-h-screen flex bg-gradient-to-r from-[#1e293b] via-[#334155] to-[#60a5fa] text-white">
             <SideNavbar />
-            <main className="sm:ml-64 flex-1 p-8">
+            <main className="sm:ml-64 flex-1 p-6 md:p-8">
                 <div className="mb-6">
                     <h1 className="text-2xl font-bold mb-2">Riwayat Peminjaman Buku</h1>
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-wrap items-center gap-4">
                         <label htmlFor="status" className="text-white">
                             Filter:
                         </label>
@@ -73,14 +85,23 @@ const HistoryPage = () => {
                     {filteredData.map((item) => (
                         <div
                             key={item.id}
-                            className="bg-slate-800 rounded-xl p-4 flex justify-between items-center shadow-md hover:shadow-lg transition-shadow"
+                            className="bg-slate-800 rounded-xl p-4 flex flex-col md:flex-row gap-4 md:items-center shadow-md hover:shadow-lg transition-shadow"
                         >
-                            <div>
+                            <img
+                                src={item.image}
+                                alt={item.title}
+                                className="w-24 h-32 object-cover rounded-md shadow mx-auto md:mx-0"
+                            />
+                            <div className="flex-1">
                                 <h2 className="text-lg font-semibold">{item.title}</h2>
-                                <p className="text-sm text-slate-300">Tanggal: {item.tanggal}</p>
+                                <div className="text-sm text-slate-300 mt-1">
+                                    <p>📆 Tanggal Status: {item.tanggal}</p>
+                                    <p>🕓 Waktu Ambil: {item.waktuAmbil}</p>
+                                    <p>⏳ Waktu Pengembalian: {item.waktuKembali}</p>
+                                </div>
                             </div>
                             <span
-                                className={`text-white px-4 py-2 rounded-full text-sm font-medium ${statusColors[item.status]}`}
+                                className={`text-white px-4 py-2 rounded-full text-sm font-medium self-start md:self-center ${statusColors[item.status]}`}
                             >
                                 {item.status}
                             </span>
