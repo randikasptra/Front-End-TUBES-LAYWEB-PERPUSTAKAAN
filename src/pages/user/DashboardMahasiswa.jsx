@@ -2,6 +2,7 @@ import React from "react";
 import SideNavbar from "../../component/ui/SideNavbar";
 import BookCard from "../../component/ui/BookCard";
 import Footer from "../../component/ui/Footer";
+import HeaderDashboard from "../../component/ui/HeaderDashboard";
 
 const books = [
     { id: 1, title: "Buku Pemrograman", author: "John Doe" },
@@ -19,14 +20,7 @@ const DashboardMahasiswa = () => {
                 <SideNavbar />
 
                 <main className="sm:ml-64 flex-1 p-8 overflow-y-auto">
-                    <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white rounded-3xl p-8 mb-10 shadow-xl">
-                        <h1 className="text-3xl font-bold mb-2">
-                            Pinjam Buku Tanpa Ribet. Ambil Sesuai Jadwal.
-                        </h1>
-                        <p className="text-base text-slate-100">
-                            Temukan buku yang kamu butuhkan dan reservasi kapan mau ambil di perpus.
-                        </p>
-                    </div>
+                  <HeaderDashboard />
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
                         {books.map((book) => (

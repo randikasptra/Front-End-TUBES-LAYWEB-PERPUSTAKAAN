@@ -1,8 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "../pages/Login";
 import DashboardMahasiswa from "../pages/user/DashboardMahasiswa";
-import DashboardAdmin from "../pages/admin/DashboardAdmin"; // pastikan file ini ada
+import DashboardAdmin from "../pages/admin/DashboardAdmin";
 import Reservation from "../pages/user/Reservation";
+import PerpustakaanPages from "../pages/user/PerpustakaanPages"; // ✅ Tambahan
 import PrivateRoute from "../component/PrivateRoute";
 
 const AppRouter = () => {
@@ -34,6 +35,14 @@ const AppRouter = () => {
           element={
             <PrivateRoute>
               <Reservation />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/perpustakaan"
+          element={
+            <PrivateRoute>
+              <PerpustakaanPages />
             </PrivateRoute>
           }
         />
