@@ -4,6 +4,7 @@ import { Input } from "@/component/ui/input";
 import { Card } from "@/component/card";
 import { Pencil, Trash2, Eye } from "lucide-react";
 import SidebarAdmin from "../../component/ui/SidebarAdmin";
+import AddBookModal from "@/component/ui/AddBookModal";
 
 const dummyBooks = [
     {
@@ -36,6 +37,13 @@ const AdminBookPage = () => {
         book.title.toLowerCase().includes(search.toLowerCase())
     );
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleAddBook = (bookData) => {
+        console.log("Data Buku Baru:", bookData);
+        // Simpan ke backend nanti di sini
+    };
+
     return (
         <div className="ml-64 p-8 text-white min-h-screen bg-[#1c1f2b]">
             <SidebarAdmin />
@@ -46,9 +54,15 @@ const AdminBookPage = () => {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
-                <Button className="bg-green-600 hover:bg-green-500 text-white font-semibold">
+                <Button onClick={() => setIsModalOpen(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
                     + Tambah Buku
                 </Button>
+
+                <AddBookModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onSubmit={handleAddBook}
+                />
             </div>
 
             <div className="overflow-x-auto">
