@@ -10,6 +10,7 @@ import SettingsPage from "../pages/user/SettingsPage";
 import AdminBookPage from "../pages/admin/AdminBookPage";
 import AdminBorrowPage from "../pages/admin/AdminBorrowPage";
 import AdminAccountPage from "../pages/admin/AdminAccountPage";
+import AdminReservationPage from "../pages/admin/AdminReservationPage";
 
 const AppRouter = () => {
   return (
@@ -89,6 +90,14 @@ const AppRouter = () => {
           element={
             <PrivateRoute>
               <AdminAccountPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/adminareservationpage"
+          element={
+            <PrivateRoute>
+              <AdminReservationPage />
             </PrivateRoute>
           }
         />

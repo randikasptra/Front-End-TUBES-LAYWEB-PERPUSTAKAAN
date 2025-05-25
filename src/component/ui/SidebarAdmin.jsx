@@ -28,7 +28,7 @@ const SidebarAdmin = () => {
                 <Link to="/adminaccountpage" className="flex items-center gap-3 text-white hover:text-blue-300 transition-colors">
                     <Users size={20} /> Data Pengguna
                 </Link>
-                <Link to="/adminreservationpage" className="flex items-center gap-3 text-white hover:text-blue-300 transition-colors">
+                <Link to="/adminareservationpage" className="flex items-center gap-3 text-white hover:text-blue-300 transition-colors">
                     <CheckCircle size={20} /> Reservasi Buku
                 </Link>
             </nav>
