@@ -60,7 +60,7 @@ const AdminAccountPage = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {filteredUsers.map((user) => (
-                        <Card key={user.id} className="p-4 bg-slate-700 text-white relative">
+                        <Card key={user.id} className="p-4 bg-slate-800 text-white border border-slate-600 shadow-md rounded-xl relative">
                             <div className="absolute top-4 right-4 cursor-pointer text-slate-400 hover:text-white">
                                 <MoreVertical size={18} />
                             </div>
@@ -73,6 +73,7 @@ const AdminAccountPage = () => {
                                 {user.status}
                             </span>
                         </Card>
+
                     ))}
                 </div>
             </main>

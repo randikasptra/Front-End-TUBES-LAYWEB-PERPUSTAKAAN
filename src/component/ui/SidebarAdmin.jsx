@@ -1,14 +1,14 @@
 // src/components/admin/SidebarAdmin.jsx
 import React from "react";
-import { Home, Book, Users, LogOut, Layers } from "lucide-react";
+import { Home, Book, Users, LogOut, Layers, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const SidebarAdmin = () => {
- const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    window.location.href = "/"; // redirect ke halaman login
-  };
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        window.location.href = "/";
+    };
 
     return (
         <aside className="fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-slate-900 to-blue-800 shadow-lg z-40">
@@ -27,6 +27,9 @@ const SidebarAdmin = () => {
                 </Link>
                 <Link to="/adminaccountpage" className="flex items-center gap-3 text-white hover:text-blue-300 transition-colors">
                     <Users size={20} /> Data Pengguna
+                </Link>
+                <Link to="/adminreservationpage" className="flex items-center gap-3 text-white hover:text-blue-300 transition-colors">
+                    <CheckCircle size={20} /> Reservasi Buku
                 </Link>
             </nav>
             <div className="absolute bottom-0 w-full p-4 border-t border-slate-700">
