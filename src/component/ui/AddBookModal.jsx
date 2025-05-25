@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Dialog } from "@headlessui/react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/buttons";
+import { Input } from "@/component/ui/input";
+import { Button } from "@/component/ui/buttons";
 
 const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
     const [formData, setFormData] = useState({

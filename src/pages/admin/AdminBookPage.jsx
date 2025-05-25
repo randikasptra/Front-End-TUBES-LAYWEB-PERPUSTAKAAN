@@ -39,6 +39,7 @@ const AdminBookPage = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+
     const handleAddBook = (bookData) => {
         console.log("Data Buku Baru:", bookData);
         // Simpan ke backend nanti di sini
@@ -61,8 +62,10 @@ const AdminBookPage = () => {
                 <AddBookModal
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
-                    onSubmit={handleAddBook}
+                    onSubmit={(data) => console.log("Data Buku Baru:", data)}
                 />
+
+      
             </div>
 
             <div className="overflow-x-auto">
