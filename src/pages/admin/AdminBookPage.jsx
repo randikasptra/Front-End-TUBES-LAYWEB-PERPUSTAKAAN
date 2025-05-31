@@ -1,108 +1,117 @@
 import React, { useState } from "react";
-import { Button } from "@/component/ui/buttons";
+import { Button } from "@/component/ui/buttons"; // <- plural "buttons" sesuai file kamu
 import { Input } from "@/component/ui/input";
 import { Card } from "@/component/card";
-import SidebarAdmin from "@/component/ui/SidebarAdmin";
-import { MoreVertical } from "lucide-react";
-import AddAccountModal from "@/component/ui/AddAccountModal";
+import { Pencil, Trash2, Eye } from "lucide-react";
+import SidebarAdmin from "../../component/ui/SidebarAdmin";
+import AddBookModal from "@/component/ui/AddBookModal";
 
-const dummyUsers = [
+const dummyBooks = [
   {
-    id: 1,
-    nama: "Rizky Maulana",
-    email: "rizky@mail.com",
-    role: "Mahasiswa",
-    status: "Aktif",
+    id: "5132",
+    title: "Python Programming",
+    author: "Eko",
+    publisher: "Tani Para",
+    year: "2015-10-11",
   },
   {
-    id: 2,
-    nama: "Dewi Andini",
-    email: "dewi@mail.com",
-    role: "Dosen",
-    status: "Nonaktif",
+    id: "4864",
+    title: "Artificial Intelligence",
+    author: "Anton",
+    publisher: "Asep Hidan",
+    year: "2019-02-19",
   },
   {
-    id: 3,
-    nama: "Ahmad Fauzan",
-    email: "ahmad@mail.com",
-    role: "Mahasiswa",
-    status: "Aktif",
+    id: "9536",
+    title: "Java",
+    author: "Samuel",
+    publisher: "Mumun Amin",
+    year: "2011-05-02",
   },
 ];
 
-const statusColor = {
-  Aktif: "bg-green-500",
-  Nonaktif: "bg-red-500",
-};
-
-const AdminAccountPage = () => {
+const AdminBookPage = () => {
   const [search, setSearch] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const filteredUsers = dummyUsers.filter(
-    (user) =>
-      user.nama.toLowerCase().includes(search.toLowerCase()) ||
-      user.email.toLowerCase().includes(search.toLowerCase())
+  const filteredBooks = dummyBooks.filter((book) =>
+    book.title.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleAddAccount = (data) => {
-    console.log("Data Akun Baru:", data);
-    // Tambahkan proses simpan ke backend di sini nanti
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+  const handleAddBook = (bookData) => {
+    console.log("Data Buku Baru:", bookData);
+    // Simpan ke backend nanti di sini
   };
 
   return (
-    <div className="flex bg-gradient-to-r from-slate-800 via-slate-700 to-blue-900 min-h-screen text-white">
+    <div className="ml-64 p-8 text-white min-h-screen bg-[#1c1f2b]">
       <SidebarAdmin />
-      <main className="flex-1 p-8 sm:ml-64">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Data Akun Pengguna</h1>
-          <Button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
-          >
-            + Tambah Akun
-          </Button>
-        </div>
+      <div className="flex items-center justify-between mb-6">
+        <Input
+          className="max-w-sm rounded-lg"
+          placeholder="Cari judul buku..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <Button onClick={() => setIsModalOpen(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+          + Tambah Buku
+        </Button>
 
-        <div className="mb-6">
-          <Input
-            type="text"
-            placeholder="Cari berdasarkan nama atau email"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full max-w-md"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {filteredUsers.map((user) => (
-            <Card
-              key={user.id}
-              className="p-4 bg-slate-800 text-white border border-slate-600 shadow-md rounded-xl relative"
-            >
-              <div className="absolute top-4 right-4 cursor-pointer text-slate-400 hover:text-white">
-                <MoreVertical size={18} />
-              </div>
-              <h2 className="text-lg font-semibold mb-1">{user.nama}</h2>
-              <p className="text-sm text-slate-300 mb-1">Email: {user.email}</p>
-              <p className="text-sm text-slate-300 mb-3">Role: {user.role}</p>
-              <span
-                className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${statusColor[user.status]}`}
-              >
-                {user.status}
-              </span>
-            </Card>
-          ))}
-        </div>
-
-        <AddAccountModal
+        <AddBookModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onSubmit={handleAddAccount}
+          onSubmit={(data) => console.log("Data Buku Baru:", data)}
         />
-      </main>
+
+
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse rounded-xl overflow-hidden text-sm">
+          <thead className="bg-blue-900 text-left">
+            <tr>
+              <th className="px-4 py-3">No</th>
+              <th className="px-4 py-3">ID Buku</th>
+              <th className="px-4 py-3">Judul Buku</th>
+              <th className="px-4 py-3">Pengarang</th>
+              <th className="px-4 py-3">Penerbit</th>
+              <th className="px-4 py-3">Tahun</th>
+              <th className="px-4 py-3">Aksi</th>
+            </tr>
+          </thead>
+          <tbody className="bg-[#2a2d3d] divide-y divide-gray-700">
+            {filteredBooks.map((book, index) => (
+              <tr key={book.id}>
+                <td className="px-4 py-2">{String(index + 1).padStart(3, "0")}</td>
+                <td className="px-4 py-2">{book.id}</td>
+                <td className="px-4 py-2">{book.title}</td>
+                <td className="px-4 py-2">{book.author}</td>
+                <td className="px-4 py-2">{book.publisher}</td>
+                <td className="px-4 py-2">{book.year}</td>
+                <td className="px-4 py-2 flex gap-2">
+                  <Button className="bg-yellow-500 hover:bg-yellow-400 p-2 rounded-full">
+                    <Eye size={16} />
+                  </Button>
+                  <Button className="bg-blue-600 hover:bg-blue-500 p-2 rounded-full">
+                    <Pencil size={16} />
+                  </Button>
+                  <Button className="bg-red-600 hover:bg-red-500 p-2 rounded-full">
+                    <Trash2 size={16} />
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {filteredBooks.length === 0 && (
+          <p className="text-center text-gray-400 mt-4">Tidak ada buku ditemukan.</p>
+        )}
+      </div>
     </div>
   );
 };
 
-export default AdminAccountPage;
+export default AdminBookPage;
