@@ -1,40 +1,61 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import dummyUsers from '../data/users';
+import axios from 'axios';
 
 const LoginPage = () => {
     const navigate = useNavigate();
-
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [showPassword, setShowPassword] = useState(false); // ✅ Tambahkan state ini
+    const [showPassword, setShowPassword] = useState(false);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
+        setErrorMessage('');
 
-        const user = dummyUsers.find(
-            u => u.email === email && u.password === password
-        );
+        try {
+            const response = await axios.post('http://localhost:5000/api/auth/login', {
+                email,
+                password
+            });
 
-        if (user) {
-            localStorage.setItem('token', 'dummy_token');
-            localStorage.setItem('role', user.role);
+            console.log('RESPON LOGIN:', response);
 
-            if (user.role === 'admin') {
-                navigate('/dashboard/admin');
-            } else if (user.role === 'mahasiswa') {
-                navigate('/dashboard/mahasiswa');
+            const data = response.data;
+
+            // Cek struktur data yang sebenarnya
+            console.log('DATA:', data);
+
+            // Cek apakah data.user dan role tersedia
+            const token = data.token || data.data?.token;
+            const role = data.user?.role || data.data?.user?.role;
+
+            if (!token || !role) {
+                throw new Error('Data login tidak lengkap. Cek struktur respons backend.');
             }
-        } else {
-            setErrorMessage('Email atau password salah.');
+
+            localStorage.setItem('token', token);
+            localStorage.setItem('role', role);
+
+            if (role === 'admin') {
+                navigate('/dashboard/admin');
+            } else if (role === 'mahasiswa') {
+                navigate('/dashboard/mahasiswa');
+            } else {
+                setErrorMessage('Role tidak dikenali.');
+            }
+
+        } catch (error) {
+            console.error('Login error:', error);
+            if (error.response?.data?.message) {
+                setErrorMessage(error.response.data.message);
+            } else {
+                setErrorMessage('Login gagal. Coba lagi.');
+            }
         }
     };
 
-    // ✅ Tambahkan fungsi toggle
-    const togglePasswordVisibility = () => {
-        setShowPassword(prev => !prev);
-    };
+    const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
     return (
         <div className="flex items-center justify-center min-h-screen text-gray-300 bg-gray-900">
@@ -70,7 +91,7 @@ const LoginPage = () => {
                             <div className="relative">
                                 <input
                                     id="password"
-                                    type={showPassword ? "text" : "password"}
+                                    type={showPassword ? 'text' : 'password'}
                                     name="password"
                                     placeholder="Password"
                                     value={password}
