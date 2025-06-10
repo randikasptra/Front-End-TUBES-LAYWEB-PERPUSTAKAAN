@@ -19,7 +19,7 @@ const AdminBookPage = () => {
             try {
                 const token = localStorage.getItem('token')
                 const response = await axios.get(
-                    'http://localhost:5000/api/book',
+                    'http://localhost:5000/api/book/',
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -38,9 +38,40 @@ const AdminBookPage = () => {
         fetchBooks()
     }, [])
 
-    const handleAddBook = (bookData) => {
+    const handleAddBook = async (bookData) => {
         console.log('Data Buku Baru:', bookData)
-        // TODO: Implementasi simpan ke backend
+
+        try {
+            const token = localStorage.getItem('token')
+            const formData = new FormData()
+
+            // Masukkan semua data ke FormData
+            formData.append('image', bookData.image)
+            formData.append('judul', bookData.judul)
+            formData.append('deskripsi', bookData.deskripsi)
+            formData.append('isbn', bookData.isbn)
+            formData.append('penulis', bookData.penulis)
+            formData.append('penerbit', bookData.penerbit)
+            formData.append('tahunTerbit', bookData.tahunTerbit)
+            formData.append('kategoriId', bookData.kategoriId)
+            formData.append('stok', bookData.stok)
+            formData.append('status', bookData.status)
+
+            const response = await axios.post(
+                'http://localhost:5000/api/book/tambah',
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            )
+
+            console.log('Buku berhasil ditambahkan:', response.data)
+        } catch (error) {
+            console.error('Gagal menambahkan buku:', error)
+        }
     }
 
     const filteredBooks = books.filter((book) =>
