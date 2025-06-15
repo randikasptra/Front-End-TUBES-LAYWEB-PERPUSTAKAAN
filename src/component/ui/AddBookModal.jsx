@@ -19,35 +19,34 @@ import {
 } from 'lucide-react'
 import axios from 'axios'
 
+
 const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
     const [loading, setLoading] = useState(false)
     const [category, setCategory] = useState([])
     const [formData, setFormData] = useState({
-        image: null, // sesuai schema Book.image
-        judul: '',
-        deskripsi: '',
-        isbn: '',
-        penerbit: '',
-        tahunTerbit: '',
-        penulis: '',
-        kategoriId: '',
-        stok: '',
-        status: 'tersedia', // default sesuai schema
-    })
+        cover: null,
+        judul_buku: "",
+        pengarang: "",
+        penerbit: "",
+        tahun_terbit: "",
+        jumlah_stok: "",
+        status: "Tersedia",
+        id_kategory: "",
+    });
 
     const handleChange = (e) => {
-        const { name, value, files } = e.target
-        if (name === 'image') {
-            setFormData({ ...formData, image: files[0] })
+        const { name, value, files } = e.target;
+        if (name === "cover") {
+            setFormData({ ...formData, cover: files[0] });
         } else {
-            setFormData({ ...formData, [name]: value })
+            setFormData({ ...formData, [name]: value });
         }
-    }
+    };
 
     const handleSubmit = () => {
-        onSubmit(formData)
-        onClose()
-    }
+        onSubmit(formData);
+        onClose();
+    };
 
     useEffect(() => {
         const fetchCategory = async () => {
@@ -250,15 +249,21 @@ const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
                         <Button
                             onClick={handleSubmit}
                             className='flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg'
-                        >
-                            <Save className='w-5 h-5' />
-                            <span className='font-semibold'>Simpan Buku</span>
-                        </Button>
+
+         
+                            <option value="Tersedia">Tersedia</option>
+                            <option value="Dipinjam">Dipinjam</option>
+                        </select>
+                        <Input name="id_kategory" placeholder="ID Kategori" value={formData.id_kategory} onChange={handleChange} />
+                    </div>
+                    <div className="mt-6 flex justify-end gap-4">
+                        <Button onClick={onClose} variant="ghost" className="text-red-400">Batal</Button>
+                        <Button onClick={handleSubmit} className="bg-blue-600 hover:bg-blue-700">Simpan</Button>
                     </div>
                 </Dialog.Panel>
             </div>
         </Dialog>
-    )
-}
+    );
+};
 
-export default AddBookModal
+export default AddBookModal;

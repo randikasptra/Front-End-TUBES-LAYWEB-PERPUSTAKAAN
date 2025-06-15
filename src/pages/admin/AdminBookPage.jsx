@@ -122,10 +122,6 @@ const AdminBookPage = () => {
         }
     }
 
-    const filteredBooks = books.filter((book) =>
-        book.judul?.toLowerCase().includes(search.toLowerCase())
-    )
-
     return (
         <>
             {/* Delete Modal */}
@@ -313,4 +309,4 @@ const AdminBookPage = () => {
     )
 }
 
-export default AdminBookPage
+export default AdminBookPage;
