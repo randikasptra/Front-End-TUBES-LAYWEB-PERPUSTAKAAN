@@ -1,58 +1,53 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card } from '@/component/card'
 import { Input } from '@/component/ui/input'
 import SidebarAdmin from '../../component/ui/SidebarAdmin'
 import { MoreHorizontal } from 'lucide-react'
+import axios from 'axios'
 
-const dummyBorrowings = [
-    {
-        id: 1,
-        nama: 'Rizki Maulana',
-        nim: '123456789',
-        buku: 'Pemrograman Web Dasar',
-        tanggalPinjam: '2025-05-10',
-        tanggalKembali: '2025-05-17',
-        status: 'Dipinjam',
-    },
-    {
-        id: 2,
-        nama: 'Dewi Andini',
-        nim: '987654321',
-        buku: 'Sistem Operasi Lanjut',
-        tanggalPinjam: '2025-04-28',
-        tanggalKembali: '2025-05-05',
-        status: 'Sudah Dikembalikan',
-    },
-    {
-        id: 3,
-        nama: 'Ucup Surcup',
-        nim: '1122334455',
-        buku: 'Computer Systems Architecture',
-        tanggalPinjam: '2025-03-01',
-        tanggalKembali: '2025-03-07',
-        status: 'Terlambat',
-    },
-]
-
-const statusColor = {
-    Dipinjam: 'bg-yellow-500',
-    'Sudah Dikembalikan': 'bg-green-500',
-    Terlambat: 'bg-red-500',
-}
-
-function formatDate(dateStr) {
-    const options = { year: 'numeric', month: 'short', day: 'numeric' }
-    return new Date(dateStr).toLocaleDateString('id-ID', options)
+const formatDate = (dateStr) => {
+    if (!dateStr) return '-'
+    const date = new Date(dateStr)
+    return date.toLocaleDateString('id-ID', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+    })
 }
 
 const AdminBorrowPage = () => {
     const [searchTerm, setSearchTerm] = useState('')
+    const [peminjaman, setPeminjaman] = useState([])
 
-    const filteredBorrowings = dummyBorrowings.filter(
-        (item) =>
-            item.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.nim.includes(searchTerm)
-    )
+    useEffect(() => {
+        const fetchPeminjaman = async () => {
+            try {
+                const token = localStorage.getItem('token')
+                const res = await axios.get(
+                    'http://localhost:5000/api/peminjaman',
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                )
+                setPeminjaman(res.data.data)
+                console.log('Data peminjaman:', res.data.data)
+            } catch (error) {
+                console.error('Gagal mengambil data peminjaman:', error)
+            }
+        }
+
+        fetchPeminjaman()
+    }, [])
+
+    const filteredBorrowings = peminjaman.filter((item) => {
+        const nama = item.reservasi?.user?.nama?.toLowerCase() || ''
+        const nim = item.reservasi?.user?.nim || ''
+        return (
+            nama.includes(searchTerm.toLowerCase()) || nim.includes(searchTerm)
+        )
+    })
 
     return (
         <div className='flex bg-gradient-to-r from-slate-800 via-slate-700 to-blue-900 min-h-screen text-white'>
@@ -100,16 +95,20 @@ const AdminBorrowPage = () => {
                                 >
                                     <td className='py-2 px-4'>{index + 1}</td>
                                     <td className='py-2 px-4 font-medium'>
-                                        {item.nama}
+                                        {item.reservasi?.user?.nama ||
+                                            'Tidak diketahui'}
                                     </td>
                                     <td className='py-2 px-4 italic'>
-                                        {item.buku}
+                                        {item.reservasi?.book?.judul ||
+                                            'Tidak diketahui'}
                                     </td>
                                     <td className='py-2 px-4'>
                                         {formatDate(item.tanggalPinjam)}
                                     </td>
                                     <td className='py-2 px-4'>
-                                        {formatDate(item.tanggalKembali)}
+                                        {item.tanggalKembali
+                                            ? formatDate(item.tanggalKembali)
+                                            : '-'}
                                     </td>
                                     <td className='py-2 px-4'>
                                         <span
