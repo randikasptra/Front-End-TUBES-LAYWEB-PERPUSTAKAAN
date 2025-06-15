@@ -122,9 +122,10 @@ const AdminBookPage = () => {
         }
     }
 
-    const filteredBooks = books.filter((book) =>
-        book.judul?.toLowerCase().includes(search.toLowerCase())
-    )
+
+
+
+
 
     return (
         <>
@@ -313,4 +314,7 @@ const AdminBookPage = () => {
     )
 }
 
-export default AdminBookPage
+ 
+
+
+export default AdminBookPage;
