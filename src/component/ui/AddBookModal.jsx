@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import { Input } from '@/component/ui/input'
 import { Button } from '@/component/ui/buttons'
@@ -17,8 +17,11 @@ import {
     Tags,
     Save,
 } from 'lucide-react'
+import axios from 'axios'
 
 const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
+    const [loading, setLoading] = useState(false)
+    const [category, setCategory] = useState([])
     const [formData, setFormData] = useState({
         image: null, // sesuai schema Book.image
         judul: '',
@@ -45,6 +48,30 @@ const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
         onSubmit(formData)
         onClose()
     }
+
+    useEffect(() => {
+        const fetchCategory = async () => {
+            setLoading(true)
+            try {
+                const token = localStorage.getItem('token')
+                const response = await axios.get(
+                    'http://localhost:5000/api/category/',
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                )
+                setCategory(response.data.data || [])
+            } catch (error) {
+                console.error('Error fetching Category:', error.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchCategory()
+    }, [])
 
     return (
         <Dialog
@@ -73,7 +100,7 @@ const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
                     </div>
 
                     {/* Form Content */}
-                    <div className='space-y-4 max-h-[70vh] overflow-y-auto pr-2'>
+                    <div className='space-y-4 max-h-[75vh] overflow-y-auto pr-2'>
                         {/* Image Upload */}
                         <div className='space-y-2'>
                             <label className='flex items-center text-sm font-medium text-slate-700 dark:text-slate-300 gap-2'>
@@ -160,17 +187,6 @@ const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
 
                         {/* Description */}
 
-                        <Input
-                            name='kategoriId'
-                            placeholder='ID Kategori'
-                            type='number' // kalau ID kategori di database berupa angka
-                            value={formData.kategoriId}
-                            onChange={handleChange}
-                            icon={
-                                <Library className='w-4 h-4 text-slate-500 dark:text-slate-400' />
-                            }
-                        />
-
                         <div className='space-y-2'>
                             <label className='flex items-center text-sm font-medium text-slate-700 dark:text-slate-300 gap-2'>
                                 <AlignLeft className='w-4 h-4' />
@@ -216,7 +232,14 @@ const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
                                     className='w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white'
                                 >
                                     <option value=''>Pilih Kategori</option>
-                                    {/* Add your category options here */}
+                                    {category.map((item) => (
+                                        <option
+                                            key={item.id}
+                                            value={item.id}
+                                        >
+                                            {item.nama}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
