@@ -32,10 +32,10 @@ const SidebarAdmin = () => {
                     <Home size={20} /> Dashboard
                 </Link>
                 <Link
-                    to='/dashboard/admin/data-mahasiswa'
+                    to='/dashboard/admin/data-pengguna'
                     className='flex items-center gap-3 text-white hover:text-blue-300 transition-colors'
                 >
-                    <GraduationCap size={20} /> Data Mahasiswa
+                    <GraduationCap size={20} /> Data Pengguna
                 </Link>
                 <Link
                     to='/dashboard/admin/data-kategori'
@@ -49,18 +49,18 @@ const SidebarAdmin = () => {
                 >
                     <Book size={20} /> Data Buku
                 </Link>
+
+                <Link
+                    to='/dashboard/admin/data-reservasi'
+                    className='flex items-center gap-3 text-white hover:text-blue-300 transition-colors'
+                >
+                    <CheckCircle size={20} /> Data Reservasi
+                </Link>
                 <Link
                     to='/dashboard/admin/data-peminjaman'
                     className='flex items-center gap-3 text-white hover:text-blue-300 transition-colors'
                 >
                     <Layers size={20} /> Data Peminjaman
-                </Link>
-
-                <Link
-                    to='/adminareservationpage'
-                    className='flex items-center gap-3 text-white hover:text-blue-300 transition-colors'
-                >
-                    <CheckCircle size={20} /> Reservasi Buku
                 </Link>
             </nav>
             <div className='absolute bottom-0 w-full p-4 border-t border-slate-700'>

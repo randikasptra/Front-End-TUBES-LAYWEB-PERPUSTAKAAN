@@ -99,7 +99,7 @@ const AppRouter = () => {
                     }
                 />
                 <Route
-                    path='/dashboard/admin/reservasi-buku'
+                    path='/dashboard/admin/data-reservasi'
                     element={
                         <PrivateRoute>
                             <AdminReservationPage />

@@ -10,7 +10,7 @@ const DetailBook = () => {
         const fetchBuku = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get(`http://localhost:5000/api/book/${id}`, {
+                const response = await axios.get(`http://localhost:5000/api/book/detail/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

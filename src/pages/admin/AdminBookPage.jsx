@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Button } from '@/component/ui/buttons' // pastikan plural "buttons"
+import { Button } from '@/component/ui/buttons'
 import { Input } from '@/component/ui/input'
-import { Card } from '@/component/card'
 import { Pencil, Trash2, Eye } from 'lucide-react'
 import SidebarAdmin from '../../component/ui/SidebarAdmin'
 import AddBookModal from '@/component/ui/AddBookModal'
+import EditBookModal from '@/component/ui/EditBookModal'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
@@ -13,56 +13,47 @@ const AdminBookPage = () => {
     const [search, setSearch] = useState('')
     const [books, setBooks] = useState([])
     const [loading, setLoading] = useState(false)
-    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const [isModalOpenAdd, setIsModalOpenAdd] = useState(false)
+    const [isModalOpenEdit, setIsModalOpenEdit] = useState(false)
 
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [selectedBookId, setSelectedBookId] = useState(null)
+    const [selectedBook, setSelectedBook] = useState(null)
+
+    const fetchBooks = async () => {
+        setLoading(true)
+        try {
+            const token = localStorage.getItem('token')
+            const response = await axios.get(
+                'http://localhost:5000/api/book/',
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            )
+            setBooks(response.data.data || [])
+        } catch (error) {
+            console.error('Error fetching books:', error.message)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     useEffect(() => {
-        const fetchBooks = async () => {
-            setLoading(true)
-            try {
-                const token = localStorage.getItem('token')
-                const response = await axios.get(
-                    'http://localhost:5000/api/book/',
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                )
-                setBooks(response.data.data || [])
-                console.log('Books fetched successfully:', response.data.data)
-            } catch (error) {
-                console.error('Error fetching books:', error.message)
-            } finally {
-                setLoading(false)
-            }
-        }
-
         fetchBooks()
     }, [])
 
     const handleAddBook = async (bookData) => {
-        console.log('Data Buku Baru:', bookData)
-
         try {
             const token = localStorage.getItem('token')
             const formData = new FormData()
+            Object.entries(bookData).forEach(([key, value]) => {
+                formData.append(key, value)
+            })
 
-            // Masukkan semua data ke FormData
-            formData.append('image', bookData.image)
-            formData.append('judul', bookData.judul)
-            formData.append('deskripsi', bookData.deskripsi)
-            formData.append('isbn', bookData.isbn)
-            formData.append('penulis', bookData.penulis)
-            formData.append('penerbit', bookData.penerbit)
-            formData.append('tahunTerbit', bookData.tahunTerbit)
-            formData.append('kategoriId', bookData.kategoriId)
-            formData.append('stok', bookData.stok)
-            formData.append('status', bookData.status)
-
-            const response = await axios.post(
+            await axios.post(
                 'http://localhost:5000/api/book/tambah',
                 formData,
                 {
@@ -73,9 +64,61 @@ const AdminBookPage = () => {
                 }
             )
 
-            console.log('Buku berhasil ditambahkan:', response.data)
+            toast.success('Buku berhasil ditambahkan')
+            setIsModalOpenAdd(false)
+            fetchBooks()
         } catch (error) {
             console.error('Gagal menambahkan buku:', error)
+            toast.error('Gagal menambahkan buku')
+        }
+    }
+
+    const handleUpdateBook = async (bookData) => {
+        try {
+            const token = localStorage.getItem('token')
+            const formData = new FormData()
+            Object.entries(bookData).forEach(([key, value]) => {
+                formData.append(key, value)
+            })
+
+            await axios.put(
+                `http://localhost:5000/api/book/edit/${bookData.id}`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            )
+
+            toast.success('Buku berhasil diperbarui')
+            setIsModalOpenEdit(false)
+            fetchBooks()
+        } catch (error) {
+            console.error('Gagal mengedit buku:', error)
+            toast.error('Gagal mengedit buku')
+        }
+    }
+
+    const handleEditClick = (book) => {
+        setSelectedBook(book)
+        setIsModalOpenEdit(true)
+    }
+
+    const handleDeleteBook = async (id) => {
+        try {
+            const token = localStorage.getItem('token')
+            await axios.delete(`http://localhost:5000/api/book/hapus/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            toast.success('Buku berhasil dihapus')
+            setBooks((prev) => prev.filter((book) => book.id !== id))
+        } catch (error) {
+            console.error('Gagal menghapus buku:', error)
+            toast.error('Gagal menghapus buku')
         }
     }
 
@@ -83,38 +126,17 @@ const AdminBookPage = () => {
         book.judul?.toLowerCase().includes(search.toLowerCase())
     )
 
-    const handleDeleteBook = async (id) => {
-        try {
-            const token = localStorage.getItem('token')
-            const response = await axios.delete(
-                `http://localhost:5000/api/book/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            )
-
-            setBooks((prevBooks) => prevBooks.filter((book) => book.id !== id))
-
-            toast.success('Buku berhasil dihapus')
-        } catch (error) {
-            console.error('Gagal menghapus buku:', error)
-            toast.error('Gagal menghapus buku')
-        }
-    }
-
     return (
         <>
+            {/* Delete Modal */}
             {showDeleteModal && (
                 <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
                     <div className='bg-white dark:bg-slate-800 p-6 rounded-xl w-[90%] max-w-md'>
-                        <h2 className='text-lg font-semibold text-slate-800 dark:text-white mb-4'>
+                        <h2 className='text-lg font-semibold mb-4 text-slate-800 dark:text-white'>
                             Konfirmasi Hapus
                         </h2>
                         <p className='text-sm text-slate-600 dark:text-slate-300 mb-6'>
-                            Apakah kamu yakin ingin menghapus buku ini? Tindakan
-                            ini tidak bisa dibatalkan.
+                            Apakah kamu yakin ingin menghapus buku ini?
                         </p>
                         <div className='flex justify-end gap-3'>
                             <button
@@ -138,6 +160,19 @@ const AdminBookPage = () => {
                 </div>
             )}
 
+            {/* Add & Edit Modals */}
+            <AddBookModal
+                isOpen={isModalOpenAdd}
+                onClose={() => setIsModalOpenAdd(false)}
+                onSubmit={handleAddBook}
+            />
+            <EditBookModal
+                isOpen={isModalOpenEdit}
+                onClose={() => setIsModalOpenEdit(false)}
+                onSubmit={handleUpdateBook}
+                initialData={selectedBook}
+            />
+
             <div className='ml-64 p-8 text-white min-h-screen bg-[#1c1f2b]'>
                 <SidebarAdmin />
                 <div className='flex items-center justify-between mb-6'>
@@ -148,69 +183,44 @@ const AdminBookPage = () => {
                         onChange={(e) => setSearch(e.target.value)}
                     />
                     <Button
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={() => setIsModalOpenAdd(true)}
                         className='bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg'
                     >
                         + Tambah Buku
                     </Button>
-
-                    <AddBookModal
-                        isOpen={isModalOpen}
-                        onClose={() => setIsModalOpen(false)}
-                        onSubmit={handleAddBook}
-                    />
                 </div>
 
-                <div className='overflow-x-auto'>
-                    <table className='w-full border-collapse rounded-xl overflow-hidden text-sm'>
-                        <thead className='bg-blue-900 text-left'>
+                <div className='overflow-x-auto rounded-xl shadow-md'>
+                    <table className='w-full text-sm border-collapse'>
+                        <thead className='bg-blue-900 text-white'>
                             <tr>
-                                <th className='p-3'>No</th>
-                                <th className='p-3'>Cover</th>
-                                <th className='p-3'>Judul Buku</th>
-                                <th className='p-3'>Penulis</th>
-                                <th className='p-3'>Penerbit</th>
-                                <th className='p-3'>Tahun</th>
-                                <th className='p-3'>Stok</th>
-                                <th className='p-3'>Status</th>
-                                <th className='p-3'>Aksi</th>
+                                <th className='p-3 text-left'>No</th>
+                                <th className='p-3 text-left'>Cover</th>
+                                <th className='p-3 text-left'>Judul Buku</th>
+                                <th className='p-3 text-left'>Kategori</th>
+                                <th className='p-3 text-left'>Penulis</th>
+                                <th className='p-3 text-left'>Penerbit</th>
+                                <th className='p-3 text-left'>Tahun</th>
+                                <th className='p-3 text-left'>Stok</th>
+                                <th className='p-3 text-left'>Status</th>
+                                <th className='p-3 text-left'>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody className='bg-[#2a2d3d] divide-y divide-gray-700'>
+                        <tbody className='bg-[#2a2d3d] text-white divide-y divide-gray-700'>
                             {loading ? (
                                 <tr>
                                     <td
-                                        colSpan='9'
-                                        className='p-8 text-center'
+                                        colSpan='10'
+                                        className='p-6 text-center'
                                     >
-                                        <div className='flex justify-center items-center'>
-                                            <svg
-                                                className='animate-spin h-5 w-5 mr-3 text-white'
-                                                viewBox='0 0 24 24'
-                                            >
-                                                <circle
-                                                    className='opacity-25'
-                                                    cx='12'
-                                                    cy='12'
-                                                    r='10'
-                                                    stroke='currentColor'
-                                                    strokeWidth='4'
-                                                />
-                                                <path
-                                                    className='opacity-75'
-                                                    fill='currentColor'
-                                                    d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
-                                                />
-                                            </svg>
-                                            Memuat data...
-                                        </div>
+                                        Memuat data...
                                     </td>
                                 </tr>
                             ) : filteredBooks.length > 0 ? (
                                 filteredBooks.map((book, index) => (
                                     <tr
                                         key={book.id}
-                                        className='hover:bg-[#34374a]'
+                                        className='hover:bg-[#34374a] transition'
                                     >
                                         <td className='p-3'>{index + 1}</td>
                                         <td className='p-3'>
@@ -227,6 +237,9 @@ const AdminBookPage = () => {
                                             )}
                                         </td>
                                         <td className='p-3'>{book.judul}</td>
+                                        <td className='p-3'>
+                                            {book.kategori?.nama || '-'}
+                                        </td>
                                         <td className='p-3'>
                                             {book.penulis || '-'}
                                         </td>
@@ -257,8 +270,10 @@ const AdminBookPage = () => {
                                                 >
                                                     <Eye size={18} />
                                                 </Link>
-
                                                 <button
+                                                    onClick={() =>
+                                                        handleEditClick(book)
+                                                    }
                                                     className='bg-blue-600 hover:bg-blue-500 h-10 w-10 rounded-full flex items-center justify-center transition'
                                                     title='Edit Buku'
                                                 >
@@ -283,8 +298,8 @@ const AdminBookPage = () => {
                             ) : (
                                 <tr>
                                     <td
-                                        colSpan='9'
-                                        className='p-4 text-center text-gray-400'
+                                        colSpan='10'
+                                        className='p-6 text-center text-gray-400'
                                     >
                                         Tidak ada data buku yang ditemukan
                                     </td>
