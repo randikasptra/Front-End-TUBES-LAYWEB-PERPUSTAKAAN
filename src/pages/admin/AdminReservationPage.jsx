@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import SidebarAdmin from '@/component/ui/SidebarAdmin'
 import { Button } from '@/component/ui/buttons'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const AdminReservationPage = () => {
     const [reservasi, setReservasi] = useState([])
@@ -22,7 +23,7 @@ const AdminReservationPage = () => {
                     }
                 )
 
-                setReservasi(res.data.data) // ✅ Ambil dari data.data
+                setReservasi(res.data.data)
                 console.log(res.data.data)
             } catch (err) {
                 setError(err.message || 'Gagal mengambil data reservasi')
@@ -33,12 +34,31 @@ const AdminReservationPage = () => {
 
         fetchReservasi()
     }, [])
+    const handleAction = async (id, action) => {
+        try {
+            const token = localStorage.getItem('token')
 
-    const handleAction = (id, action) => {
-        const updated = reservasi.map((res) =>
-            res.id === id ? { ...res, status: action } : res
-        )
-        setReservasi(updated)
+            const res = await axios.patch(
+                `http://localhost:5000/api/reservasi/status/${id}`,
+                { status: action },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            )
+
+            // Jika berhasil, perbarui state lokal
+            setReservasi((prev) =>
+                prev.map((res) =>
+                    res.id === id ? { ...res, status: action } : res
+                )
+            )
+            toast.success('Status reservasi berhasil diperbarui')
+        } catch (error) {
+            console.error('Gagal memperbarui status reservasi:', error)
+            alert('Terjadi kesalahan saat mengupdate status.')
+        }
     }
 
     return (
