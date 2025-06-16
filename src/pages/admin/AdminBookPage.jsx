@@ -9,13 +9,11 @@ import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 import { API_BASE_URL } from '../../config'
 import {
-    createBook,
+    addBook,
     deleteBook,
     getAllBooks,
     updateBook,
 } from '../../services/bookService'
-import { upload } from '@vercel/blob/client'
-import axios from 'axios'
 
 const AdminBookPage = () => {
     const [search, setSearch] = useState('')
@@ -45,46 +43,10 @@ const AdminBookPage = () => {
         }
     }
 
+    // Di dalam handler
     const handleAddBook = async (bookData) => {
         try {
-            const token = localStorage.getItem('token')
-            const formData = new FormData()
-
-            // Mapping nama field FE ke yang dibutuhkan BE
-            formData.append('judul', bookData.judul_buku)
-            formData.append('isbn', bookData.isbn || 'ISBN-DEFAULT') // dummy ISBN jika kosong
-            formData.append('tahunTerbit', bookData.tahun_terbit)
-            formData.append('kategoriId', bookData.id_kategory)
-            formData.append('deskripsi', bookData.deskripsi || '')
-            formData.append('penerbit', bookData.penerbit || '')
-            formData.append('penulis', bookData.pengarang || '')
-            formData.append('stok', bookData.jumlah_stok || 1)
-            formData.append('status', bookData.status || 'tersedia')
-
-            // 🔍 Perbaiki pengiriman file
-            if (bookData.cover instanceof File) {
-                formData.append('image', bookData.cover)
-            } else {
-                console.warn('❗ File cover tidak valid atau tidak ditemukan')
-            }
-
-            // Debug log
-            for (const [key, value] of formData.entries()) {
-                console.log(`formData: ${key} =>`, value)
-            }
-
-            // Kirim request
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_BASE_URL}/book/tambah`,
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        // ⛔ Jangan set Content-Type!
-                    },
-                }
-            )
-
+            await addBook(bookData)
             toast.success('Buku berhasil ditambahkan')
             setIsModalOpenAdd(false)
             fetchBooks()

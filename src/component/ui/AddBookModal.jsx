@@ -24,6 +24,7 @@ const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
     const [formData, setFormData] = useState({
         cover: null,
         judul_buku: '',
+        isbn: '',
         pengarang: '',
         penerbit: '',
         tahun_terbit: '',
@@ -116,6 +117,14 @@ const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
                                 onChange={handleChange}
                                 icon={<BookOpen />}
                             />
+                            <Input
+                                name='isbn'
+                                placeholder='ISBN Buku'
+                                value={formData.isbn}
+                                onChange={handleChange}
+                                icon={<Barcode />}
+                            />
+
                             <Input
                                 name='pengarang'
                                 placeholder='Pengarang'
