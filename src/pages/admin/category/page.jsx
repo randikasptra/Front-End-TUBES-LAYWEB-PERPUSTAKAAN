@@ -6,6 +6,7 @@ import { Pencil, Trash2, FolderKanban } from 'lucide-react'
 import SidebarAdmin from '../../../component/ui/SidebarAdmin'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { getAllKategori } from '../../../services/categoryService'
 
 const CategoryPage = () => {
     const [search, setSearch] = useState('')
@@ -25,16 +26,9 @@ const CategoryPage = () => {
     const fetchKategori = async () => {
         setLoading(true)
         try {
-            const token = localStorage.getItem('token')
-            const response = await axios.get(
-                'http://localhost:5000/api/category',
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            )
-            setKategori(response.data.data || [])
+            const result = await getAllKategori()
+            setKategori(result)
+            console.log(result)
         } catch (error) {
             console.error('Gagal memuat kategori:', error)
         } finally {
