@@ -31,7 +31,6 @@ const CategoryPage = () => {
         try {
             const result = await getAllKategori()
             setKategori(result)
-            console.log(result)
         } catch (error) {
             console.error('Gagal memuat kategori:', error)
         } finally {

@@ -5,9 +5,17 @@ import { Pencil, Trash2, Eye } from 'lucide-react'
 import SidebarAdmin from '../../component/ui/SidebarAdmin'
 import AddBookModal from '@/component/ui/AddBookModal'
 import EditBookModal from '@/component/ui/EditBookModal'
-import axios from 'axios'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
+import { API_BASE_URL } from '../../config'
+import {
+    createBook,
+    deleteBook,
+    getAllBooks,
+    updateBook,
+} from '../../services/bookService'
+import { upload } from '@vercel/blob/client'
+import axios from 'axios'
 
 const AdminBookPage = () => {
     const [search, setSearch] = useState('')
@@ -21,45 +29,58 @@ const AdminBookPage = () => {
     const [selectedBookId, setSelectedBookId] = useState(null)
     const [selectedBook, setSelectedBook] = useState(null)
 
+    useEffect(() => {
+        fetchBooks()
+    }, [])
+
     const fetchBooks = async () => {
         setLoading(true)
         try {
-            const token = localStorage.getItem('token')
-            const response = await axios.get(
-                'http://localhost:5000/api/book/',
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            )
-            setBooks(response.data.data || [])
+            const result = await getAllBooks()
+            setBooks(result)
         } catch (error) {
-            console.error('Error fetching books:', error.message)
+            console.error('Gagal memuat buku:', error)
         } finally {
             setLoading(false)
         }
     }
 
-    useEffect(() => {
-        fetchBooks()
-    }, [])
-
     const handleAddBook = async (bookData) => {
         try {
             const token = localStorage.getItem('token')
             const formData = new FormData()
-            Object.entries(bookData).forEach(([key, value]) => {
-                formData.append(key, value)
-            })
 
-            await axios.post(
-                'http://localhost:5000/api/book/tambah',
+            // Mapping nama field FE ke yang dibutuhkan BE
+            formData.append('judul', bookData.judul_buku)
+            formData.append('isbn', bookData.isbn || 'ISBN-DEFAULT') // dummy ISBN jika kosong
+            formData.append('tahunTerbit', bookData.tahun_terbit)
+            formData.append('kategoriId', bookData.id_kategory)
+            formData.append('deskripsi', bookData.deskripsi || '')
+            formData.append('penerbit', bookData.penerbit || '')
+            formData.append('penulis', bookData.pengarang || '')
+            formData.append('stok', bookData.jumlah_stok || 1)
+            formData.append('status', bookData.status || 'tersedia')
+
+            // 🔍 Perbaiki pengiriman file
+            if (bookData.cover instanceof File) {
+                formData.append('image', bookData.cover)
+            } else {
+                console.warn('❗ File cover tidak valid atau tidak ditemukan')
+            }
+
+            // Debug log
+            for (const [key, value] of formData.entries()) {
+                console.log(`formData: ${key} =>`, value)
+            }
+
+            // Kirim request
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_BASE_URL}/book/tambah`,
                 formData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data',
+                        // ⛔ Jangan set Content-Type!
                     },
                 }
             )
@@ -68,30 +89,26 @@ const AdminBookPage = () => {
             setIsModalOpenAdd(false)
             fetchBooks()
         } catch (error) {
-            console.error('Gagal menambahkan buku:', error)
-            toast.error('Gagal menambahkan buku')
+            console.error('🔥 ERROR Full:', error)
+
+            if (error.response?.data?.message?.includes('Unexpected field')) {
+                toast.error('❌ Field `image` tidak dikenali backend')
+            } else if (error.response?.data?.message) {
+                toast.error(`❌ ${error.response.data.message}`)
+            } else {
+                toast.error('❌ Gagal menambahkan buku')
+            }
         }
     }
 
     const handleUpdateBook = async (bookData) => {
         try {
-            const token = localStorage.getItem('token')
             const formData = new FormData()
             Object.entries(bookData).forEach(([key, value]) => {
                 formData.append(key, value)
             })
 
-            await axios.put(
-                `http://localhost:5000/api/book/edit/${bookData.id}`,
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data',
-                    },
-                }
-            )
-
+            await updateBook(bookData.id, formData)
             toast.success('Buku berhasil diperbarui')
             setIsModalOpenEdit(false)
             fetchBooks()
@@ -101,19 +118,9 @@ const AdminBookPage = () => {
         }
     }
 
-    const handleEditClick = (book) => {
-        setSelectedBook(book)
-        setIsModalOpenEdit(true)
-    }
-
     const handleDeleteBook = async (id) => {
         try {
-            const token = localStorage.getItem('token')
-            await axios.delete(`http://localhost:5000/api/book/hapus/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
+            await deleteBook(id)
             toast.success('Buku berhasil dihapus')
             setBooks((prev) => prev.filter((book) => book.id !== id))
         } catch (error) {
@@ -122,10 +129,14 @@ const AdminBookPage = () => {
         }
     }
 
+    const handleEditClick = (book) => {
+        setSelectedBook(book)
+        setIsModalOpenEdit(true)
+    }
 
-
-
-
+    const filteredBooks = books.filter((book) =>
+        book.judul.toLowerCase().includes(search.toLowerCase())
+    )
 
     return (
         <>
@@ -314,7 +325,4 @@ const AdminBookPage = () => {
     )
 }
 
- 
-
-
-export default AdminBookPage;
+export default AdminBookPage

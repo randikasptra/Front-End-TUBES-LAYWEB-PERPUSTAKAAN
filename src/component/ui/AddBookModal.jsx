@@ -16,53 +16,45 @@ import {
     Bookmark,
     Tags,
 } from 'lucide-react'
-import axios from 'axios'
+import { getAllKategori } from '../../services/categoryService'
 
 const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
     const [loading, setLoading] = useState(false)
     const [category, setCategory] = useState([])
     const [formData, setFormData] = useState({
         cover: null,
-        judul_buku: "",
-        pengarang: "",
-        penerbit: "",
-        tahun_terbit: "",
-        jumlah_stok: "",
-        deskripsi: "",
-        status: "Tersedia",
-        id_kategory: "",
-    });
+        judul_buku: '',
+        pengarang: '',
+        penerbit: '',
+        tahun_terbit: '',
+        jumlah_stok: '',
+        deskripsi: '',
+        status: 'Tersedia',
+        id_kategory: '',
+    })
 
     const handleChange = (e) => {
-        const { name, value, files } = e.target;
-        if (name === "cover") {
-            setFormData({ ...formData, cover: files[0] });
+        const { name, value, files } = e.target
+        if (name === 'cover') {
+            setFormData({ ...formData, cover: files[0] })
         } else {
-            setFormData({ ...formData, [name]: value });
+            setFormData({ ...formData, [name]: value })
         }
-    };
+    }
 
     const handleSubmit = () => {
-        onSubmit(formData);
-        onClose();
-    };
+        onSubmit(formData)
+        onClose()
+    }
 
     useEffect(() => {
         const fetchCategory = async () => {
             setLoading(true)
             try {
-                const token = localStorage.getItem('token')
-                const response = await axios.get(
-                    'http://localhost:5000/api/category/',
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                )
-                setCategory(response.data.data || [])
+                const result = await getAllKategori()
+                setCategory(result)
             } catch (error) {
-                console.error('Error fetching Category:', error.message)
+                console.error('Error fetching category:', error.message)
             } finally {
                 setLoading(false)
             }
@@ -72,11 +64,17 @@ const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
     }, [])
 
     return (
-        <Dialog open={isOpen} onClose={onClose} className='relative z-50'>
-            <div className='fixed inset-0 bg-black/30' aria-hidden='true' />
+        <Dialog
+            open={isOpen}
+            onClose={onClose}
+            className='relative z-50'
+        >
+            <div
+                className='fixed inset-0 bg-black/30'
+                aria-hidden='true'
+            />
             <div className='fixed inset-0 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm'>
                 <Dialog.Panel className='w-full max-w-md rounded-xl bg-white dark:bg-slate-800 p-6 shadow-xl border border-slate-200 dark:border-slate-700'>
-
                     <div className='flex items-center justify-between mb-6'>
                         <Dialog.Title className='flex items-center text-xl font-semibold text-slate-800 dark:text-white gap-2'>
                             <BookPlus className='w-5 h-5 text-blue-600 dark:text-blue-400' />
@@ -91,7 +89,6 @@ const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
                     </div>
 
                     <div className='space-y-4 max-h-[75vh] overflow-y-auto pr-2'>
-
                         <div className='space-y-2'>
                             <label className='flex items-center text-sm font-medium text-slate-700 dark:text-slate-300 gap-2'>
                                 <Image className='w-4 h-4' />
@@ -112,11 +109,43 @@ const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
                         </div>
 
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                            <Input name='judul_buku' placeholder='Judul Buku' value={formData.judul_buku} onChange={handleChange} icon={<BookOpen />} />
-                            <Input name='pengarang' placeholder='Pengarang' value={formData.pengarang} onChange={handleChange} icon={<User />} />
-                            <Input name='penerbit' placeholder='Penerbit' value={formData.penerbit} onChange={handleChange} icon={<Building2 />} />
-                            <Input name='tahun_terbit' placeholder='Tahun Terbit' type='number' value={formData.tahun_terbit} onChange={handleChange} icon={<CalendarDays />} />
-                            <Input name='jumlah_stok' placeholder='Jumlah Stok' type='number' value={formData.jumlah_stok} onChange={handleChange} icon={<Library />} />
+                            <Input
+                                name='judul_buku'
+                                placeholder='Judul Buku'
+                                value={formData.judul_buku}
+                                onChange={handleChange}
+                                icon={<BookOpen />}
+                            />
+                            <Input
+                                name='pengarang'
+                                placeholder='Pengarang'
+                                value={formData.pengarang}
+                                onChange={handleChange}
+                                icon={<User />}
+                            />
+                            <Input
+                                name='penerbit'
+                                placeholder='Penerbit'
+                                value={formData.penerbit}
+                                onChange={handleChange}
+                                icon={<Building2 />}
+                            />
+                            <Input
+                                name='tahun_terbit'
+                                placeholder='Tahun Terbit'
+                                type='number'
+                                value={formData.tahun_terbit}
+                                onChange={handleChange}
+                                icon={<CalendarDays />}
+                            />
+                            <Input
+                                name='jumlah_stok'
+                                placeholder='Jumlah Stok'
+                                type='number'
+                                value={formData.jumlah_stok}
+                                onChange={handleChange}
+                                icon={<Library />}
+                            />
                         </div>
 
                         <div className='space-y-2'>
@@ -164,7 +193,10 @@ const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
                                 >
                                     <option value=''>Pilih Kategori</option>
                                     {category.map((item) => (
-                                        <option key={item.id} value={item.id}>
+                                        <option
+                                            key={item.id}
+                                            value={item.id}
+                                        >
                                             {item.nama}
                                         </option>
                                     ))}
@@ -174,10 +206,17 @@ const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
                     </div>
 
                     <div className='mt-8 flex justify-end gap-3'>
-                        <Button onClick={onClose} variant='ghost' className='text-red-500'>
+                        <Button
+                            onClick={onClose}
+                            variant='ghost'
+                            className='text-red-500'
+                        >
                             Batal
                         </Button>
-                        <Button onClick={handleSubmit} className='bg-blue-600 hover:bg-blue-700 text-white'>
+                        <Button
+                            onClick={handleSubmit}
+                            className='bg-blue-600 hover:bg-blue-700 text-white'
+                        >
                             Simpan
                         </Button>
                     </div>
@@ -187,4 +226,4 @@ const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
     )
 }
 
-export default AddBookModal;
+export default AddBookModal
