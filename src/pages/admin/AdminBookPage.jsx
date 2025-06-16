@@ -5,9 +5,15 @@ import { Pencil, Trash2, Eye } from 'lucide-react'
 import SidebarAdmin from '../../component/ui/SidebarAdmin'
 import AddBookModal from '@/component/ui/AddBookModal'
 import EditBookModal from '@/component/ui/EditBookModal'
-import axios from 'axios'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
+import { API_BASE_URL } from '../../config'
+import {
+    addBook,
+    deleteBook,
+    getAllBooks,
+    updateBook,
+} from '../../services/bookService'
 
 const AdminBookPage = () => {
     const [search, setSearch] = useState('')
@@ -21,77 +27,50 @@ const AdminBookPage = () => {
     const [selectedBookId, setSelectedBookId] = useState(null)
     const [selectedBook, setSelectedBook] = useState(null)
 
+    useEffect(() => {
+        fetchBooks()
+    }, [])
+
     const fetchBooks = async () => {
         setLoading(true)
         try {
-            const token = localStorage.getItem('token')
-            const response = await axios.get(
-                'http://localhost:5000/api/book/',
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            )
-            setBooks(response.data.data || [])
+            const result = await getAllBooks()
+            setBooks(result)
         } catch (error) {
-            console.error('Error fetching books:', error.message)
+            console.error('Gagal memuat buku:', error)
         } finally {
             setLoading(false)
         }
     }
 
-    useEffect(() => {
-        fetchBooks()
-    }, [])
-
+    // Di dalam handler
     const handleAddBook = async (bookData) => {
         try {
-            const token = localStorage.getItem('token')
-            const formData = new FormData()
-            Object.entries(bookData).forEach(([key, value]) => {
-                formData.append(key, value)
-            })
-
-            await axios.post(
-                'http://localhost:5000/api/book/tambah',
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data',
-                    },
-                }
-            )
-
+            await addBook(bookData)
             toast.success('Buku berhasil ditambahkan')
             setIsModalOpenAdd(false)
             fetchBooks()
         } catch (error) {
-            console.error('Gagal menambahkan buku:', error)
-            toast.error('Gagal menambahkan buku')
+            console.error('🔥 ERROR Full:', error)
+
+            if (error.response?.data?.message?.includes('Unexpected field')) {
+                toast.error('❌ Field `image` tidak dikenali backend')
+            } else if (error.response?.data?.message) {
+                toast.error(`❌ ${error.response.data.message}`)
+            } else {
+                toast.error('❌ Gagal menambahkan buku')
+            }
         }
     }
 
     const handleUpdateBook = async (bookData) => {
         try {
-            const token = localStorage.getItem('token')
             const formData = new FormData()
             Object.entries(bookData).forEach(([key, value]) => {
                 formData.append(key, value)
             })
 
-            await axios.put(
-                `http://localhost:5000/api/book/edit/${bookData.id}`,
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data',
-                    },
-                }
-            )
-
+            await updateBook(bookData.id, formData)
             toast.success('Buku berhasil diperbarui')
             setIsModalOpenEdit(false)
             fetchBooks()
@@ -101,19 +80,9 @@ const AdminBookPage = () => {
         }
     }
 
-    const handleEditClick = (book) => {
-        setSelectedBook(book)
-        setIsModalOpenEdit(true)
-    }
-
     const handleDeleteBook = async (id) => {
         try {
-            const token = localStorage.getItem('token')
-            await axios.delete(`http://localhost:5000/api/book/hapus/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
+            await deleteBook(id)
             toast.success('Buku berhasil dihapus')
             setBooks((prev) => prev.filter((book) => book.id !== id))
         } catch (error) {
@@ -122,10 +91,14 @@ const AdminBookPage = () => {
         }
     }
 
+    const handleEditClick = (book) => {
+        setSelectedBook(book)
+        setIsModalOpenEdit(true)
+    }
 
-
-
-
+    const filteredBooks = books.filter((book) =>
+        book.judul.toLowerCase().includes(search.toLowerCase())
+    )
 
     return (
         <>
@@ -314,7 +287,4 @@ const AdminBookPage = () => {
     )
 }
 
- 
-
-
-export default AdminBookPage;
+export default AdminBookPage
