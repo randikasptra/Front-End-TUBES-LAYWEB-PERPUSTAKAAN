@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Button } from '@/component/ui/buttons'
 import { Input } from '@/component/ui/input'
-import { Card } from '@/component/card'
 import { Pencil, Trash2, FolderKanban } from 'lucide-react'
 import SidebarAdmin from '../../../component/ui/SidebarAdmin'
-import axios from 'axios'
 import { toast } from 'react-toastify'
-import { getAllKategori } from '../../../services/categoryService'
+import {
+    createKategori,
+    deleteKategori,
+    getAllKategori,
+    updateKategori,
+} from '../../../services/categoryService'
 
 const CategoryPage = () => {
     const [search, setSearch] = useState('')
@@ -38,20 +41,11 @@ const CategoryPage = () => {
 
     const handleSubmit = async () => {
         try {
-            const token = localStorage.getItem('token')
             if (editingId) {
-                await axios.put(
-                    `http://localhost:5000/api/category/${editingId}`,
-                    { nama: namaKategori },
-                    { headers: { Authorization: `Bearer ${token}` } }
-                )
+                await updateKategori(editingId, namaKategori)
                 toast.success('Kategori berhasil diperbarui')
             } else {
-                await axios.post(
-                    `http://localhost:5000/api/category`,
-                    { nama: namaKategori },
-                    { headers: { Authorization: `Bearer ${token}` } }
-                )
+                await createKategori(namaKategori)
                 toast.success('Kategori berhasil ditambahkan')
             }
 
@@ -71,10 +65,7 @@ const CategoryPage = () => {
 
     const handleDelete = async (id) => {
         try {
-            const token = localStorage.getItem('token')
-            await axios.delete(`http://localhost:5000/api/category/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            })
+            await deleteKategori(id)
             toast.success('Kategori dihapus')
             fetchKategori()
         } catch (error) {
