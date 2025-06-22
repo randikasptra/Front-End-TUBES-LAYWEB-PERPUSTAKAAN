@@ -3,7 +3,7 @@ import { Card } from "@/component/card"
 import { Input } from "@/component/ui/input"
 import { Button } from "@/component/ui/buttons"
 import SidebarAdmin from "@/component/ui/SidebarAdmin"
-import { MoreVertical, Plus, X } from "lucide-react"
+import { MoreVertical, Plus, X, Eye, Edit, Trash2 } from "lucide-react"
 import { toast } from "react-toastify"
 import { getAllUsers, createUser } from "@/services/userService"
 
@@ -26,7 +26,7 @@ const AdminAccountPage = () => {
     const [formData, setFormData] = useState({
         nama: "",
         email: "",
-        role: "mahasiswa", // lowercase sesuai backend
+        role: "mahasiswa",
         status: "aktif",
     })
 
@@ -73,7 +73,7 @@ const AdminAccountPage = () => {
     )
 
     return (
-        <div className="flex bg-gradient-to-r from-slate-800 via-slate-700 to-blue-900 min-h-screen text-white">
+        <div className="flex bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 min-h-screen text-white">
             <SidebarAdmin />
             <main className="flex-1 p-8 sm:ml-64">
                 <h1 className="text-2xl font-bold mb-6">Data Akun Pengguna</h1>
@@ -85,56 +85,84 @@ const AdminAccountPage = () => {
                         placeholder="Cari berdasarkan nama atau email"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full max-w-md"
+                        className="w-full max-w-md bg-blue-800 border-blue-600 text-white placeholder-blue-300"
                     />
                     <Button
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2"
+                        className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2"
                         onClick={() => setIsModalOpen(true)}
                     >
                         <Plus size={18} /> Tambah Akun
                     </Button>
                 </div>
 
-                {/* Kartu Akun */}
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {loading ? (
-                        <p>Memuat data pengguna...</p>
-                    ) : filteredUsers.length > 0 ? (
-                        filteredUsers.map((user) => (
-                            <Card
-                                key={user.id}
-                                className="p-4 bg-slate-800 text-white border border-slate-600 shadow-md rounded-xl relative"
-                            >
-                                <div className="absolute top-4 right-4 cursor-pointer text-slate-400 hover:text-white">
-                                    <MoreVertical size={18} />
-                                </div>
-                                <h2 className="text-lg font-semibold mb-1">{user.nama}</h2>
-                                <p className="text-sm text-slate-300 mb-1">
-                                    Email: {user.email}
-                                </p>
-                                <p className="text-sm text-slate-300 mb-3">
-                                    Role: {capitalize(user.role)}
-                                </p>
-                                <span
-                                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${statusColor[capitalize(user.status)] || "bg-gray-500"
-                                        }`}
-                                >
-                                    {capitalize(user.status)}
-                                </span>
-                            </Card>
-                        ))
-                    ) : (
-                        <p>Tidak ada data pengguna ditemukan</p>
-                    )}
+                {/* Tabel Akun */}
+                <div className="overflow-x-auto rounded-lg border border-blue-600 shadow-lg">
+                    <table className="min-w-full bg-blue-900">
+                        <thead className="bg-blue-800">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nama</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Role</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-blue-700">
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="5" className="px-6 py-4 text-center">Memuat data pengguna...</td>
+                                </tr>
+                            ) : filteredUsers.length > 0 ? (
+                                filteredUsers.map((user) => (
+                                    <tr key={user.id} className="hover:bg-blue-800">
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="font-medium">{user.nama}</div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-blue-100">
+                                            {user.email}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-blue-100">
+                                            {capitalize(user.role)}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColor[capitalize(user.status)] || "bg-gray-500"
+                                                    }`}
+                                            >
+                                                {capitalize(user.status)}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <div className="flex justify-end space-x-2">
+                                                <button className="text-blue-300 hover:text-blue-100 p-1 rounded hover:bg-blue-700">
+                                                    <Eye size={18} />
+                                                </button>
+                                                <button className="text-yellow-400 hover:text-yellow-300 p-1 rounded hover:bg-blue-700">
+                                                    <Edit size={18} />
+                                                </button>
+                                                <button className="text-red-400 hover:text-red-300 p-1 rounded hover:bg-blue-700">
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="px-6 py-4 text-center">Tidak ada data pengguna ditemukan</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
                 </div>
             </main>
 
             {/* Modal Tambah Akun */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
-                    <div className="bg-slate-800 rounded-xl shadow-lg w-full max-w-lg relative border border-slate-600 text-white p-6">
+                    <div className="bg-blue-900 rounded-xl shadow-lg w-full max-w-lg relative border border-blue-600 text-white p-6">
                         <button
-                            className="absolute top-4 right-4 text-gray-400 hover:text-white"
+                            className="absolute top-4 right-4 text-blue-300 hover:text-white"
                             onClick={() => setIsModalOpen(false)}
                         >
                             <X size={20} />
@@ -151,6 +179,7 @@ const AdminAccountPage = () => {
                                     }
                                     placeholder="Nama lengkap"
                                     required
+                                    className="bg-blue-800 border-blue-600 text-white"
                                 />
                             </div>
                             <div>
@@ -164,6 +193,7 @@ const AdminAccountPage = () => {
                                     }
                                     placeholder="Alamat email @sariwangi.ac.id"
                                     required
+                                    className="bg-blue-800 border-blue-600 text-white"
                                 />
                             </div>
                             <div>
@@ -177,6 +207,7 @@ const AdminAccountPage = () => {
                                     }
                                     placeholder="Minimal 6 karakter"
                                     required
+                                    className="bg-blue-800 border-blue-600 text-white"
                                 />
                             </div>
 
@@ -192,6 +223,7 @@ const AdminAccountPage = () => {
                                         }
                                         placeholder="NIM Mahasiswa"
                                         required
+                                        className="bg-blue-800 border-blue-600 text-white"
                                     />
                                 </div>
                             )}
@@ -206,6 +238,7 @@ const AdminAccountPage = () => {
                                         }
                                         placeholder="NID Dosen"
                                         required
+                                        className="bg-blue-800 border-blue-600 text-white"
                                     />
                                 </div>
                             )}
@@ -220,7 +253,7 @@ const AdminAccountPage = () => {
                                         onChange={(e) =>
                                             setFormData({ ...formData, role: e.target.value, nim: "", nid: "" })
                                         }
-                                        className="w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600"
+                                        className="w-full bg-blue-800 text-white rounded-lg p-2 border border-blue-600"
                                     >
                                         <option value="mahasiswa">Mahasiswa</option>
                                         <option value="dosen">Dosen</option>
@@ -234,7 +267,7 @@ const AdminAccountPage = () => {
                                         onChange={(e) =>
                                             setFormData({ ...formData, status: e.target.value })
                                         }
-                                        className="w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600"
+                                        className="w-full bg-blue-800 text-white rounded-lg p-2 border border-blue-600"
                                     >
                                         <option value="aktif">Aktif</option>
                                         <option value="nonaktif">Nonaktif</option>
@@ -246,7 +279,7 @@ const AdminAccountPage = () => {
                             <div className="flex justify-end">
                                 <Button
                                     type="submit"
-                                    className="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
+                                    className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg"
                                 >
                                     Simpan Akun
                                 </Button>
@@ -255,7 +288,6 @@ const AdminAccountPage = () => {
                     </div>
                 </div>
             )}
-
         </div>
     )
 }

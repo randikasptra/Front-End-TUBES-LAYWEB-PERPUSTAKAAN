@@ -208,8 +208,8 @@ const EditBookModal = ({ isOpen, onClose, onSubmit, initialData }) => {
                                     onChange={handleChange}
                                     className='w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white'
                                 >
-                                    <option value='tersedia'>Tersedia</option>
-                                    <option value='dipinjam'>Dipinjam</option>
+                                    <option value='Tersedia'>Tersedia</option>
+                                    <option value='Tidak Tersedia'>Tidak Tersedia</option>
                                 </select>
                             </div>
 
