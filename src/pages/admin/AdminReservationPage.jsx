@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import SidebarAdmin from '@/component/ui/SidebarAdmin'
 import { Button } from '@/component/ui/buttons'
-import axios from 'axios'
 import { toast } from 'react-toastify'
+import {
+    getAllReservasi,
+    updateReservasiStatus,
+} from '../../services/reservationService'
 
 const AdminReservationPage = () => {
     const [reservasi, setReservasi] = useState([])
@@ -10,50 +13,32 @@ const AdminReservationPage = () => {
     const [error, setError] = useState(null)
 
     useEffect(() => {
-        const fetchReservasi = async () => {
-            try {
-                const token = localStorage.getItem('token')
-
-                const res = await axios.get(
-                    'http://localhost:5000/api/reservasi',
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                )
-
-                setReservasi(res.data.data)
-                console.log(res.data.data)
-            } catch (err) {
-                setError(err.message || 'Gagal mengambil data reservasi')
-            } finally {
-                setLoading(false)
-            }
-        }
-
         fetchReservasi()
     }, [])
+
+    const fetchReservasi = async () => {
+        setLoading(true)
+        setError(null)
+        try {
+            const result = await getAllReservasi()
+            setReservasi(result)
+        } catch (error) {
+            console.error('Gagal memuat reservasi:', error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const handleAction = async (id, action) => {
         try {
-            const token = localStorage.getItem('token')
+            await updateReservasiStatus(id, action)
 
-            const res = await axios.patch(
-                `http://localhost:5000/api/reservasi/status/${id}`,
-                { status: action },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            )
-
-            // Jika berhasil, perbarui state lokal
             setReservasi((prev) =>
                 prev.map((res) =>
                     res.id === id ? { ...res, status: action } : res
                 )
             )
+
             toast.success('Status reservasi berhasil diperbarui')
         } catch (error) {
             console.error('Gagal memperbarui status reservasi:', error)

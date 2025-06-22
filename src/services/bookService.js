@@ -38,3 +38,8 @@ export const updateBook = async (id, data) => {
 export const deleteBook = async (id) => {
     return await api.delete(`/book/hapus/${id}`)
 }
+
+export const getTotalBuku = async () => {
+    const response = await api.get('/book/total')
+    return response.data.total || 0
+}

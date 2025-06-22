@@ -3,7 +3,7 @@ import { Card } from '@/component/card'
 import { Input } from '@/component/ui/input'
 import SidebarAdmin from '../../component/ui/SidebarAdmin'
 import { MoreHorizontal } from 'lucide-react'
-import axios from 'axios'
+import { getAllPeminjaman } from '../../services/peminjamanService'
 
 const formatDate = (dateStr) => {
     if (!dateStr) return '-'
@@ -22,17 +22,9 @@ const AdminBorrowPage = () => {
     useEffect(() => {
         const fetchPeminjaman = async () => {
             try {
-                const token = localStorage.getItem('token')
-                const res = await axios.get(
-                    'http://localhost:5000/api/peminjaman',
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                )
-                setPeminjaman(res.data.data)
-                console.log('Data peminjaman:', res.data.data)
+                const result = await getAllPeminjaman()
+                setPeminjaman(result)
+                console.log('Data peminjaman:', result)
             } catch (error) {
                 console.error('Gagal mengambil data peminjaman:', error)
             }
