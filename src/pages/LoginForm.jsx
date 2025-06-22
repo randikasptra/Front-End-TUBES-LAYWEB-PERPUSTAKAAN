@@ -20,6 +20,8 @@ const LoginPage = () => {
                 navigate('/dashboard/admin')
             } else if (role === 'mahasiswa') {
                 navigate('/dashboard/mahasiswa')
+            } else if (role === 'dosen') {
+                navigate('/dashboard/mahasiswa')
             } else {
                 setErrorMessage('Role tidak dikenali.')
             }
