@@ -32,7 +32,7 @@ export const getUserProfile = async () => {
     const token = localStorage.getItem('token')
     if (!token) throw new Error('Token tidak tersedia')
 
-    const response = await axios.get(`${API_BASE_URL}/auth/profile`, {
+    const response = await axios.get(`${API_BASE_URL}/user/profile`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },

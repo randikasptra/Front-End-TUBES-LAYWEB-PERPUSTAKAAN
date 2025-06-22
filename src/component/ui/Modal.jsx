@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { X } from "lucide-react";
 import { toast } from "react-toastify";
 import { createReservasi } from "@/services/reservasiService";
 
 const Modal = ({ isOpen, onClose, book, userId }) => {
+    console.log("🧾 Props Modal:");
+    console.log("📚 book:", book);
+    console.log("👤 userId:", userId);
+
     const [catatan, setCatatan] = useState("");
     const [jamAmbil, setJamAmbil] = useState("");
     const [tanggalAmbil, setTanggalAmbil] = useState("");
     const [loading, setLoading] = useState(false);
+
+
 
     if (!book) return null;
 
@@ -20,14 +26,26 @@ const Modal = ({ isOpen, onClose, book, userId }) => {
 
         try {
             setLoading(true);
+            console.log("📤 Data yang dikirim:", {
+                userId,
+                bookId: book.id,
+                tanggalAmbil,
+                jamAmbil,
+                catatanAdmin: catatan,
+                status: "Menunggu",
+            });
+
+
             await createReservasi({
                 userId,
                 bookId: book.id,
                 tanggalAmbil,
                 jamAmbil,
                 catatanAdmin: catatan,
-                status: "reservasi",
+                status: "Menunggu",
             });
+
+
 
             toast.success("✅ Reservasi berhasil dibuat");
             setCatatan("");
@@ -41,6 +59,7 @@ const Modal = ({ isOpen, onClose, book, userId }) => {
             setLoading(false);
         }
     };
+
 
     return (
         <Dialog
@@ -119,9 +138,8 @@ const Modal = ({ isOpen, onClose, book, userId }) => {
                     <button
                         onClick={handleReservasi}
                         disabled={loading}
-                        className={`bg-white text-blue-800 font-semibold px-5 py-2 rounded-lg transition duration-200 ${
-                            loading ? "opacity-60 cursor-not-allowed" : "hover:bg-blue-100"
-                        }`}
+                        className={`bg-white text-blue-800 font-semibold px-5 py-2 rounded-lg transition duration-200 ${loading ? "opacity-60 cursor-not-allowed" : "hover:bg-blue-100"
+                            }`}
                     >
                         {loading ? "Memproses..." : "Konfirmasi Reservasi"}
                     </button>
