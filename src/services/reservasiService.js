@@ -1,7 +1,7 @@
 import api from "@/utils/api";
 
 export const createReservasi = async (data) => {
-    const response = await api.post("/auth/reservasi/tambah", data);
+    const response = await api.post("/reservasi/tambah", data);
     return response.data.data;
 };
 

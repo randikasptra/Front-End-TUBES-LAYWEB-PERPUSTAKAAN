@@ -24,7 +24,6 @@ const PerpustakaanPages = () => {
         setLoading(true);
         try {
             const result = await getAllBooks();
-            console.log("📚 Data buku:", result);
             setAllBooks(result);
         } catch (error) {
             console.error("❌ Gagal memuat buku:", error);
@@ -36,7 +35,6 @@ const PerpustakaanPages = () => {
     const fetchUser = async () => {
         try {
             const profile = await getUserProfile();
-            console.log("👤 User profile:", profile);
             setUserId(profile.id);
         } catch (error) {
             console.error("❌ Gagal memuat profil pengguna:", error);
@@ -50,10 +48,7 @@ const PerpustakaanPages = () => {
     });
 
     const handleOpenModal = (book) => {
-        if (!book?.id) {
-            console.warn("⚠️ Buku tidak valid");
-            return;
-        }
+        console.log("📚 Buku diklik:", book);
         setSelectedBook(book);
         setIsModalOpen(true);
     };
@@ -62,6 +57,9 @@ const PerpustakaanPages = () => {
         setIsModalOpen(false);
         setSelectedBook(null);
     };
+
+
+
 
     return (
         <div className="min-h-screen flex bg-gradient-to-r from-[#1e293b] via-[#334155] to-[#60a5fa] text-white">
@@ -108,12 +106,26 @@ const PerpustakaanPages = () => {
                 )}
 
                 {/* Modal Reservasi */}
-                <Modal
-                    isOpen={isModalOpen}
-                    onClose={handleCloseModal}
-                    book={selectedBook}
-                    userId={userId}
-                />
+                {(() => {
+                    console.log("🧾 Final check sebelum kirim ke modal");
+                    console.log("isModalOpen:", isModalOpen);
+                    console.log("userId:", userId);
+                    console.log("selectedBook:", selectedBook);
+                    return null;
+                })()}
+
+
+                {/* Modal Reservasi */}
+                {isModalOpen && selectedBook && userId && (
+                    <Modal
+                        isOpen={isModalOpen}
+                        onClose={handleCloseModal}
+                        book={selectedBook}
+                        userId={userId}
+                    />
+                )}
+
+
             </main>
         </div>
     );
