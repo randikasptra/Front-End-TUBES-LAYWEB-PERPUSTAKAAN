@@ -27,26 +27,7 @@ export const addBook = async (bookData) => {
     return await api.post('/book/tambah', formData)
 }
 
-export const updateBook = async (id, bookData) => {
-    const formData = new FormData()
-
-    formData.append('judul', bookData.judul)
-    formData.append('isbn', bookData.isbn)
-    formData.append('tahunTerbit', bookData.tahunTerbit)
-    formData.append('kategoriId', bookData.kategoriId)
-    formData.append('deskripsi', bookData.deskripsi || '')
-    formData.append('penerbit', bookData.penerbit || '')
-    formData.append('penulis', bookData.penulis || '')
-    formData.append('stok', bookData.stok || 1)
-    formData.append('status', bookData.status || 'tersedia')
-
-    // ✅ Pastikan pakai key `image` dan cek kalau file valid
-    if (bookData.image instanceof File) {
-        formData.append('image', bookData.image)
-    } else {
-        console.info('ℹ️ Tidak ada file baru, gunakan cover lama.')
-    }
-
+export const updateBook = async (id, formData) => {
     return await api.put(`/book/edit/${id}`, formData)
 }
 
