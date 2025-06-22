@@ -116,9 +116,8 @@ const AdminAccountPage = () => {
                                     Role: {capitalize(user.role)}
                                 </p>
                                 <span
-                                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                                        statusColor[capitalize(user.status)] || "bg-gray-500"
-                                    }`}
+                                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${statusColor[capitalize(user.status)] || "bg-gray-500"
+                                        }`}
                                 >
                                     {capitalize(user.status)}
                                 </span>
@@ -163,10 +162,55 @@ const AdminAccountPage = () => {
                                     onChange={(e) =>
                                         setFormData({ ...formData, email: e.target.value })
                                     }
-                                    placeholder="Alamat email"
+                                    placeholder="Alamat email @sariwangi.ac.id"
                                     required
                                 />
                             </div>
+                            <div>
+                                <label className="block text-sm mb-1">Password</label>
+                                <Input
+                                    name="password"
+                                    type="password"
+                                    value={formData.password}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, password: e.target.value })
+                                    }
+                                    placeholder="Minimal 6 karakter"
+                                    required
+                                />
+                            </div>
+
+                            {/* NIM / NID */}
+                            {formData.role === "mahasiswa" && (
+                                <div>
+                                    <label className="block text-sm mb-1">NIM</label>
+                                    <Input
+                                        name="nim"
+                                        value={formData.nim}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, nim: e.target.value })
+                                        }
+                                        placeholder="NIM Mahasiswa"
+                                        required
+                                    />
+                                </div>
+                            )}
+                            {formData.role === "dosen" && (
+                                <div>
+                                    <label className="block text-sm mb-1">NID</label>
+                                    <Input
+                                        name="nid"
+                                        value={formData.nid}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, nid: e.target.value })
+                                        }
+                                        placeholder="NID Dosen"
+                                        required
+                                    />
+                                </div>
+                            )}
+
+                            {/* Role & Status */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm mb-1">Role</label>
@@ -174,13 +218,12 @@ const AdminAccountPage = () => {
                                         name="role"
                                         value={formData.role}
                                         onChange={(e) =>
-                                            setFormData({ ...formData, role: e.target.value })
+                                            setFormData({ ...formData, role: e.target.value, nim: "", nid: "" })
                                         }
                                         className="w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600"
                                     >
                                         <option value="mahasiswa">Mahasiswa</option>
                                         <option value="dosen">Dosen</option>
-                                        <option value="admin">Admin</option>
                                     </select>
                                 </div>
                                 <div>
@@ -198,6 +241,8 @@ const AdminAccountPage = () => {
                                     </select>
                                 </div>
                             </div>
+
+                            {/* Submit */}
                             <div className="flex justify-end">
                                 <Button
                                     type="submit"
@@ -210,6 +255,7 @@ const AdminAccountPage = () => {
                     </div>
                 </div>
             )}
+
         </div>
     )
 }
