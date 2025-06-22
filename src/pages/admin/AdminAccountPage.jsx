@@ -12,30 +12,38 @@ const statusColor = {
     Nonaktif: "bg-red-500",
 }
 
+const capitalize = (text) => {
+    if (!text) return ""
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
+}
+
 const AdminAccountPage = () => {
     const [search, setSearch] = useState("")
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [users, setUsers] = useState([])
+    const [loading, setLoading] = useState(false)
 
     const [formData, setFormData] = useState({
         nama: "",
         email: "",
-        role: "Mahasiswa",
-        status: "Aktif",
+        role: "mahasiswa", // lowercase sesuai backend
+        status: "aktif",
     })
 
-    // Fetch data dari backend
     useEffect(() => {
         fetchUsers()
     }, [])
 
     const fetchUsers = async () => {
+        setLoading(true)
         try {
             const result = await getAllUsers()
             setUsers(result)
         } catch (err) {
             console.error("Gagal memuat pengguna:", err)
             toast.error("❌ Gagal memuat data user")
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -47,8 +55,8 @@ const AdminAccountPage = () => {
             setFormData({
                 nama: "",
                 email: "",
-                role: "Mahasiswa",
-                status: "Aktif",
+                role: "mahasiswa",
+                status: "aktif",
             })
             setIsModalOpen(false)
             fetchUsers()
@@ -89,24 +97,36 @@ const AdminAccountPage = () => {
 
                 {/* Kartu Akun */}
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {filteredUsers.map((user) => (
-                        <Card
-                            key={user.id}
-                            className="p-4 bg-slate-800 text-white border border-slate-600 shadow-md rounded-xl relative"
-                        >
-                            <div className="absolute top-4 right-4 cursor-pointer text-slate-400 hover:text-white">
-                                <MoreVertical size={18} />
-                            </div>
-                            <h2 className="text-lg font-semibold mb-1">{user.nama}</h2>
-                            <p className="text-sm text-slate-300 mb-1">Email: {user.email}</p>
-                            <p className="text-sm text-slate-300 mb-3">Role: {user.role}</p>
-                            <span
-                                className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${statusColor[user.status]}`}
+                    {loading ? (
+                        <p>Memuat data pengguna...</p>
+                    ) : filteredUsers.length > 0 ? (
+                        filteredUsers.map((user) => (
+                            <Card
+                                key={user.id}
+                                className="p-4 bg-slate-800 text-white border border-slate-600 shadow-md rounded-xl relative"
                             >
-                                {user.status}
-                            </span>
-                        </Card>
-                    ))}
+                                <div className="absolute top-4 right-4 cursor-pointer text-slate-400 hover:text-white">
+                                    <MoreVertical size={18} />
+                                </div>
+                                <h2 className="text-lg font-semibold mb-1">{user.nama}</h2>
+                                <p className="text-sm text-slate-300 mb-1">
+                                    Email: {user.email}
+                                </p>
+                                <p className="text-sm text-slate-300 mb-3">
+                                    Role: {capitalize(user.role)}
+                                </p>
+                                <span
+                                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                                        statusColor[capitalize(user.status)] || "bg-gray-500"
+                                    }`}
+                                >
+                                    {capitalize(user.status)}
+                                </span>
+                            </Card>
+                        ))
+                    ) : (
+                        <p>Tidak ada data pengguna ditemukan</p>
+                    )}
                 </div>
             </main>
 
@@ -158,9 +178,9 @@ const AdminAccountPage = () => {
                                         }
                                         className="w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600"
                                     >
-                                        <option value="Mahasiswa">Mahasiswa</option>
-                                        <option value="Dosen">Dosen</option>
-                                        <option value="Admin">Admin</option>
+                                        <option value="mahasiswa">Mahasiswa</option>
+                                        <option value="dosen">Dosen</option>
+                                        <option value="admin">Admin</option>
                                     </select>
                                 </div>
                                 <div>
@@ -173,8 +193,8 @@ const AdminAccountPage = () => {
                                         }
                                         className="w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600"
                                     >
-                                        <option value="Aktif">Aktif</option>
-                                        <option value="Nonaktif">Nonaktif</option>
+                                        <option value="aktif">Aktif</option>
+                                        <option value="nonaktif">Nonaktif</option>
                                     </select>
                                 </div>
                             </div>
