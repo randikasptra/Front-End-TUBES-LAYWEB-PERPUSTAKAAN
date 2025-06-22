@@ -40,8 +40,7 @@ const EditBookModal = ({ isOpen, onClose, onSubmit, initialData }) => {
         if (isOpen && initialData) {
             setFormData({
                 id: initialData.id,
-                image: null, // hanya untuk file baru
-                coverLama: initialData.image || '', // simpan path gambar lama di backend
+                image: initialData.image, // hanya untuk file baru
                 judul: initialData.judul || '',
                 deskripsi: initialData.deskripsi || '',
                 isbn: initialData.isbn || '',
@@ -133,18 +132,6 @@ const EditBookModal = ({ isOpen, onClose, onSubmit, initialData }) => {
                                     file:bg-blue-50 dark:file:bg-slate-700 file:text-blue-600 dark:file:text-blue-400
                                     hover:file:bg-blue-100 dark:hover:file:bg-slate-600'
                             />
-                            {!formData.image && formData.coverLama && (
-                                <div className='mt-2'>
-                                    <p className='text-sm text-slate-500 dark:text-slate-400 mb-1'>
-                                        Cover Lama:
-                                    </p>
-                                    <img
-                                        src={formData.coverLama}
-                                        alt='Cover Buku Lama'
-                                        className='max-h-64 w-auto object-contain rounded-md border border-slate-300 dark:border-slate-600 mx-auto'
-                                    />
-                                </div>
-                            )}
                         </div>
 
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>

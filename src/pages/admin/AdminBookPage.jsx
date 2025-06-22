@@ -7,7 +7,6 @@ import AddBookModal from '@/component/ui/AddBookModal'
 import EditBookModal from '@/component/ui/EditBookModal'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
-import { API_BASE_URL } from '../../config'
 import {
     addBook,
     deleteBook,
