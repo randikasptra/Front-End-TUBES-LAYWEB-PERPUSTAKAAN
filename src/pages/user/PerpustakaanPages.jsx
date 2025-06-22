@@ -1,5 +1,5 @@
+// src/pages/perpustakaan/PerpustakaanPages.jsx
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import SideNavbar from "../../component/ui/SideNavbar";
 import BookCard from "../../component/ui/BookCard";
 import { getAllBooks } from "../../services/bookService";
@@ -11,34 +11,31 @@ const PerpustakaanPages = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchBooks()
-    }, [])
+        fetchBooks();
+    }, []);
 
     const fetchBooks = async () => {
-        setLoading(true)
+        setLoading(true);
         try {
-            const result = await getAllBooks()
-            setBooks(result)
-            console.log(result);
-            
+            const result = await getAllBooks();
+            console.log("📚 Data buku:", result);
+            setAllBooks(result);
         } catch (error) {
-            console.error('Gagal memuat buku:', error)
+            console.error("❌ Gagal memuat buku:", error);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
-
+    };
 
     const filteredBooks = allBooks.filter((book) => {
         const matchesSearch = book.judul.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesFilter = filter === "Semua" || book.kategori?.namaKategori === filter;
+        const matchesFilter = filter === "Semua" || book.kategori?.nama === filter;
         return matchesSearch && matchesFilter;
     });
 
     return (
         <div className="min-h-screen flex bg-gradient-to-r from-[#1e293b] via-[#334155] to-[#60a5fa] text-white">
             <SideNavbar />
-
             <main className="sm:ml-64 flex-1 p-8 overflow-y-auto my-24">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
                     <div className="flex flex-1 items-center gap-2">
@@ -66,12 +63,14 @@ const PerpustakaanPages = () => {
 
                 {loading ? (
                     <p className="text-white">Loading buku...</p>
-                ) : (
+                ) : filteredBooks.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
                         {filteredBooks.map((book) => (
-                            <BookCard key={book.id} bookId={book.id} />
+                            <BookCard key={book.id} book={book} />
                         ))}
                     </div>
+                ) : (
+                    <p className="text-white">Tidak ada buku ditemukan.</p>
                 )}
             </main>
         </div>
