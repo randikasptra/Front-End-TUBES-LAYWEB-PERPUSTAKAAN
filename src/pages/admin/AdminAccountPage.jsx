@@ -1,70 +1,68 @@
-import React, { useState } from "react";
-import { Card } from "@/component/card";
-import { Input } from "@/component/ui/input";
-import { Button } from "@/component/ui/buttons";
-import SidebarAdmin from "@/component/ui/SidebarAdmin";
-import { MoreVertical, Plus, X } from "lucide-react";
+import React, { useState, useEffect } from "react"
+import { Card } from "@/component/card"
+import { Input } from "@/component/ui/input"
+import { Button } from "@/component/ui/buttons"
+import SidebarAdmin from "@/component/ui/SidebarAdmin"
+import { MoreVertical, Plus, X } from "lucide-react"
+import { toast } from "react-toastify"
+import { getAllUsers, createUser } from "@/services/userService"
 
 const statusColor = {
     Aktif: "bg-green-500",
     Nonaktif: "bg-red-500",
-};
+}
 
 const AdminAccountPage = () => {
-    const [search, setSearch] = useState("");
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [users, setUsers] = useState([
-        {
-            id: 1,
-            nama: "Rizky Maulana",
-            email: "rizky@mail.com",
-            role: "Mahasiswa",
-            status: "Aktif",
-        },
-        {
-            id: 2,
-            nama: "Dewi Andini",
-            email: "dewi@mail.com",
-            role: "Dosen",
-            status: "Nonaktif",
-        },
-        {
-            id: 3,
-            nama: "Ahmad Fauzan",
-            email: "ahmad@mail.com",
-            role: "Mahasiswa",
-            status: "Aktif",
-        },
-    ]);
+    const [search, setSearch] = useState("")
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [users, setUsers] = useState([])
 
     const [formData, setFormData] = useState({
         nama: "",
         email: "",
         role: "Mahasiswa",
         status: "Aktif",
-    });
+    })
 
-    const handleAddUser = (e) => {
-        e.preventDefault();
-        const newUser = {
-            id: Date.now(),
-            ...formData,
-        };
-        setUsers([...users, newUser]);
-        setFormData({
-            nama: "",
-            email: "",
-            role: "Mahasiswa",
-            status: "Aktif",
-        });
-        setIsModalOpen(false);
-    };
+    // Fetch data dari backend
+    useEffect(() => {
+        fetchUsers()
+    }, [])
+
+    const fetchUsers = async () => {
+        try {
+            const result = await getAllUsers()
+            setUsers(result)
+        } catch (err) {
+            console.error("Gagal memuat pengguna:", err)
+            toast.error("❌ Gagal memuat data user")
+        }
+    }
+
+    const handleAddUser = async (e) => {
+        e.preventDefault()
+        try {
+            await createUser(formData)
+            toast.success("✅ Akun berhasil ditambahkan")
+            setFormData({
+                nama: "",
+                email: "",
+                role: "Mahasiswa",
+                status: "Aktif",
+            })
+            setIsModalOpen(false)
+            fetchUsers()
+        } catch (err) {
+            console.error("Gagal menambahkan user:", err)
+            toast.error("❌ Gagal menambahkan user")
+        }
+    }
 
     const filteredUsers = users.filter(
         (user) =>
             user.nama.toLowerCase().includes(search.toLowerCase()) ||
             user.email.toLowerCase().includes(search.toLowerCase())
-    );
+    )
 
     return (
         <div className="flex bg-gradient-to-r from-slate-800 via-slate-700 to-blue-900 min-h-screen text-white">
@@ -193,7 +191,7 @@ const AdminAccountPage = () => {
                 </div>
             )}
         </div>
-    );
-};
+    )
+}
 
-export default AdminAccountPage;
+export default AdminAccountPage
