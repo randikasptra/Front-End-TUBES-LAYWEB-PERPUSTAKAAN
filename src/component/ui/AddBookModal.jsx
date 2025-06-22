@@ -70,6 +70,11 @@ const AddBookModal = ({ isOpen, onClose, onSubmit }) => {
             onClose={onClose}
             className='relative z-50'
         >
+            {loading && (
+                <div className='absolute inset-0 flex items-center justify-center bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm z-50'>
+                    <div className='h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin' />
+                </div>
+            )}
             <div
                 className='fixed inset-0 bg-black/30'
                 aria-hidden='true'
