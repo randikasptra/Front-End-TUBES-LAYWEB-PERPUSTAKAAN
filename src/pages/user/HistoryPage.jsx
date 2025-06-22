@@ -1,45 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SideNavbar from "../../component/ui/SideNavbar";
 import Footer from "../../component/ui/Footer";
-
-const historyData = [
-    {
-        id: 1,
-        title: "Algoritma Dasar",
-        status: "Dipinjam",
-        tanggal: "2025-05-10",
-        image: "/book-placeholder.jpg",
-        waktuAmbil: "2025-05-10",
-        waktuKembali: "2025-05-17",
-    },
-    {
-        id: 2,
-        title: "Manajemen Proyek",
-        status: "Dikembalikan",
-        tanggal: "2025-04-30",
-        image: "/book-placeholder.jpg",
-        waktuAmbil: "2025-04-23",
-        waktuKembali: "2025-04-30",
-    },
-    {
-        id: 3,
-        title: "Hukum Siber",
-        status: "Belum Dikembalikan",
-        tanggal: "2025-05-01",
-        image: "/book-placeholder.jpg",
-        waktuAmbil: "2025-04-24",
-        waktuKembali: "Seharusnya 2025-05-01",
-    },
-    {
-        id: 4,
-        title: "Database Modern",
-        status: "Reservasi",
-        tanggal: "2025-05-21",
-        image: "/book-placeholder.jpg",
-        waktuAmbil: "-",
-        waktuKembali: "-",
-    },
-];
+import { getAllReservasiByUser } from "@/services/reservasiService";
+import { getUserProfile } from "@/services/authService";
 
 const statusColors = {
     Reservasi: "bg-blue-500",
@@ -50,11 +13,25 @@ const statusColors = {
 
 const HistoryPage = () => {
     const [filter, setFilter] = useState("Semua");
+    const [reservasiData, setReservasiData] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const profile = await getUserProfile();
+                const all = await getAllReservasiByUser(profile.id);
+                setReservasiData(all);
+            } catch (err) {
+                console.error("Gagal memuat data riwayat:", err);
+            }
+        };
+        fetchData();
+    }, []);
 
     const filteredData =
         filter === "Semua"
-            ? historyData
-            : historyData.filter((item) => item.status === filter);
+            ? reservasiData
+            : reservasiData.filter((item) => item.status === filter);
 
     return (
         <div className="min-h-screen flex bg-gradient-to-r from-[#1e293b] via-[#334155] to-[#60a5fa] text-white">
@@ -88,16 +65,16 @@ const HistoryPage = () => {
                             className="bg-slate-800 rounded-xl p-4 flex flex-col md:flex-row gap-4 md:items-center shadow-md hover:shadow-lg transition-shadow"
                         >
                             <img
-                                src={item.image}
-                                alt={item.title}
+                                src={item.book?.image || "/book-placeholder.jpg"}
+                                alt={item.book?.title || "Judul Buku"}
                                 className="w-24 h-32 object-cover rounded-md shadow mx-auto md:mx-0"
                             />
                             <div className="flex-1">
-                                <h2 className="text-lg font-semibold">{item.title}</h2>
+                                <h2 className="text-lg font-semibold">{item.book?.title}</h2>
                                 <div className="text-sm text-slate-300 mt-1">
-                                    <p>📆 Tanggal Status: {item.tanggal}</p>
-                                    <p>🕓 Waktu Ambil: {item.waktuAmbil}</p>
-                                    <p>⏳ Waktu Pengembalian: {item.waktuKembali}</p>
+                                    <p>📆 Tanggal Status: {new Date(item.createdAt).toLocaleDateString()}</p>
+                                    <p>🕓 Waktu Ambil: {item.tanggalAmbil || "-"}</p>
+                                    <p>⏳ Waktu Pengembalian: {item.tanggalKembali || "-"}</p>
                                 </div>
                             </div>
                             <span
@@ -117,4 +94,4 @@ const HistoryPage = () => {
     );
 };
 
-export default HistoryPage;
+export default HistoryPage; 

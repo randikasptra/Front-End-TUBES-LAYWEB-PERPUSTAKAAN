@@ -3,7 +3,7 @@ import api from '../utils/api'
 
 // Ambil semua pengguna mahasiswa & dosen
 export const getAllUsers = async () => {
-    const response = await api.get('/auth/get-users')
+    const response = await api.get('/user')
     return response.data.data || []  // sesuai dengan controller kamu
 }
 

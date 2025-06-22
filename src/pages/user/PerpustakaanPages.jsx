@@ -2,16 +2,22 @@
 import React, { useState, useEffect } from "react";
 import SideNavbar from "../../component/ui/SideNavbar";
 import BookCard from "../../component/ui/BookCard";
+import Modal from "../../component/ui/Modal";
 import { getAllBooks } from "../../services/bookService";
+import { getUserProfile } from "../../services/authService";
 
 const PerpustakaanPages = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filter, setFilter] = useState("Semua");
     const [allBooks, setAllBooks] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedBook, setSelectedBook] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [userId, setUserId] = useState(null);
 
     useEffect(() => {
         fetchBooks();
+        fetchUser();
     }, []);
 
     const fetchBooks = async () => {
@@ -27,11 +33,35 @@ const PerpustakaanPages = () => {
         }
     };
 
+    const fetchUser = async () => {
+        try {
+            const profile = await getUserProfile();
+            console.log("👤 User profile:", profile);
+            setUserId(profile.id);
+        } catch (error) {
+            console.error("❌ Gagal memuat profil pengguna:", error);
+        }
+    };
+
     const filteredBooks = allBooks.filter((book) => {
         const matchesSearch = book.judul.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesFilter = filter === "Semua" || book.kategori?.nama === filter;
         return matchesSearch && matchesFilter;
     });
+
+    const handleOpenModal = (book) => {
+        if (!book?.id) {
+            console.warn("⚠️ Buku tidak valid");
+            return;
+        }
+        setSelectedBook(book);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedBook(null);
+    };
 
     return (
         <div className="min-h-screen flex bg-gradient-to-r from-[#1e293b] via-[#334155] to-[#60a5fa] text-white">
@@ -66,12 +96,24 @@ const PerpustakaanPages = () => {
                 ) : filteredBooks.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
                         {filteredBooks.map((book) => (
-                            <BookCard key={book.id} book={book} />
+                            <BookCard
+                                key={book.id}
+                                book={book}
+                                onReservasiClick={() => handleOpenModal(book)}
+                            />
                         ))}
                     </div>
                 ) : (
                     <p className="text-white">Tidak ada buku ditemukan.</p>
                 )}
+
+                {/* Modal Reservasi */}
+                <Modal
+                    isOpen={isModalOpen}
+                    onClose={handleCloseModal}
+                    book={selectedBook}
+                    userId={userId}
+                />
             </main>
         </div>
     );

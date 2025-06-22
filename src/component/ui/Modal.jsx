@@ -1,9 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { X } from "lucide-react";
+import { toast } from "react-toastify";
+import { createReservasi } from "@/services/reservasiService";
 
-const Modal = ({ isOpen, onClose, book }) => {
+const Modal = ({ isOpen, onClose, book, userId }) => {
+    const [catatan, setCatatan] = useState("");
+    const [jamAmbil, setJamAmbil] = useState("");
+    const [tanggalAmbil, setTanggalAmbil] = useState("");
+    const [loading, setLoading] = useState(false);
+
     if (!book) return null;
+
+    const handleReservasi = async () => {
+        if (!jamAmbil || !tanggalAmbil) {
+            toast.warn("⏰ Jam dan tanggal ambil wajib diisi");
+            return;
+        }
+
+        try {
+            setLoading(true);
+            await createReservasi({
+                userId,
+                bookId: book.id,
+                tanggalAmbil,
+                jamAmbil,
+                catatanAdmin: catatan,
+                status: "reservasi",
+            });
+
+            toast.success("✅ Reservasi berhasil dibuat");
+            setCatatan("");
+            setJamAmbil("");
+            setTanggalAmbil("");
+            onClose();
+        } catch (err) {
+            console.error("Gagal reservasi:", err);
+            toast.error("❌ Gagal melakukan reservasi");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <Dialog
@@ -44,9 +81,11 @@ const Modal = ({ isOpen, onClose, book }) => {
                             Catatan untuk Admin
                         </label>
                         <textarea
+                            value={catatan}
+                            onChange={(e) => setCatatan(e.target.value)}
                             className="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
                             rows={3}
-                            placeholder="Contoh: titip ke temen saya, datang sore, dll"
+                            placeholder="Contoh: titip ke teman, datang sore, dll"
                         />
                     </div>
 
@@ -57,6 +96,8 @@ const Modal = ({ isOpen, onClose, book }) => {
                             </label>
                             <input
                                 type="time"
+                                value={jamAmbil}
+                                onChange={(e) => setJamAmbil(e.target.value)}
                                 className="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
                             />
                         </div>
@@ -66,6 +107,8 @@ const Modal = ({ isOpen, onClose, book }) => {
                             </label>
                             <input
                                 type="date"
+                                value={tanggalAmbil}
+                                onChange={(e) => setTanggalAmbil(e.target.value)}
                                 className="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
                             />
                         </div>
@@ -74,10 +117,13 @@ const Modal = ({ isOpen, onClose, book }) => {
 
                 <div className="mt-6 flex justify-end">
                     <button
-                        onClick={onClose}
-                        className="bg-white text-blue-800 font-semibold px-5 py-2 rounded-lg hover:bg-blue-100 transition duration-200"
+                        onClick={handleReservasi}
+                        disabled={loading}
+                        className={`bg-white text-blue-800 font-semibold px-5 py-2 rounded-lg transition duration-200 ${
+                            loading ? "opacity-60 cursor-not-allowed" : "hover:bg-blue-100"
+                        }`}
                     >
-                        Konfirmasi Reservasi
+                        {loading ? "Memproses..." : "Konfirmasi Reservasi"}
                     </button>
                 </div>
             </Dialog.Panel>
