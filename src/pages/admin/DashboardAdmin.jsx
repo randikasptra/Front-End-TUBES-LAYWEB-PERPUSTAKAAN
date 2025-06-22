@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import SidebarAdmin from '../../component/ui/SidebarAdmin'
 import { BarChart2, BookOpen, Users, Clock } from 'lucide-react'
-import axios from 'axios'
+import { getTotalBuku } from '../../services/bookService'
 
 const recentActivities = [
     {
@@ -25,16 +25,8 @@ const DashboardAdmin = () => {
     useEffect(() => {
         const fetchTotalBuku = async () => {
             try {
-                const token = localStorage.getItem('token') // Ambil token dari localStorage
-                const response = await axios.get(
-                    'http://localhost:5000/api/book/total',
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                )
-                setTotal(response.data.total)
+                const total = await getTotalBuku()
+                setTotal(total)
             } catch (error) {
                 console.error('Gagal mengambil total buku:', error)
             } finally {
