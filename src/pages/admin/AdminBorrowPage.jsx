@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react'
 import { Card } from '@/component/card'
 import { Input } from '@/component/ui/input'
@@ -18,6 +19,7 @@ const formatDate = (dateStr) => {
 const AdminBorrowPage = () => {
     const [searchTerm, setSearchTerm] = useState('')
     const [peminjaman, setPeminjaman] = useState([])
+    const [data, setData] = useState([])
 
     useEffect(() => {
         const fetchPeminjaman = async () => {
@@ -40,6 +42,14 @@ const AdminBorrowPage = () => {
             nama.includes(searchTerm.toLowerCase()) || nim.includes(searchTerm)
         )
     })
+
+    const handleTanggalKembaliChange = (id, value) => {
+        setData((prev) =>
+            prev.map((item) =>
+                item.id === id ? { ...item, tanggalKembali: value } : item
+            )
+        )
+    }
 
     return (
         <div className='flex bg-gradient-to-r from-slate-800 via-slate-700 to-blue-900 min-h-screen text-white'>
@@ -67,9 +77,9 @@ const AdminBorrowPage = () => {
                                 <th className='py-3 px-4'>Nama Peminjam</th>
                                 <th className='py-3 px-4'>Judul Buku</th>
                                 <th className='py-3 px-4'>Tgl Pinjam</th>
+                                <th className='py-3 px-4'>Tgl Jatuh Tempo</th>
                                 <th className='py-3 px-4'>Tgl Kembali</th>
                                 <th className='py-3 px-4'>Status</th>
-                                <th className='py-3 px-4'>Aksi</th>
                             </tr>
                         </thead>
                         <tbody className='bg-slate-900 divide-y divide-slate-700'>
@@ -98,10 +108,28 @@ const AdminBorrowPage = () => {
                                         {formatDate(item.tanggalPinjam)}
                                     </td>
                                     <td className='py-2 px-4'>
-                                        {item.tanggalKembali
-                                            ? formatDate(item.tanggalKembali)
-                                            : '-'}
+                                        {formatDate(item.tanggalJatuhTempo)}
                                     </td>
+                                    <td className='py-2 px-4'>
+                                        <input
+                                            type='date'
+                                            value={
+                                                item.tanggalKembali
+                                                    ? item.tanggalKembali.split(
+                                                          'T'
+                                                      )[0]
+                                                    : ''
+                                            }
+                                            onChange={(e) =>
+                                                handleTanggalKembaliChange(
+                                                    item.id,
+                                                    e.target.value
+                                                )
+                                            }
+                                            className='border border-gray-600 bg-gray-800 text-white rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition'
+                                        />
+                                    </td>
+
                                     <td className='py-2 px-4'>
                                         <span
                                             className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -116,11 +144,6 @@ const AdminBorrowPage = () => {
                                         >
                                             {item.status}
                                         </span>
-                                    </td>
-                                    <td className='py-2 px-4'>
-                                        <button title='Lihat Detail'>
-                                            <MoreHorizontal className='text-white hover:text-blue-400' />
-                                        </button>
                                     </td>
                                 </tr>
                             ))}
