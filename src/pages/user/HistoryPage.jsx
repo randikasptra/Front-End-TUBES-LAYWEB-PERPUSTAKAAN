@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Footer from '../../component/ui/Footer'
 import SideNavbar from '../../component/ui/SideNavbar'
-import {
-  getReservasiByUserId,
-  deleteReservasi
-} from '@/services/reservasiService'
+import { getPeminjamanByUserId } from '@/services/peminjamanService'
 import { getUserProfile } from '@/services/authService'
 import { toast } from 'react-toastify'
 import {
@@ -12,37 +9,25 @@ import {
   BookOpenText,
   Calendar,
   Clock,
-  Trash2,
   AlertCircle,
-  Bookmark
+  Bookmark,
+  DollarSign
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const statusConfig = {
-  Reservasi: {
-    color: 'bg-blue-500/90',
-    icon: <Clock size={14} className="mr-1" />
-  },
-  Dipinjam: {
+  dipinjam: {
     color: 'bg-yellow-500/90',
     icon: <BookOpenText size={14} className="mr-1" />
   },
-  'Belum Dikembalikan': {
-    color: 'bg-red-600/90',
-    icon: <AlertCircle size={14} className="mr-1" />
-  },
-  Dikembalikan: {
+  dikembalikan: {
     color: 'bg-green-500/90',
     icon: <Calendar size={14} className="mr-1" />
-  },
-  Ditolak: {
-    color: 'bg-red-700/90',
-    icon: <AlertCircle size={14} className="mr-1" />
   }
 }
 
 const HistoryPage = () => {
-  const [reservasi, setReservasi] = useState([])
+  const [peminjaman, setPeminjaman] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('Semua')
 
@@ -50,12 +35,12 @@ const HistoryPage = () => {
     const fetchData = async () => {
       try {
         const profile = await getUserProfile()
-        const data = await getReservasiByUserId(profile.id)
-        console.log('📦 Data Reservasi:', data)
-        setReservasi(data)
+        const data = await getPeminjamanByUserId(profile.id)
+        console.log('📦 Data Peminjaman:', data)
+        setPeminjaman(data)
       } catch (err) {
-        console.error('Gagal memuat data reservasi:', err)
-        toast.error('Gagal memuat data reservasi')
+        console.error('Gagal memuat data peminjaman:', err)
+        toast.error('Gagal memuat data peminjaman')
       } finally {
         setLoading(false)
       }
@@ -63,20 +48,8 @@ const HistoryPage = () => {
     fetchData()
   }, [])
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Yakin ingin menghapus reservasi ini?')) return
-    try {
-      await deleteReservasi(id)
-      setReservasi((prev) => prev.filter((r) => r.id !== id))
-      toast.success('Reservasi berhasil dihapus')
-    } catch (err) {
-      console.error('Gagal menghapus reservasi:', err)
-      toast.error('Gagal menghapus reservasi')
-    }
-  }
-
   const filteredData =
-    filter === 'Semua' ? reservasi : reservasi.filter((r) => r.status === filter)
+    filter === 'Semua' ? peminjaman : peminjaman.filter((r) => r.status === filter.toLowerCase())
 
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900/50 text-white">
@@ -92,10 +65,10 @@ const HistoryPage = () => {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-300 to-teal-300 bg-clip-text text-transparent">
-                  Riwayat Reservasi
+                  Riwayat Peminjaman
                 </h1>
                 <p className="text-sm text-slate-400 mt-1">
-                  Daftar lengkap riwayat peminjaman buku Anda
+                  Daftar lengkap peminjaman buku Anda
                 </p>
               </div>
               <div className="flex items-center gap-2 bg-slate-800/70 rounded-xl px-4 py-2 border border-slate-700/50">
@@ -106,11 +79,8 @@ const HistoryPage = () => {
                   onChange={(e) => setFilter(e.target.value)}
                 >
                   <option value="Semua">Semua Status</option>
-                  <option value="Reservasi">Reservasi</option>
-                  <option value="Dipinjam">Dipinjam</option>
-                  <option value="Dikembalikan">Dikembalikan</option>
-                  <option value="Belum Dikembalikan">Belum Dikembalikan</option>
-                  <option value="Ditolak">Ditolak</option>
+                  <option value="dipinjam">Dipinjam</option>
+                  <option value="dikembalikan">Dikembalikan</option>
                 </select>
               </div>
             </div>
@@ -130,24 +100,36 @@ const HistoryPage = () => {
                     >
                       <div className="min-w-[100px] h-[140px] relative overflow-hidden rounded-lg">
                         <img
-                          src={item.book?.image || '/book-placeholder.jpg'}
-                          alt={item.book?.judul}
+                          src={item.reservasi?.book?.image || '/book-placeholder.jpg'}
+                          alt={item.reservasi?.book?.judul}
                           className="w-full h-full object-cover absolute inset-0"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent" />
                       </div>
 
                       <div className="flex-1 space-y-2">
-                        <h2 className="text-lg font-semibold">{item.book?.judul}</h2>
+                        <h2 className="text-lg font-semibold">{item.reservasi?.book?.judul}</h2>
                         <div className="text-sm text-slate-400">
-                          Penulis: <span className="text-white">{item.book?.penulis || '-'}</span><br />
-                          Penerbit: <span className="text-white">{item.book?.penerbit || '-'}</span><br />
-                          Tahun: <span className="text-white">{item.book?.tahunTerbit || '-'}</span>
+                          Tanggal Pinjam:{' '}
+                          <span className="text-white">
+                            {item.tanggalPinjam ? new Date(item.tanggalPinjam).toLocaleDateString() : '-'}
+                          </span>
+                          <br />
+                          Jatuh Tempo:{' '}
+                          <span className="text-white">
+                            {item.tanggalJatuhTempo ? new Date(item.tanggalJatuhTempo).toLocaleDateString() : '-'}
+                          </span>
+                          <br />
+                          Tanggal Kembali:{' '}
+                          <span className="text-white">
+                            {item.tanggalKembali ? new Date(item.tanggalKembali).toLocaleDateString() : '-'}
+                          </span>
                         </div>
-                        <div className="text-sm text-slate-400 mt-2">
-                          Ambil: <span className="text-white">{item.tanggalAmbil || '-'}</span><br />
-                          Kembali: <span className="text-white">{item.tanggalKembali || '-'}</span>
-                        </div>
+                        {item.denda > 0 && (
+                          <div className="text-sm text-red-400 flex items-center gap-1 mt-2">
+                            <DollarSign size={14} /> Denda: <span className="text-white">Rp{item.denda}</span>
+                          </div>
+                        )}
                       </div>
 
                       <div className="flex flex-col items-end justify-between">
@@ -161,19 +143,11 @@ const HistoryPage = () => {
                             {item.status}
                           </div>
                         )}
-                        {item.status === 'Ditolak' && (
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            className="mt-4 flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
-                          >
-                            <Trash2 size={16} /> Hapus
-                          </button>
-                        )}
                       </div>
                     </motion.div>
                   ))
                 ) : (
-                  <p className="text-center text-slate-400 py-10">📭 Tidak ada data reservasi.</p>
+                  <p className="text-center text-slate-400 py-10">📭 Tidak ada data peminjaman.</p>
                 )}
               </div>
             )}

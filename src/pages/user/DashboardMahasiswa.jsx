@@ -31,7 +31,7 @@ const DashboardMahasiswa = () => {
         <div className='min-h-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900/50'>
             <div className='flex flex-1'>
                 <SideNavbar />
-                
+
                 <div className='flex-1 flex flex-col'>
                     <main className='flex-1 sm:ml-64 p-6 md:p-8 overflow-y-auto pt-24 sm:pt-8'>
                         <motion.div
@@ -48,16 +48,16 @@ const DashboardMahasiswa = () => {
                                         <div className="absolute inset-0 rounded-full border-4 border-blue-500/30"></div>
                                         <div className="absolute inset-0 rounded-full border-4 border-t-transparent border-l-transparent border-blue-400 animate-spin"></div>
                                         <div className="absolute inset-1 rounded-full border-4 border-transparent border-t-blue-300 animate-spin-reverse"></div>
-                                        
+
                                         {/* Book icon in center */}
                                         <div className="absolute inset-0 flex items-center justify-center">
-                                            <BookOpenText 
-                                                className="text-blue-300 animate-pulse" 
+                                            <BookOpenText
+                                                className="text-blue-300 animate-pulse"
                                                 size={28}
                                             />
                                         </div>
                                     </div>
-                                    
+
                                     {/* Loading text with typing animation */}
                                     <div className="text-center space-y-1">
                                         <p className="text-blue-100 font-medium text-lg">Memuat Koleksi Buku</p>
@@ -67,7 +67,7 @@ const DashboardMahasiswa = () => {
                                     </div>
                                 </div>
                             ) : (
-                                <motion.div 
+                                <motion.div
                                     className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6'
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
@@ -78,8 +78,8 @@ const DashboardMahasiswa = () => {
                                             key={book.id}
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            transition={{ 
-                                                duration: 0.4, 
+                                            transition={{
+                                                duration: 0.4,
                                                 delay: index * 0.05,
                                                 ease: "easeOut"
                                             }}
@@ -91,7 +91,7 @@ const DashboardMahasiswa = () => {
                             )}
                         </motion.div>
                     </main>
-                    
+
                     <div className='sm:ml-64'>
                         <Footer />
                     </div>

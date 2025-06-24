@@ -43,3 +43,9 @@ export const kembalikanPeminjaman = async (id, tanggalKembali) => {
         )
     }
 }
+
+
+export const getPeminjamanByUserId = async (userId) => {
+  const response = await api.get(`/peminjaman/user/${userId}`)
+  return response.data.data || []
+}
