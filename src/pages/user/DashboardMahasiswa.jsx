@@ -27,29 +27,35 @@ const DashboardMahasiswa = () => {
     }
 
     return (
-        <div className='min-h-screen flex flex-col bg-gradient-to-r from-[#1e293b] via-[#334155] to-[#60a5fa] text-white'>
+        <div className='min-h-screen flex flex-col bg-gradient-to-r from-[#1e293b] via-[#334155] to-[#60a5fa]'>
             <div className='flex flex-1'>
                 <SideNavbar />
+                
+                <div className='flex-1 flex flex-col'>
+                    <main className='flex-1 sm:ml-64 p-6 md:p-8 overflow-y-auto pt-24 sm:pt-8'>
+                        <HeaderDashboard />
 
-                <main className='sm:ml-64 flex-1 p-8 overflow-y-auto'>
-                    <HeaderDashboard />
-
-                    {loading ? (
-                        <div className='text-white'>Loading buku...</div>
-                    ) : (
-                        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8'>
-                            {books.map((book) => (
-                                <BookCard
-                                    key={book.id}
-                                    book={book} 
-                                />
-                            ))}
-                        </div>
-                    )}
-                </main>
+                        {loading ? (
+                            <div className='flex justify-center items-center h-64'>
+                                <div className='text-white text-lg'>Memuat buku...</div>
+                            </div>
+                        ) : (
+                            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6'>
+                                {books.map((book) => (
+                                    <BookCard
+                                        key={book.id}
+                                        book={book} 
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </main>
+                    
+                    <div className='sm:ml-64'>
+                        <Footer />
+                    </div>
+                </div>
             </div>
-
-            <Footer className='ml-64 z-10' />
         </div>
     )
 }
