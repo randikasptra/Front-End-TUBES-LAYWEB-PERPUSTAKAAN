@@ -5,17 +5,15 @@ import { getAllUsers, editUser } from "@/services/userService"
 import { Input } from "@/component/ui/input"
 import { Button } from "@/component/ui/buttons"
 import SidebarAdmin from "@/component/ui/SidebarAdmin"
-import LoadingScreen from "@/component/ui/LoadingScreen"
+// LoadingScreen telah dihapus
 
 const EditUserPage = () => {
     const { id } = useParams()
     const navigate = useNavigate()
-    const [loading, setLoading] = useState(true)
     const [formData, setFormData] = useState(null)
 
     useEffect(() => {
         const fetchUser = async () => {
-            setLoading(true)
             try {
                 const allUsers = await getAllUsers()
                 const user = allUsers.find((u) => u.id === id)
@@ -36,8 +34,6 @@ const EditUserPage = () => {
             } catch (err) {
                 console.error(err)
                 toast.error("❌ Gagal mengambil data pengguna")
-            } finally {
-                setLoading(false)
             }
         }
 
@@ -56,9 +52,7 @@ const EditUserPage = () => {
         }
     }
 
-    if (loading || !formData) {
-        return <LoadingScreen />
-    }
+    if (!formData) return null // Hindari render sebelum data ada
 
     return (
         <div className="flex bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 min-h-screen text-white">
@@ -83,7 +77,9 @@ const EditUserPage = () => {
                             <select
                                 name="role"
                                 value={formData.role}
-                                onChange={(e) => setFormData({ ...formData, role: e.target.value, nim: "", nid: "" })}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, role: e.target.value, nim: "", nid: "" })
+                                }
                                 className="w-full bg-blue-800 text-white rounded-lg p-2 border border-blue-600"
                             >
                                 <option value="mahasiswa">Mahasiswa</option>
@@ -95,7 +91,9 @@ const EditUserPage = () => {
                             <select
                                 name="status"
                                 value={formData.status}
-                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, status: e.target.value })
+                                }
                                 className="w-full bg-blue-800 text-white rounded-lg p-2 border border-blue-600"
                             >
                                 <option value="aktif">Aktif</option>
