@@ -8,8 +8,8 @@ import { getAllUsers, createUser } from '@/services/userService'
 import { useNavigate } from 'react-router-dom'
 
 const statusColor = {
-    Aktif: 'bg-green-500',
-    Nonaktif: 'bg-red-500',
+    Aktif: 'bg-emerald-500',
+    Nonaktif: 'bg-rose-500',
 }
 
 const capitalize = (text) => {
@@ -89,7 +89,7 @@ const AdminAccountPage = () => {
     )
 
     return (
-        <div className='flex bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 min-h-screen text-white'>
+        <div className='flex bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900/50 min-h-screen text-white'>
             <SidebarAdmin />
             <main className='flex-1 p-8 sm:ml-64'>
                 <h1 className='text-2xl font-bold mb-6'>Data Akun Pengguna</h1>
@@ -101,10 +101,10 @@ const AdminAccountPage = () => {
                         placeholder='Cari berdasarkan nama atau email'
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className='w-full max-w-md bg-blue-800 border-blue-600 text-white placeholder-blue-300'
+                        className='w-full max-w-md bg-slate-800 border-slate-600 text-white placeholder-slate-400 focus:border-blue-400 focus:ring-blue-400'
                     />
                     <Button
-                        className='bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2'
+                        className='bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2 transition-colors'
                         onClick={() => setIsModalOpen(true)}
                     >
                         <Plus size={18} /> Tambah Akun
@@ -112,28 +112,28 @@ const AdminAccountPage = () => {
                 </div>
 
                 {/* Table */}
-                <div className='overflow-x-auto rounded-lg border border-blue-600 shadow-lg'>
-                    <table className='min-w-full bg-blue-900'>
-                        <thead className='bg-blue-800'>
+                <div className='overflow-x-auto rounded-lg border border-slate-700 shadow-lg'>
+                    <table className='min-w-full bg-slate-800/70 backdrop-blur-sm'>
+                        <thead className='bg-slate-700/50'>
                             <tr>
-                                <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider'>
+                                <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-300'>
                                     Nama
                                 </th>
-                                <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider'>
+                                <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-300'>
                                     Email
                                 </th>
-                                <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider'>
+                                <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-300'>
                                     Role
                                 </th>
-                                <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider'>
+                                <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-300'>
                                     Status
                                 </th>
-                                <th className='px-6 py-3 text-right text-xs font-medium uppercase tracking-wider'>
+                                <th className='px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-300'>
                                     Aksi
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className='divide-y divide-blue-700'>
+                        <tbody className='divide-y divide-slate-700'>
                             {loading ? (
                                 <tr>
                                     <td
@@ -142,7 +142,7 @@ const AdminAccountPage = () => {
                                     >
                                         <div className='flex flex-col items-center justify-center space-y-3'>
                                             <div className='w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin'></div>
-                                            <p className='text-gray-600 font-medium'>
+                                            <p className='text-slate-400 font-medium'>
                                                 Memuat data pengguna...
                                             </p>
                                         </div>
@@ -152,15 +152,15 @@ const AdminAccountPage = () => {
                                 filteredUsers.map((user) => (
                                     <tr
                                         key={user.id}
-                                        className='hover:bg-blue-800'
+                                        className='hover:bg-slate-700/30 transition-colors'
                                     >
                                         <td className='px-6 py-4'>
                                             {user.nama}
                                         </td>
-                                        <td className='px-6 py-4 text-blue-100'>
+                                        <td className='px-6 py-4 text-slate-300'>
                                             {user.email}
                                         </td>
-                                        <td className='px-6 py-4 text-blue-100'>
+                                        <td className='px-6 py-4 text-slate-300'>
                                             {capitalize(user.role)}
                                         </td>
                                         <td className='px-6 py-4'>
@@ -168,8 +168,8 @@ const AdminAccountPage = () => {
                                                 className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                                     statusColor[
                                                         capitalize(user.status)
-                                                    ] || 'bg-gray-500'
-                                                }`}
+                                                    ] || 'bg-slate-500'
+                                                } text-white`}
                                             >
                                                 {capitalize(user.status)}
                                             </span>
@@ -180,7 +180,7 @@ const AdminAccountPage = () => {
                                                     onClick={() =>
                                                         handleShowDetail(user)
                                                     }
-                                                    className='text-blue-300 hover:text-blue-100 p-1 rounded hover:bg-blue-700'
+                                                    className='text-blue-400 hover:text-blue-300 p-1 rounded hover:bg-slate-700 transition-colors'
                                                 >
                                                     <Eye size={18} />
                                                 </button>
@@ -190,11 +190,11 @@ const AdminAccountPage = () => {
                                                             `/dashboard/admin/data-pengguna/edit/${user.id}`
                                                         )
                                                     }
-                                                    className='text-yellow-400 hover:text-yellow-300 p-1 rounded hover:bg-blue-700'
+                                                    className='text-amber-400 hover:text-amber-300 p-1 rounded hover:bg-slate-700 transition-colors'
                                                 >
                                                     <Edit size={18} />
                                                 </button>
-                                                <button className='text-red-400 hover:text-red-300 p-1 rounded hover:bg-blue-700'>
+                                                <button className='text-rose-400 hover:text-rose-300 p-1 rounded hover:bg-slate-700 transition-colors'>
                                                     <Trash2 size={18} />
                                                 </button>
                                             </div>
@@ -205,7 +205,7 @@ const AdminAccountPage = () => {
                                 <tr>
                                     <td
                                         colSpan='5'
-                                        className='px-6 py-4 text-center'
+                                        className='px-6 py-4 text-center text-slate-400'
                                     >
                                         Tidak ada data pengguna ditemukan
                                     </td>
@@ -219,9 +219,9 @@ const AdminAccountPage = () => {
             {/* Modal Tambah */}
             {isModalOpen && (
                 <div className='fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4'>
-                    <div className='bg-blue-900 rounded-xl shadow-lg w-full max-w-lg relative border border-blue-600 text-white p-6'>
+                    <div className='bg-slate-800 rounded-xl shadow-lg w-full max-w-lg relative border border-slate-700 text-white p-6'>
                         <button
-                            className='absolute top-4 right-4 text-blue-300 hover:text-white'
+                            className='absolute top-4 right-4 text-slate-400 hover:text-white transition-colors'
                             onClick={() => setIsModalOpen(false)}
                         >
                             <X size={20} />
@@ -234,7 +234,7 @@ const AdminAccountPage = () => {
                             className='space-y-4'
                         >
                             <div>
-                                <label className='block text-sm mb-1'>
+                                <label className='block text-sm mb-1 text-slate-300'>
                                     Nama
                                 </label>
                                 <Input
@@ -247,11 +247,11 @@ const AdminAccountPage = () => {
                                         })
                                     }
                                     required
-                                    className='bg-blue-800 border-blue-600 text-white'
+                                    className='bg-slate-700 border-slate-600 text-white focus:border-blue-400 focus:ring-blue-400'
                                 />
                             </div>
                             <div>
-                                <label className='block text-sm mb-1'>
+                                <label className='block text-sm mb-1 text-slate-300'>
                                     Email
                                 </label>
                                 <Input
@@ -265,11 +265,11 @@ const AdminAccountPage = () => {
                                         })
                                     }
                                     required
-                                    className='bg-blue-800 border-blue-600 text-white'
+                                    className='bg-slate-700 border-slate-600 text-white focus:border-blue-400 focus:ring-blue-400'
                                 />
                             </div>
                             <div>
-                                <label className='block text-sm mb-1'>
+                                <label className='block text-sm mb-1 text-slate-300'>
                                     Password
                                 </label>
                                 <Input
@@ -283,12 +283,12 @@ const AdminAccountPage = () => {
                                         })
                                     }
                                     required
-                                    className='bg-blue-800 border-blue-600 text-white'
+                                    className='bg-slate-700 border-slate-600 text-white focus:border-blue-400 focus:ring-blue-400'
                                 />
                             </div>
                             {formData.role === 'mahasiswa' && (
                                 <div>
-                                    <label className='block text-sm mb-1'>
+                                    <label className='block text-sm mb-1 text-slate-300'>
                                         NIM
                                     </label>
                                     <Input
@@ -301,13 +301,13 @@ const AdminAccountPage = () => {
                                             })
                                         }
                                         required
-                                        className='bg-blue-800 border-blue-600 text-white'
+                                        className='bg-slate-700 border-slate-600 text-white focus:border-blue-400 focus:ring-blue-400'
                                     />
                                 </div>
                             )}
                             {formData.role === 'dosen' && (
                                 <div>
-                                    <label className='block text-sm mb-1'>
+                                    <label className='block text-sm mb-1 text-slate-300'>
                                         NID
                                     </label>
                                     <Input
@@ -320,13 +320,13 @@ const AdminAccountPage = () => {
                                             })
                                         }
                                         required
-                                        className='bg-blue-800 border-blue-600 text-white'
+                                        className='bg-slate-700 border-slate-600 text-white focus:border-blue-400 focus:ring-blue-400'
                                     />
                                 </div>
                             )}
                             <div className='grid grid-cols-2 gap-4'>
                                 <div>
-                                    <label className='block text-sm mb-1'>
+                                    <label className='block text-sm mb-1 text-slate-300'>
                                         Role
                                     </label>
                                     <select
@@ -340,7 +340,7 @@ const AdminAccountPage = () => {
                                                 nid: '',
                                             })
                                         }
-                                        className='w-full bg-blue-800 text-white rounded-lg p-2 border border-blue-600'
+                                        className='w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600 focus:border-blue-400 focus:ring-blue-400'
                                     >
                                         <option value='mahasiswa'>
                                             Mahasiswa
@@ -349,7 +349,7 @@ const AdminAccountPage = () => {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className='block text-sm mb-1'>
+                                    <label className='block text-sm mb-1 text-slate-300'>
                                         Status
                                     </label>
                                     <select
@@ -361,7 +361,7 @@ const AdminAccountPage = () => {
                                                 status: e.target.value,
                                             })
                                         }
-                                        className='w-full bg-blue-800 text-white rounded-lg p-2 border border-blue-600'
+                                        className='w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600 focus:border-blue-400 focus:ring-blue-400'
                                     >
                                         <option value='aktif'>Aktif</option>
                                         <option value='nonaktif'>
@@ -373,7 +373,7 @@ const AdminAccountPage = () => {
                             <div className='flex justify-end'>
                                 <Button
                                     type='submit'
-                                    className='bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg'
+                                    className='bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition-colors'
                                 >
                                     Simpan Akun
                                 </Button>
@@ -386,9 +386,9 @@ const AdminAccountPage = () => {
             {/* Modal Detail */}
             {isDetailOpen && selectedUser && (
                 <div className='fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4'>
-                    <div className='bg-blue-900 rounded-xl shadow-lg w-full max-w-md relative border border-blue-600 text-white p-6'>
+                    <div className='bg-slate-800 rounded-xl shadow-lg w-full max-w-md relative border border-slate-700 text-white p-6'>
                         <button
-                            className='absolute top-4 right-4 text-blue-300 hover:text-white'
+                            className='absolute top-4 right-4 text-slate-400 hover:text-white transition-colors'
                             onClick={() => setIsDetailOpen(false)}
                         >
                             <X size={20} />
@@ -398,41 +398,45 @@ const AdminAccountPage = () => {
                         </h2>
                         <div className='space-y-3 text-sm'>
                             <div>
-                                <span className='text-blue-300'>Nama:</span>{' '}
-                                {selectedUser.nama}
+                                <span className='text-blue-400'>Nama:</span>{' '}
+                                <span className='text-slate-200'>{selectedUser.nama}</span>
                             </div>
                             <div>
-                                <span className='text-blue-300'>Email:</span>{' '}
-                                {selectedUser.email}
+                                <span className='text-blue-400'>Email:</span>{' '}
+                                <span className='text-slate-200'>{selectedUser.email}</span>
                             </div>
                             <div>
-                                <span className='text-blue-300'>Role:</span>{' '}
-                                {capitalize(selectedUser.role)}
+                                <span className='text-blue-400'>Role:</span>{' '}
+                                <span className='text-slate-200'>{capitalize(selectedUser.role)}</span>
                             </div>
                             <div>
-                                <span className='text-blue-300'>Status:</span>{' '}
-                                {capitalize(selectedUser.status)}
+                                <span className='text-blue-400'>Status:</span>{' '}
+                                <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                                    statusColor[capitalize(selectedUser.status)] || 'bg-slate-500'
+                                }`}>
+                                    {capitalize(selectedUser.status)}
+                                </span>
                             </div>
                             {selectedUser.role === 'mahasiswa' && (
                                 <div>
-                                    <span className='text-blue-300'>NIM:</span>{' '}
-                                    {selectedUser.nim || '-'}
+                                    <span className='text-blue-400'>NIM:</span>{' '}
+                                    <span className='text-slate-200'>{selectedUser.nim || '-'}</span>
                                 </div>
                             )}
                             {selectedUser.role === 'dosen' && (
                                 <div>
-                                    <span className='text-blue-300'>NID:</span>{' '}
-                                    {selectedUser.nid || '-'}
+                                    <span className='text-blue-400'>NID:</span>{' '}
+                                    <span className='text-slate-200'>{selectedUser.nid || '-'}</span>
                                 </div>
                             )}
                             <div>
-                                <span className='text-blue-300'>ID:</span>{' '}
-                                {selectedUser.id}
+                                <span className='text-blue-400'>ID:</span>{' '}
+                                <span className='text-slate-200'>{selectedUser.id}</span>
                             </div>
                         </div>
                         <div className='mt-6 flex justify-end'>
                             <Button
-                                className='bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg'
+                                className='bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition-colors'
                                 onClick={() => setIsDetailOpen(false)}
                             >
                                 Tutup

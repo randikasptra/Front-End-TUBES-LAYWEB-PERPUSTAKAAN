@@ -13,7 +13,11 @@ import {
   Calendar,
   Clock,
   Trash2,
-  AlertCircle
+  AlertCircle,
+  Bookmark,
+  PenTool,
+  Building2,
+  FileText
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -79,9 +83,7 @@ const HistoryPage = () => {
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900/50 text-white">
       <SideNavbar />
-
-      {/* Konten utama + Footer di kanan */}
-      <div className="flex flex-col flex-1 sm:ml-64">
+      <div className="mt-24 flex flex-col flex-1 sm:ml-64">
         <main className="flex-1 px-4 py-6 md:px-8 md:py-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -99,8 +101,7 @@ const HistoryPage = () => {
                   Daftar lengkap riwayat peminjaman buku Anda
                 </p>
               </div>
-
-              <div className="flex items-center gap-2 bg-slate-800/70 backdrop-blur-sm rounded-xl px-4 py-2 shadow-sm border border-slate-700/50 hover:border-slate-600 transition-colors">
+              <div className="flex items-center gap-2 bg-slate-800/70 rounded-xl px-4 py-2 border border-slate-700/50">
                 <Filter className="w-5 h-5 text-blue-300" />
                 <select
                   className="bg-transparent text-white outline-none text-sm md:text-base cursor-pointer"
@@ -117,22 +118,8 @@ const HistoryPage = () => {
               </div>
             </div>
 
-            {/* Content */}
             {loading ? (
-              <div className="flex flex-col items-center justify-center min-h-[300px] space-y-4">
-                <div className="relative w-16 h-16">
-                  <div className="absolute inset-0 rounded-full border-4 border-blue-500/30"></div>
-                  <div className="absolute inset-0 rounded-full border-4 border-t-transparent border-l-transparent border-blue-400 animate-spin"></div>
-                  <div className="absolute inset-1 rounded-full border-4 border-transparent border-t-blue-300 animate-spin-reverse"></div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <BookOpenText className="text-blue-300 animate-pulse" size={24} />
-                  </div>
-                </div>
-                <div className="text-center space-y-1">
-                  <p className="text-blue-100 font-medium text-lg">Memuat Reservasi</p>
-                  <p className="text-blue-300/80 text-sm">...</p>
-                </div>
-              </div>
+              <div className="flex justify-center py-20">Loading...</div>
             ) : (
               <div className="space-y-4">
                 {filteredData.length > 0 ? (
@@ -147,87 +134,47 @@ const HistoryPage = () => {
                       <div className="min-w-[100px] h-[140px] relative overflow-hidden rounded-lg">
                         <img
                           src={item.book?.image || '/book-placeholder.jpg'}
-                          alt={item.book?.judul || 'Buku'}
+                          alt={item.book?.judul}
                           className="w-full h-full object-cover absolute inset-0"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent" />
                       </div>
 
                       <div className="flex-1 space-y-2">
-                        <h2 className="text-lg md:text-xl font-semibold text-white line-clamp-1">
-                          {item.book?.judul || 'Judul tidak tersedia'}
-                        </h2>
-                        <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-slate-300">
-                          <div className="flex items-center">
-                            <Calendar className="w-4 h-4 mr-2 text-blue-300" />
-                            <span>
-                              Ambil:{' '}
-                              <span className="text-white ml-1">
-                                {item.tanggalAmbil || '-'}
-                              </span>
-                            </span>
-                          </div>
-                          <div className="flex items-center">
-                            <Calendar className="w-4 h-4 mr-2 text-blue-300" />
-                            <span>
-                              Kembali:{' '}
-                              <span className="text-white ml-1">
-                                {item.tanggalKembali || '-'}
-                              </span>
-                            </span>
-                          </div>
+                        <h2 className="text-lg font-semibold">{item.book?.judul}</h2>
+                        <div className="text-sm text-slate-400">
+                          Penulis: <span className="text-white">{item.book?.penulis || '-'}</span><br />
+                          Penerbit: <span className="text-white">{item.book?.penerbit || '-'}</span><br />
+                          Tahun: <span className="text-white">{item.book?.tahunTerbit || '-'}</span>
+                        </div>
+                        <div className="text-sm text-slate-400 mt-2">
+                          Ambil: <span className="text-white">{item.tanggalAmbil || '-'}</span><br />
+                          Kembali: <span className="text-white">{item.tanggalKembali || '-'}</span>
                         </div>
                       </div>
 
-                      <div className="flex flex-col items-end gap-3 min-w-[120px]">
-                        <div
-                          className={`flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                            statusConfig[item.status]?.color || 'bg-gray-500'
-                          } shadow-sm`}
-                        >
-                          {statusConfig[item.status]?.icon}
-                          {item.status}
+                      <div className="flex flex-col items-end justify-between">
+                        <div className={`px-3 py-1 rounded-full text-sm font-semibold ${statusConfig[item.status]?.color}`}>
+                          {statusConfig[item.status]?.icon} {item.status}
                         </div>
-
                         {item.status === 'Ditolak' && (
-                          <motion.button
-                            whileHover={{ scale: 1.03 }}
-                            whileTap={{ scale: 0.98 }}
+                          <button
                             onClick={() => handleDelete(item.id)}
-                            className="flex items-center gap-1 bg-red-600/90 hover:bg-red-700 px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
+                            className="mt-4 flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
                           >
-                            <Trash2 size={16} />
-                            Hapus
-                          </motion.button>
+                            <Trash2 size={16} /> Hapus
+                          </button>
                         )}
                       </div>
                     </motion.div>
                   ))
                 ) : (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex flex-col items-center justify-center py-16 text-center"
-                  >
-                    <div className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
-                      <BookOpenText size={32} className="text-slate-500" />
-                    </div>
-                    <h3 className="text-xl font-medium text-slate-300 mb-1">
-                      Belum ada riwayat reservasi
-                    </h3>
-                    <p className="text-slate-500 max-w-md">
-                      {filter === 'Semua'
-                        ? 'Anda belum melakukan reservasi buku apapun.'
-                        : `Tidak ada reservasi dengan status "${filter}".`}
-                    </p>
-                  </motion.div>
+                  <p className="text-center text-slate-400 py-10">📭 Tidak ada data reservasi.</p>
                 )}
               </div>
             )}
           </motion.div>
         </main>
-
-        {/* Footer sticky di bawah */}
         <Footer />
       </div>
     </div>
