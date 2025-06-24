@@ -26,7 +26,7 @@ const Footer = () => {
                             <Library size={22} className="text-white" />
                         </div>
                         <h3 className="text-xl font-bold bg-gradient-to-r from-blue-300 to-teal-300 bg-clip-text text-transparent">
-                            DigitalLib
+                            UNSAR
                         </h3>
                     </div>
                     <p className="text-slate-300 text-sm leading-relaxed">
