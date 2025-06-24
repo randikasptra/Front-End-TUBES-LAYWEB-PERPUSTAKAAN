@@ -14,10 +14,7 @@ import {
   Clock,
   Trash2,
   AlertCircle,
-  Bookmark,
-  PenTool,
-  Building2,
-  FileText
+  Bookmark
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -54,6 +51,7 @@ const HistoryPage = () => {
       try {
         const profile = await getUserProfile()
         const data = await getReservasiByUserId(profile.id)
+        console.log('📦 Data Reservasi:', data)
         setReservasi(data)
       } catch (err) {
         console.error('Gagal memuat data reservasi:', err)
@@ -91,7 +89,6 @@ const HistoryPage = () => {
             transition={{ duration: 0.4 }}
             className="max-w-6xl mx-auto"
           >
-            {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-300 to-teal-300 bg-clip-text text-transparent">
@@ -154,9 +151,16 @@ const HistoryPage = () => {
                       </div>
 
                       <div className="flex flex-col items-end justify-between">
-                        <div className={`px-3 py-1 rounded-full text-sm font-semibold ${statusConfig[item.status]?.color}`}>
-                          {statusConfig[item.status]?.icon} {item.status}
-                        </div>
+                        {item.status && (
+                          <div
+                            className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1 ${
+                              statusConfig[item.status]?.color || 'bg-gray-600'
+                            }`}
+                          >
+                            {statusConfig[item.status]?.icon || <Bookmark size={14} className="mr-1" />}
+                            {item.status}
+                          </div>
+                        )}
                         {item.status === 'Ditolak' && (
                           <button
                             onClick={() => handleDelete(item.id)}

@@ -3,7 +3,7 @@ import { Card, CardContent } from './card'
 import { Button } from './buttons'
 import ReserveModal from './Modal'
 import { motion } from 'framer-motion'
-import { BookOpenText, User, Clock } from 'lucide-react'
+import { BookOpenText, User, Clock, Library } from 'lucide-react'
 
 const BookCard = ({ book }) => {
     const [isHovered, setIsHovered] = useState(false)
@@ -17,6 +17,7 @@ const BookCard = ({ book }) => {
         kategori,
         status,
         deskripsi,
+        stok, // ini dari BE
     } = book
 
     const title = judul
@@ -50,7 +51,6 @@ const BookCard = ({ book }) => {
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                 >
-                    {/* Book Cover with Gradient Overlay */}
                     <div className="relative h-56 group overflow-hidden">
                         {image ? (
                             <>
@@ -77,7 +77,6 @@ const BookCard = ({ book }) => {
                             </div>
                         )}
 
-                        {/* Status Badges */}
                         <motion.div 
                             className="absolute top-3 left-3 flex flex-wrap gap-2"
                             initial={{ y: -10, opacity: 0 }}
@@ -100,7 +99,6 @@ const BookCard = ({ book }) => {
                         </motion.div>
                     </div>
 
-                    {/* Book Details */}
                     <CardContent className="p-5 space-y-4">
                         <motion.div 
                             className="space-y-2"
@@ -118,9 +116,12 @@ const BookCard = ({ book }) => {
                                 <User size={14} className="mr-2" />
                                 {author}
                             </p>
+                            <p className="text-sm text-slate-300 flex items-center gap-2">
+                                <Library size={14} className="text-blue-400" />
+                                <span>Stok: <strong>{stok}</strong></span>
+                            </p>
                         </motion.div>
 
-                        {/* Availability Status */}
                         <motion.div
                             className="flex justify-between items-center"
                             initial={{ opacity: 1 }}
@@ -137,7 +138,6 @@ const BookCard = ({ book }) => {
                             </span>
                         </motion.div>
 
-                        {/* Action Button */}
                         <motion.div
                             whileTap={{ scale: 0.98 }}
                             whileHover={{ scale: 1.02 }}
