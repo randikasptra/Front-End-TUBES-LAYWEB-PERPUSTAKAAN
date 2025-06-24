@@ -19,3 +19,18 @@ export const createUser = async (userData) => {
     const response = await api.post('/auth/register', payload)
     return response.data
 }
+
+export const editUser = async (id, userData) => {
+    const payload = {
+        nama: userData.nama,
+        email: userData.email,
+        password: userData.password,  // boleh kosong kalau tidak diubah
+        role: userData.role,
+        status: userData.status,
+        nim: userData.role === 'mahasiswa' ? userData.nim || null : null,
+        nid: userData.role === 'dosen' ? userData.nid || null : null,
+    }
+
+    const response = await api.put(`/user/edit/${id}`, payload)
+    return response.data
+}
