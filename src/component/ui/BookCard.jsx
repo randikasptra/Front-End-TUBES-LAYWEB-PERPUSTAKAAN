@@ -136,7 +136,7 @@ const BookCard = ({ book }) => {
                                         : 'bg-blue-900/50 text-blue-300/50 cursor-not-allowed border border-blue-700/50'
                                 }`}
                             >
-                                {availability ? 'Borrow Now' : 'Unavailable'}
+                                {availability ? 'Reservasi' : 'Unavailable'}
                             </Button>
                         </motion.div>
                     </CardContent>
