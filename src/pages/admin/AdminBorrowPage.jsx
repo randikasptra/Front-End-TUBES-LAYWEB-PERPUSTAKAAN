@@ -1,14 +1,16 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react'
-import { Card } from '@/component/card'
+import { useEffect, useState } from 'react'
 import { Input } from '@/component/ui/input'
 import SidebarAdmin from '../../component/ui/SidebarAdmin'
-import { MoreHorizontal } from 'lucide-react'
-import { getAllPeminjaman, kembalikanPeminjaman } from '../../services/peminjamanService'
+import { RotateCcw, Trash2 } from 'lucide-react'
+
+import {
+    getAllPeminjaman,
+    kembalikanPeminjaman,
+} from '../../services/peminjamanService'
 import { Dialog } from '@headlessui/react'
 import { X } from 'lucide-react' 
 import { toast } from 'react-toastify'
-
 
 const formatDate = (dateStr) => {
     if (!dateStr) return '-'
@@ -57,15 +59,12 @@ const AdminBorrowPage = () => {
 
             const updated = await getAllPeminjaman()
             setPeminjaman(updated)
-
         } catch (error) {
             console.error('❌ Error dari frontend:', error) 
 
             toast.error(`❌ Gagal mengembalikan: ${error.message}`)
         }
     }
-
-
 
     const hitungDenda = (tanggalPinjam, tanggalKembali) => {
         const tglPinjam = new Date(tanggalPinjam)
@@ -84,48 +83,87 @@ const AdminBorrowPage = () => {
         }
     }
 
+    const handleDelete = (id) => {
+        const konfirmasi = window.confirm(
+            'Yakin ingin menghapus peminjaman ini?'
+        )
+        if (konfirmasi) {
+            alert(`Peminjaman dengan ID ${id} berhasil dihapus (dummy alert).`)
+            // TODO: Tambahkan logika hapus ke backend di sini kalau sudah ada endpoint
+        }
+    }
 
     return (
         <>
             {modalOpen && selectedPeminjaman && (
-                <Dialog open={modalOpen} onClose={() => setModalOpen(false)} className="relative z-50">
+                <Dialog
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    className='relative z-50'
+                >
                     {/* Overlay */}
-                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" aria-hidden="true" />
+                    <div
+                        className='fixed inset-0 bg-black/50 backdrop-blur-sm'
+                        aria-hidden='true'
+                    />
 
                     {/* Modal content */}
-                    <div className="fixed inset-0 flex items-center justify-center p-4">
-                        <Dialog.Panel className="w-full max-w-md rounded-xl bg-slate-800 text-white p-6 z-50 shadow-lg border border-slate-700">
-                            <div className="flex justify-between items-center mb-4">
-                                <Dialog.Title className="text-lg font-bold text-white">
+                    <div className='fixed inset-0 flex items-center justify-center p-4'>
+                        <Dialog.Panel className='w-full max-w-md rounded-xl bg-slate-800 text-white p-6 z-50 shadow-lg border border-slate-700'>
+                            <div className='flex justify-between items-center mb-4'>
+                                <Dialog.Title className='text-lg font-bold text-white'>
                                     Konfirmasi Pengembalian
                                 </Dialog.Title>
                                 <button
                                     onClick={() => setModalOpen(false)}
-                                    className="text-gray-400 hover:text-white"
+                                    className='text-gray-400 hover:text-white'
                                 >
-                                    <X className="w-5 h-5" />
+                                    <X className='w-5 h-5' />
                                 </button>
                             </div>
 
-                            <div className="space-y-2 text-sm">
-                                <p>Nama Peminjam: <strong>{selectedPeminjaman?.user}</strong></p>
-                                <p>Judul Buku: <strong>{selectedPeminjaman?.judul}</strong></p>
-                                <p>Tanggal Pinjam: {formatDate(selectedPeminjaman?.tanggalPinjam)}</p>
-                                <p>Jatuh Tempo: {formatDate(selectedPeminjaman?.tanggalJatuhTempo)}</p>
+                            <div className='space-y-2 text-sm'>
+                                <p>
+                                    Nama Peminjam:{' '}
+                                    <strong>{selectedPeminjaman?.user}</strong>
+                                </p>
+                                <p>
+                                    Judul Buku:{' '}
+                                    <strong>{selectedPeminjaman?.judul}</strong>
+                                </p>
+                                <p>
+                                    Tanggal Pinjam:{' '}
+                                    {formatDate(
+                                        selectedPeminjaman?.tanggalPinjam
+                                    )}
+                                </p>
+                                <p>
+                                    Jatuh Tempo:{' '}
+                                    {formatDate(
+                                        selectedPeminjaman?.tanggalJatuhTempo
+                                    )}
+                                </p>
 
                                 {/* Input Tanggal Kembali */}
-                                <div className="mt-4">
-                                    <label className="block mb-1 text-white">Tanggal Kembali</label>
+                                <div className='mt-4'>
+                                    <label className='block mb-1 text-white'>
+                                        Tanggal Kembali
+                                    </label>
                                     <input
-                                        type="date"
+                                        type='date'
                                         value={
                                             selectedPeminjaman?.tanggalKembali
-                                                ? selectedPeminjaman.tanggalKembali.split("T")[0]
+                                                ? selectedPeminjaman.tanggalKembali.split(
+                                                      'T'
+                                                  )[0]
                                                 : ''
                                         }
                                         onChange={(e) => {
                                             const value = e.target.value
-                                            const dendaBaru = hitungDenda(selectedPeminjaman.tanggalPinjam, value)
+                                            const dendaBaru = hitungDenda(
+                                                selectedPeminjaman.tanggalPinjam,
+                                                value
+                                            )
 
                                             setSelectedPeminjaman((prev) => ({
                                                 ...prev,
@@ -133,28 +171,29 @@ const AdminBorrowPage = () => {
                                                 denda: dendaBaru,
                                             }))
                                         }}
-                                        className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className='w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500'
                                     />
-
                                 </div>
 
                                 {/* Denda */}
-                                <div className="mt-2">
-                                    <p className="text-sm">
+                                <div className='mt-2'>
+                                    <p className='text-sm'>
                                         Denda:{' '}
                                         <strong>
                                             {selectedPeminjaman?.denda
-                                                ? `Rp${selectedPeminjaman.denda.toLocaleString('id-ID')}`
+                                                ? `Rp${selectedPeminjaman.denda.toLocaleString(
+                                                      'id-ID'
+                                                  )}`
                                                 : 'Tidak ada'}
                                         </strong>
                                     </p>
                                 </div>
                             </div>
 
-                            <div className="mt-6 flex justify-end space-x-3">
+                            <div className='mt-6 flex justify-end space-x-3'>
                                 <button
                                     onClick={() => setModalOpen(false)}
-                                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded"
+                                    className='bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded'
                                 >
                                     Batal
                                 </button>
@@ -166,12 +205,10 @@ const AdminBorrowPage = () => {
                                         )
                                         setModalOpen(false)
                                     }}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                                    className='bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded'
                                 >
                                     Konfirmasi
                                 </button>
-
-
                             </div>
                         </Dialog.Panel>
                     </div>
@@ -203,7 +240,9 @@ const AdminBorrowPage = () => {
                                     <th className='py-3 px-4'>Nama Peminjam</th>
                                     <th className='py-3 px-4'>Judul Buku</th>
                                     <th className='py-3 px-4'>Tgl Pinjam</th>
-                                    <th className='py-3 px-4'>Tgl Jatuh Tempo</th>
+                                    <th className='py-3 px-4'>
+                                        Tgl Jatuh Tempo
+                                    </th>
                                     <th className='py-3 px-4'>Tgl Kembali</th>
                                     <th className='py-3 px-4'>Status</th>
                                     <th className='py-3 px-4'>Denda</th>
@@ -214,15 +253,18 @@ const AdminBorrowPage = () => {
                                 {filteredBorrowings.map((item, index) => (
                                     <tr
                                         key={item.id}
-                                        className={`hover:bg-slate-700 ${item.status === 'Terlambat'
-                                            ? 'text-red-400'
-                                            : item.status ===
-                                                'Sudah Dikembalikan'
+                                        className={`hover:bg-slate-700 ${
+                                            item.status === 'Terlambat'
+                                                ? 'text-red-400'
+                                                : item.status ===
+                                                  'Sudah Dikembalikan'
                                                 ? 'text-green-400'
                                                 : 'text-white'
-                                            }`}
+                                        }`}
                                     >
-                                        <td className='py-2 px-4'>{index + 1}</td>
+                                        <td className='py-2 px-4'>
+                                            {index + 1}
+                                        </td>
                                         <td className='py-2 px-4 font-medium'>
                                             {item.reservasi?.user?.nama ||
                                                 'Tidak diketahui'}
@@ -238,65 +280,73 @@ const AdminBorrowPage = () => {
                                             {formatDate(item.tanggalJatuhTempo)}
                                         </td>
                                         <td className='py-2 px-4'>
-                                            <input
-                                                type='date'
-                                                value={
-                                                    item.tanggalKembali
-                                                        ? item.tanggalKembali.split(
-                                                            'T'
-                                                        )[0]
-                                                        : ''
-                                                }
-                                                onChange={(e) =>
-                                                    handleTanggalKembaliChange(
-                                                        item.id,
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className='border border-gray-600 bg-gray-800 text-white rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition'
-                                            />
+                                            {formatDate(item.tanggalKembali)}
                                         </td>
+
                                         <td className='py-2 px-4'>
                                             <span
                                                 className={`px-3 py-1 rounded-full text-xs font-semibold capitalize
-            ${item.status.toLowerCase() === 'dikembalikan'
-                                                        ? 'bg-teal-500/20 text-teal-400'
-                                                        : 'bg-yellow-500/20 text-yellow-400'}
+            ${
+                item.status.toLowerCase() === 'dikembalikan'
+                    ? 'bg-teal-500/20 text-teal-400'
+                    : 'bg-yellow-500/20 text-yellow-400'
+            }
         `}
                                             >
                                                 {item.status.toLowerCase()}
                                             </span>
                                         </td>
 
-
-
-
                                         <td className='py-2 px-4'>
-                                            {item.denda ? `Rp${item.denda.toLocaleString('id-ID')}` : '-'}
+                                            {item.denda
+                                                ? `Rp${item.denda.toLocaleString(
+                                                      'id-ID'
+                                                  )}`
+                                                : '-'}
                                         </td>
-                                        <td className='py-2 px-4'>
-                                            {item.status !== 'Dikembalikan' && (
+                                        <td className='py-2 px-4 flex gap-2'>
+                                            {!item.tanggalKembali && (
                                                 <button
                                                     onClick={() => {
                                                         setSelectedPeminjaman({
                                                             id: item.id,
-                                                            user: item.reservasi?.user?.nama || 'Tidak diketahui',
-                                                            judul: item.reservasi?.book?.judul || 'Tidak diketahui',
-                                                            tanggalPinjam: item.tanggalPinjam,
-                                                            tanggalJatuhTempo: item.tanggalJatuhTempo,
-                                                            tanggalKembali: item.tanggalKembali || '', // optional
+                                                            user:
+                                                                item.reservasi
+                                                                    ?.user
+                                                                    ?.nama ||
+                                                                'Tidak diketahui',
+                                                            judul:
+                                                                item.reservasi
+                                                                    ?.book
+                                                                    ?.judul ||
+                                                                'Tidak diketahui',
+                                                            tanggalPinjam:
+                                                                item.tanggalPinjam,
+                                                            tanggalJatuhTempo:
+                                                                item.tanggalJatuhTempo,
+                                                            tanggalKembali:
+                                                                item.tanggalKembali ||
+                                                                '',
                                                         })
                                                         setModalOpen(true)
                                                     }}
-
-                                                    className='bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded transition'
+                                                    className='bg-emerald-600/20 hover:bg-emerald-600/30 h-10 w-10 rounded-full flex items-center justify-center transition text-emerald-400 hover:text-emerald-300'
+                                                    title='Kembalikan Buku'
                                                 >
-                                                    Kembalikan
+                                                    <RotateCcw className='w-5 h-5' />
                                                 </button>
                                             )}
+
+                                            <button
+                                                onClick={() =>
+                                                    handleDelete(item.id)
+                                                }
+                                                className='bg-red-600/20 hover:bg-red-600/30 h-10 w-10 rounded-full flex items-center justify-center transition text-red-400 hover:text-red-300'
+                                                title='Hapus Peminjaman'
+                                            >
+                                                <Trash2 className='w-5 h-5' />
+                                            </button>
                                         </td>
-
-
                                     </tr>
                                 ))}
                             </tbody>
@@ -305,7 +355,6 @@ const AdminBorrowPage = () => {
                 </main>
             </div>
         </>
-
     )
 }
 

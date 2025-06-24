@@ -1,6 +1,3 @@
-// src/component/ui/LoadingScreen.jsx
-import React from "react"
-
 const LoadingScreen = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700">
