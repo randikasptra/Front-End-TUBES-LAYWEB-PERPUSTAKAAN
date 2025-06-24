@@ -40,3 +40,8 @@ export const deleteUser = async (id) => {
     return response.data
 }
 
+export const updateUser = async (id, payload) => {
+  const response = await api.put(`/user/edit/${id}`, payload)
+  return response.data
+}
+
