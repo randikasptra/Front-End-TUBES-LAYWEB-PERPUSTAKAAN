@@ -1,10 +1,8 @@
-// src/services/userService.js
 import api from '../utils/api'
 
-// Ambil semua pengguna mahasiswa & dosen
 export const getAllUsers = async () => {
     const response = await api.get('/user')
-    return response.data.data || [] // sesuai dengan controller kamu
+    return response.data.data || [] 
 }
 
 export const createUser = async (userData) => {
@@ -20,11 +18,12 @@ export const createUser = async (userData) => {
     return response.data
 }
 
+
 export const updateUser = async (id, userData) => {
     const payload = {
         nama: userData.nama,
         email: userData.email,
-        password: userData.password?.trim() || '', // jika kosong, backend pakai password lama
+        password: userData.password?.trim() || '', 
         role: userData.role,
         status: userData.status,
         nim: userData.role === 'mahasiswa' ? userData.nim || '' : '',
@@ -35,7 +34,9 @@ export const updateUser = async (id, userData) => {
     return response.data
 }
 
+
 export const deleteUser = async (id) => {
     const response = await api.delete(`/user/hapus/${id}`)
     return response.data
 }
+
