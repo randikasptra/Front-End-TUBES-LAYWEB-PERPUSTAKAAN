@@ -74,7 +74,7 @@ const HistoryPage = () => {
               <div className="flex items-center gap-2 bg-slate-800/70 rounded-xl px-4 py-2 border border-slate-700/50">
                 <Filter className="w-5 h-5 text-blue-300" />
                 <select
-                  className="bg-transparent text-white outline-none text-sm md:text-base cursor-pointer"
+                  className="bg-slate-800/70 text-white outline-none text-sm md:text-base cursor-pointer"
                   value={filter}
                   onChange={(e) => setFilter(e.target.value)}
                 >
