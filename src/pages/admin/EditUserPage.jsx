@@ -5,7 +5,6 @@ import { getAllUsers, editUser } from "@/services/userService"
 import { Input } from "@/component/ui/input"
 import { Button } from "@/component/ui/buttons"
 import SidebarAdmin from "@/component/ui/SidebarAdmin"
-import LoadingScreen from "@/component/ui/LoadingScreen"
 
 const EditUserPage = () => {
     const { id } = useParams()
