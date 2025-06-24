@@ -5,7 +5,7 @@ import ilustrasiBuku from "../../assets/fotoBukuPerpus.jpg";
 const HeaderDashboard = () => {
     return (
         <div
-            className="relative rounded-3xl overflow-hidden shadow-2xl h-72 flex mt-8 mb-16 items-center justify-between p-8 bg-cover bg-center"
+            className=" relative rounded-3xl overflow-hidden shadow-2xl h-72 flex mt-32 mb-16 items-center justify-between p-8 bg-cover bg-center"
             style={{
                 backgroundImage: `linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.8) 100%), url(${bgPerpus})`,
                 backgroundBlendMode: 'multiply'
