@@ -6,7 +6,7 @@ import SidebarAdmin from '../../component/ui/SidebarAdmin'
 import { MoreHorizontal } from 'lucide-react'
 import { getAllPeminjaman, kembalikanPeminjaman } from '../../services/peminjamanService'
 import { Dialog } from '@headlessui/react'
-import { X } from 'lucide-react' // kamu sudah punya ini, bagus
+import { X } from 'lucide-react' 
 import { toast } from 'react-toastify'
 
 
@@ -59,7 +59,7 @@ const AdminBorrowPage = () => {
             setPeminjaman(updated)
 
         } catch (error) {
-            console.error('❌ Error dari frontend:', error) // Log lengkap
+            console.error('❌ Error dari frontend:', error) 
 
             toast.error(`❌ Gagal mengembalikan: ${error.message}`)
         }
