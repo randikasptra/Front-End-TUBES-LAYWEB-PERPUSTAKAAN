@@ -6,6 +6,7 @@ import {
     getAllReservasi,
     updateReservasiStatus,
 } from '../../services/reservationService'
+import { Check, X, XCircle } from 'lucide-react'
 
 const AdminReservationPage = () => {
     const [reservasi, setReservasi] = useState([])
@@ -116,10 +117,30 @@ const AdminReservationPage = () => {
                                                         'Disetujui'
                                                     )
                                                 }
-                                                className='bg-green-600 hover:bg-green-700 px-3 py-1 text-sm'
+                                                disabled={
+                                                    res.status ===
+                                                        'Disetujui' ||
+                                                    res.status === 'Ditolak'
+                                                }
+                                                className={`px-3 py-1 text-sm font-bold text-white ${
+                                                    res.status ===
+                                                        'Disetujui' ||
+                                                    res.status === 'Ditolak'
+                                                        ? 'bg-gray-400 cursor-not-allowed'
+                                                        : 'bg-green-600 hover:bg-green-700'
+                                                }`}
+                                                title={
+                                                    res.status === 'Disetujui'
+                                                        ? 'Sudah disetujui'
+                                                        : res.status ===
+                                                          'Ditolak'
+                                                        ? 'Reservasi sudah ditolak'
+                                                        : 'Setujui'
+                                                }
                                             >
-                                                Setujui
+                                                <Check className='w-4 h-4' />
                                             </Button>
+
                                             <Button
                                                 onClick={() =>
                                                     handleAction(
@@ -127,9 +148,28 @@ const AdminReservationPage = () => {
                                                         'Ditolak'
                                                     )
                                                 }
-                                                className='bg-red-600 hover:bg-red-700 px-3 py-1 text-sm'
+                                                disabled={
+                                                    res.status ===
+                                                        'Disetujui' ||
+                                                    res.status === 'Ditolak'
+                                                }
+                                                className={`px-3 py-1 text-sm font-bold text-white ${
+                                                    res.status ===
+                                                        'Disetujui' ||
+                                                    res.status === 'Ditolak'
+                                                        ? 'bg-gray-400 cursor-not-allowed'
+                                                        : 'bg-red-600 hover:bg-red-700'
+                                                }`}
+                                                title={
+                                                    res.status === 'Disetujui'
+                                                        ? 'Reservasi sudah disetujui'
+                                                        : res.status ===
+                                                          'Ditolak'
+                                                        ? 'Sudah ditolak'
+                                                        : 'Tolak'
+                                                }
                                             >
-                                                Tolak
+                                                <X className='w-4 h-4' />
                                             </Button>
                                         </td>
                                     </tr>

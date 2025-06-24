@@ -2,24 +2,12 @@ import React, { useEffect, useState } from 'react'
 import SidebarAdmin from '../../component/ui/SidebarAdmin'
 import { BarChart2, BookOpen, Users, Clock } from 'lucide-react'
 import { getTotalBuku } from '../../services/bookService'
-import { getTotalPeminjamanDikembalikan, getTotalPeminjamanDipinjam } from '../../services/peminjamanService'
+import {
+    getAllPeminjaman,
+    getTotalPeminjamanDikembalikan,
+    getTotalPeminjamanDipinjam,
+} from '../../services/peminjamanService'
 import { getTotalMahasiswaDanDosen } from '../../services/userService'
-
-
-const recentActivities = [
-    {
-        nama: 'Ichi Caroline',
-        judul: 'Jaringan Komputer',
-        status: 'Di Kembalikan',
-        tanggal: '23 - 03 - 2025',
-    },
-    {
-        nama: 'Ucup Surcup',
-        judul: 'Sistem Informasi',
-        status: 'Sedang di Pinjam',
-        tanggal: '23 - 03 - 2025',
-    },
-]
 
 const DashboardAdmin = () => {
     const [totalUser, setTotalUser] = useState(0)
@@ -27,6 +15,7 @@ const DashboardAdmin = () => {
     const [totalDipinjam, setTotalDipinjam] = useState(0)
     const [totalDikembalikan, setTotalDikembalikan] = useState(0)
     const [loading, setLoading] = useState(true)
+    const [recentActivities, setRecentActivities] = useState([])
 
     useEffect(() => {
         const fetchTotals = async () => {
@@ -35,7 +24,7 @@ const DashboardAdmin = () => {
                     getTotalBuku(),
                     getTotalPeminjamanDipinjam(),
                     getTotalPeminjamanDikembalikan(),
-                    getTotalMahasiswaDanDosen()
+                    getTotalMahasiswaDanDosen(),
                 ])
                 setTotalBuku(buku)
                 setTotalDipinjam(dipinjam)
@@ -51,32 +40,71 @@ const DashboardAdmin = () => {
         fetchTotals()
     }, [])
 
-
     const statCards = [
         {
             title: 'Total Pengguna',
             value: loading ? 'Loading...' : totalUser,
-            icon: <Users size={20} className="text-blue-400" />,
+            icon: (
+                <Users
+                    size={20}
+                    className='text-blue-400'
+                />
+            ),
         },
         {
             title: 'Total Buku',
             value: loading ? 'Loading...' : totalBuku,
-            icon: <BookOpen size={20} className="text-green-400" />,
+            icon: (
+                <BookOpen
+                    size={20}
+                    className='text-green-400'
+                />
+            ),
         },
         {
             title: 'Buku Dipinjam',
             value: loading ? 'Loading...' : totalDipinjam,
-            icon: <Clock size={20} className="text-yellow-400" />,
+            icon: (
+                <Clock
+                    size={20}
+                    className='text-yellow-400'
+                />
+            ),
         },
         {
             title: 'Buku Dikembalikan',
             value: loading ? 'Loading...' : totalDikembalikan,
-            icon: <BarChart2 size={20} className="text-purple-400" />,
+            icon: (
+                <BarChart2
+                    size={20}
+                    className='text-purple-400'
+                />
+            ),
         },
     ]
 
+    useEffect(() => {
+        const fetchRecent = async () => {
+            try {
+                const all = await getAllPeminjaman()
 
+                // Urutkan berdasarkan tanggal pinjam terbaru
+                const sorted = [...all].sort(
+                    (a, b) =>
+                        new Date(b.tanggalPinjam) - new Date(a.tanggalPinjam)
+                )
 
+                // Ambil 5 data teratas
+                const latestFive = sorted.slice(0, 5)
+
+                setRecentActivities(latestFive)
+            } catch (err) {
+                console.error('Gagal ambil data terbaru:', err)
+            }
+        }
+
+        fetchRecent()
+    }, [])
 
     return (
         <div className='min-h-screen bg-[#0f172a] text-white flex'>
@@ -125,20 +153,42 @@ const DashboardAdmin = () => {
                                         key={idx}
                                         className='border-b border-slate-700'
                                     >
-                                        <td className='p-2'>{item.nama}</td>
-                                        <td className='p-2'>{item.judul}</td>
+                                        <td className='p-2'>
+                                            {item?.reservasi?.user?.nama ||
+                                                'Tidak diketahui'}
+                                        </td>
+                                        <td className='p-2'>
+                                            {item?.reservasi?.book?.judul ||
+                                                'Tidak diketahui'}
+                                        </td>
                                         <td className='p-2'>
                                             <span
-                                                className={`font-semibold ${item.status ===
-                                                    'Di Kembalikan'
-                                                    ? 'text-green-400'
-                                                    : 'text-yellow-400'
-                                                    }`}
+                                                className={`font-semibold ${
+                                                    item.status ===
+                                                    'dikembalikan'
+                                                        ? 'text-green-400 capitalize'
+                                                        : item.status ===
+                                                          'dipinjam'
+                                                        ? 'text-yellow-400 capitalize'
+                                                        : 'text-slate-400'
+                                                }`}
                                             >
                                                 {item.status}
                                             </span>
                                         </td>
-                                        <td className='p-2'>{item.tanggal}</td>
+                                        <td className='p-2'>
+                                            {item?.tanggalPinjam
+                                                ? new Date(
+                                                      item.tanggalPinjam
+                                                  ).toLocaleString('id-ID', {
+                                                      day: '2-digit',
+                                                      month: 'short',
+                                                      year: 'numeric',
+                                                      hour: '2-digit',
+                                                      minute: '2-digit',
+                                                  })
+                                                : '-'}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

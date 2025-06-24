@@ -5,6 +5,15 @@ export const getAllPeminjaman = async () => {
     return response.data.data || []
 }
 
+export const deletePeminjaman = async (id) => {
+    try {
+        const response = await api.delete(`/peminjaman/hapus/${id}`)
+        return response.data
+    } catch (error) {
+        console.error('Gagal menghapus peminjaman:', error)
+        throw error
+    }
+}
 
 export const getTotalPeminjamanDipinjam = async () => {
     try {
@@ -21,7 +30,6 @@ export const getTotalPeminjamanDikembalikan = async () => {
     return response.data.total || 0
 }
 
-
 export const kembalikanPeminjaman = async (id, tanggalKembali) => {
     try {
         const response = await api.patch(`/peminjaman/kembalikan/${id}`, {
@@ -30,6 +38,8 @@ export const kembalikanPeminjaman = async (id, tanggalKembali) => {
         return response.data
     } catch (error) {
         console.error('❌ Gagal mengembalikan peminjaman:', error)
-        throw error.response?.data || { message: 'Terjadi kesalahan pada server' }
+        throw (
+            error.response?.data || { message: 'Terjadi kesalahan pada server' }
+        )
     }
 }

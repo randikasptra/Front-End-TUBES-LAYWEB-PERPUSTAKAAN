@@ -48,6 +48,8 @@ const AdminAccountPage = () => {
         try {
             const result = await getAllUsers()
             setUsers(result)
+            console.log(result);
+            
         } catch (err) {
             console.error("Gagal memuat pengguna:", err)
             toast.error("❌ Gagal memuat data user")

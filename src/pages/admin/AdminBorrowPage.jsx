@@ -5,11 +5,12 @@ import SidebarAdmin from '../../component/ui/SidebarAdmin'
 import { RotateCcw, Trash2 } from 'lucide-react'
 
 import {
+    deletePeminjaman,
     getAllPeminjaman,
     kembalikanPeminjaman,
 } from '../../services/peminjamanService'
 import { Dialog } from '@headlessui/react'
-import { X } from 'lucide-react' 
+import { X } from 'lucide-react'
 import { toast } from 'react-toastify'
 
 const formatDate = (dateStr) => {
@@ -27,6 +28,9 @@ const AdminBorrowPage = () => {
     const [peminjaman, setPeminjaman] = useState([])
     const [modalOpen, setModalOpen] = useState(false)
     const [selectedPeminjaman, setSelectedPeminjaman] = useState(null)
+
+    const [showModal, setShowModal] = useState(false)
+    const [selectedId, setSelectedId] = useState(null)
 
     const [data, setData] = useState([])
 
@@ -60,7 +64,7 @@ const AdminBorrowPage = () => {
             const updated = await getAllPeminjaman()
             setPeminjaman(updated)
         } catch (error) {
-            console.error('❌ Error dari frontend:', error) 
+            console.error('❌ Error dari frontend:', error)
 
             toast.error(`❌ Gagal mengembalikan: ${error.message}`)
         }
@@ -83,13 +87,17 @@ const AdminBorrowPage = () => {
         }
     }
 
-    const handleDelete = (id) => {
-        const konfirmasi = window.confirm(
-            'Yakin ingin menghapus peminjaman ini?'
-        )
-        if (konfirmasi) {
-            alert(`Peminjaman dengan ID ${id} berhasil dihapus (dummy alert).`)
-            // TODO: Tambahkan logika hapus ke backend di sini kalau sudah ada endpoint
+    const handleDelete = async (id) => {
+        try {
+            await deletePeminjaman(id)
+
+            setPeminjaman((prev) => prev.filter((item) => item.id !== id))
+
+            toast.success('Peminjaman berhasil dihapus')
+            setShowModal(false)
+        } catch (err) {
+            toast.error('Gagal menghapus peminjaman')
+            console.error('Gagal hapus:', err)
         }
     }
 
@@ -215,6 +223,38 @@ const AdminBorrowPage = () => {
                 </Dialog>
             )}
 
+            {showModal && (
+                <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40'>
+                    <div className='bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg w-[90%] max-w-sm border border-slate-200 dark:border-slate-700'>
+                        <div className='flex justify-between items-center mb-4'>
+                            <h2 className='text-lg font-semibold text-slate-900 dark:text-white'>
+                                Konfirmasi Hapus
+                            </h2>
+                            <button onClick={() => setShowModal(false)}>
+                                <X className='w-5 h-5 text-slate-600 dark:text-slate-300' />
+                            </button>
+                        </div>
+                        <p className='text-sm mb-6 text-slate-700 dark:text-slate-300'>
+                            Yakin ingin menghapus peminjaman ini?
+                        </p>
+                        <div className='flex justify-end space-x-3'>
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className='px-4 py-2 bg-gray-200 text-slate-800 rounded hover:bg-gray-300 text-sm dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600'
+                            >
+                                Batal
+                            </button>
+                            <button
+                                onClick={() => handleDelete(selectedId)}
+                                className='px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm'
+                            >
+                                Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className='flex bg-gradient-to-r from-slate-800 via-slate-700 to-blue-900 min-h-screen text-white'>
                 <SidebarAdmin />
                 <main className='flex-1 p-8 sm:ml-64'>
@@ -336,11 +376,11 @@ const AdminBorrowPage = () => {
                                                     <RotateCcw className='w-5 h-5' />
                                                 </button>
                                             )}
-
                                             <button
-                                                onClick={() =>
-                                                    handleDelete(item.id)
-                                                }
+                                                onClick={() => {
+                                                    setSelectedId(item.id)
+                                                    setShowModal(true)
+                                                }}
                                                 className='bg-red-600/20 hover:bg-red-600/30 h-10 w-10 rounded-full flex items-center justify-center transition text-red-400 hover:text-red-300'
                                                 title='Hapus Peminjaman'
                                             >
