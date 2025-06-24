@@ -27,12 +27,12 @@ export const addBook = async (bookData) => {
     return await api.post('/book/tambah', formData)
 }
 
-export const getDetailBook = async (id, data) => {
-    return await api.get(`/book/detail/${id}`, data)
+export const updateBook = async (id, formData) => {
+    return await api.put(`/book/edit/${id}`, formData)
 }
 
-export const updateBook = async (id, data) => {
-    return await api.put(`/book/edit/${id}`, data)
+export const getDetailBook = async (id, data) => {
+    return await api.get(`/book/detail/${id}`, data)
 }
 
 export const deleteBook = async (id) => {

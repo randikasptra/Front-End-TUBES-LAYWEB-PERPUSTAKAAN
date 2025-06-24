@@ -41,7 +41,7 @@ const DashboardMahasiswa = () => {
                             {books.map((book) => (
                                 <BookCard
                                     key={book.id}
-                                    book={book} // langsung kirim semua data
+                                    book={book} 
                                 />
                             ))}
                         </div>

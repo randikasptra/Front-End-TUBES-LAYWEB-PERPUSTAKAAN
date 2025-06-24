@@ -7,7 +7,6 @@ import AddBookModal from '@/component/ui/AddBookModal'
 import EditBookModal from '@/component/ui/EditBookModal'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
-import { API_BASE_URL } from '../../config'
 import {
     addBook,
     deleteBook,
@@ -66,17 +65,41 @@ const AdminBookPage = () => {
     const handleUpdateBook = async (bookData) => {
         try {
             const formData = new FormData()
-            Object.entries(bookData).forEach(([key, value]) => {
-                formData.append(key, value)
-            })
+
+            formData.append('judul', bookData.judul)
+            formData.append('isbn', bookData.isbn)
+            formData.append('tahunTerbit', bookData.tahunTerbit)
+            formData.append('kategoriId', bookData.kategoriId)
+            formData.append('deskripsi', bookData.deskripsi || '')
+            formData.append('penerbit', bookData.penerbit || '')
+            formData.append('penulis', bookData.penulis || '')
+            formData.append('stok', bookData.stok || 1)
+            formData.append('status', bookData.status || 'tersedia')
+
+            if (bookData.image instanceof File) {
+                formData.append('image', bookData.image)
+            } else if (bookData.coverLama) {
+                formData.append('image', bookData.coverLama)
+            }
+
+            console.log('📤 Data yang dikirim ke updateBook:', bookData)
 
             await updateBook(bookData.id, formData)
             toast.success('Buku berhasil diperbarui')
             setIsModalOpenEdit(false)
             fetchBooks()
         } catch (error) {
-            console.error('Gagal mengedit buku:', error)
-            toast.error('Gagal mengedit buku')
+            console.error('🔥 Gagal mengedit buku:', error)
+
+            if (error.response?.data?.message?.includes('Unexpected field')) {
+                toast.error(
+                    '❌ Field tidak dikenali backend (periksa struktur data)'
+                )
+            } else if (error.response?.data?.message) {
+                toast.error(`❌ ${error.response.data.message}`)
+            } else {
+                toast.error('❌ Gagal mengedit buku')
+            }
         }
     }
 

@@ -17,11 +17,11 @@ import {
     Tags,
     Save,
 } from 'lucide-react'
-import axios from 'axios'
+import { getAllKategori } from '../../services/categoryService'
 
 const EditBookModal = ({ isOpen, onClose, onSubmit, initialData }) => {
     const [loading, setLoading] = useState(false)
-    const [category, setCategory] = useState([])
+    const [kategoriList, setKategoriList] = useState([])
 
     const [formData, setFormData] = useState({
         image: null,
@@ -37,21 +37,45 @@ const EditBookModal = ({ isOpen, onClose, onSubmit, initialData }) => {
     })
 
     useEffect(() => {
-        if (initialData) {
+        if (isOpen && initialData) {
             setFormData({
-                ...formData,
-                ...initialData,
-                image: null, // reset image input on open
+                id: initialData.id,
+                image: initialData.image, // hanya untuk file baru
+                judul: initialData.judul || '',
+                deskripsi: initialData.deskripsi || '',
+                isbn: initialData.isbn || '',
+                penerbit: initialData.penerbit || '',
+                tahunTerbit: initialData.tahunTerbit || '',
+                penulis: initialData.penulis || '',
+                kategoriId: initialData.kategoriId || '',
+                stok: initialData.stok || '',
+                status: initialData.status || 'tersedia',
             })
         }
-    }, [initialData])
+    }, [initialData, isOpen])
+
+    useEffect(() => {
+        const fetchKategori = async () => {
+            setLoading(true)
+            try {
+                const res = await getAllKategori()
+                const dataKategori = res.data?.data || res.data || res
+                setKategoriList(dataKategori)
+            } catch (error) {
+                console.error('Gagal memuat kategori:', error.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchKategori()
+    }, [])
 
     const handleChange = (e) => {
         const { name, value, files } = e.target
         if (name === 'image') {
-            setFormData({ ...formData, image: files[0] })
+            setFormData((prev) => ({ ...prev, image: files[0] }))
         } else {
-            setFormData({ ...formData, [name]: value })
+            setFormData((prev) => ({ ...prev, [name]: value }))
         }
     }
 
@@ -60,47 +84,27 @@ const EditBookModal = ({ isOpen, onClose, onSubmit, initialData }) => {
         onClose()
     }
 
-    useEffect(() => {
-        const fetchCategory = async () => {
-            setLoading(true)
-            try {
-                const token = localStorage.getItem('token')
-                const response = await axios.get(
-                    'http://localhost:5000/api/category/',
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                )
-                setCategory(response.data.data || [])
-            } catch (error) {
-                console.error('Error fetching Category:', error.message)
-            } finally {
-                setLoading(false)
-            }
-        }
-
-        fetchCategory()
-    }, [])
-
     return (
         <Dialog
             open={isOpen}
             onClose={onClose}
             className='relative z-50'
         >
+            {loading && (
+                <div className='absolute inset-0 flex items-center justify-center bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm z-50'>
+                    <div className='h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin' />
+                </div>
+            )}
             <div
                 className='fixed inset-0 bg-black/30'
                 aria-hidden='true'
             />
-            <div className='fixed inset-0 flex items-center justify-center p-4 bg-black/50 z-50 backdrop-blur-sm'>
+            <div className='fixed inset-0 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm'>
                 <Dialog.Panel className='w-full max-w-md rounded-xl bg-white dark:bg-slate-800 p-6 shadow-xl border border-slate-200 dark:border-slate-700'>
-                    {/* Header */}
                     <div className='flex items-center justify-between mb-6'>
                         <Dialog.Title className='flex items-center text-xl font-semibold text-slate-800 dark:text-white gap-2'>
                             <BookUp2 className='w-5 h-5 text-yellow-600 dark:text-yellow-400' />
-                            <span>Edit Buku</span>
+                            Edit Buku
                         </Dialog.Title>
                         <button
                             onClick={onClose}
@@ -110,9 +114,7 @@ const EditBookModal = ({ isOpen, onClose, onSubmit, initialData }) => {
                         </button>
                     </div>
 
-                    {/* Form */}
                     <div className='space-y-4 max-h-[75vh] overflow-y-auto pr-2'>
-                        {/* Upload Cover */}
                         <div className='space-y-2'>
                             <label className='flex items-center text-sm font-medium text-slate-700 dark:text-slate-300 gap-2'>
                                 <Image className='w-4 h-4' />
@@ -124,11 +126,11 @@ const EditBookModal = ({ isOpen, onClose, onSubmit, initialData }) => {
                                 accept='image/*'
                                 onChange={handleChange}
                                 className='block w-full text-sm text-slate-500 dark:text-slate-400
-                                file:mr-4 file:py-2 file:px-4 
-                                file:rounded-lg file:border-0 
-                                file:text-sm file:font-semibold
-                                file:bg-blue-50 dark:file:bg-slate-700 file:text-blue-600 dark:file:text-blue-400
-                                hover:file:bg-blue-100 dark:hover:file:bg-slate-600'
+                                    file:mr-4 file:py-2 file:px-4 
+                                    file:rounded-lg file:border-0 
+                                    file:text-sm file:font-semibold
+                                    file:bg-blue-50 dark:file:bg-slate-700 file:text-blue-600 dark:file:text-blue-400
+                                    hover:file:bg-blue-100 dark:hover:file:bg-slate-600'
                             />
                         </div>
 
@@ -138,36 +140,28 @@ const EditBookModal = ({ isOpen, onClose, onSubmit, initialData }) => {
                                 placeholder='Judul Buku'
                                 value={formData.judul}
                                 onChange={handleChange}
-                                icon={
-                                    <BookOpen className='w-4 h-4 text-slate-500 dark:text-slate-400' />
-                                }
+                                icon={<BookOpen />}
                             />
                             <Input
                                 name='isbn'
                                 placeholder='ISBN'
                                 value={formData.isbn}
                                 onChange={handleChange}
-                                icon={
-                                    <Barcode className='w-4 h-4 text-slate-500 dark:text-slate-400' />
-                                }
+                                icon={<Barcode />}
                             />
                             <Input
                                 name='penulis'
                                 placeholder='Penulis'
                                 value={formData.penulis}
                                 onChange={handleChange}
-                                icon={
-                                    <User className='w-4 h-4 text-slate-500 dark:text-slate-400' />
-                                }
+                                icon={<User />}
                             />
                             <Input
                                 name='penerbit'
                                 placeholder='Penerbit'
                                 value={formData.penerbit}
                                 onChange={handleChange}
-                                icon={
-                                    <Building2 className='w-4 h-4 text-slate-500 dark:text-slate-400' />
-                                }
+                                icon={<Building2 />}
                             />
                             <Input
                                 name='tahunTerbit'
@@ -175,9 +169,7 @@ const EditBookModal = ({ isOpen, onClose, onSubmit, initialData }) => {
                                 type='number'
                                 value={formData.tahunTerbit}
                                 onChange={handleChange}
-                                icon={
-                                    <CalendarDays className='w-4 h-4 text-slate-500 dark:text-slate-400' />
-                                }
+                                icon={<CalendarDays />}
                             />
                             <Input
                                 name='stok'
@@ -185,9 +177,7 @@ const EditBookModal = ({ isOpen, onClose, onSubmit, initialData }) => {
                                 type='number'
                                 value={formData.stok}
                                 onChange={handleChange}
-                                icon={
-                                    <Library className='w-4 h-4 text-slate-500 dark:text-slate-400' />
-                                }
+                                icon={<Library />}
                             />
                         </div>
 
@@ -198,9 +188,9 @@ const EditBookModal = ({ isOpen, onClose, onSubmit, initialData }) => {
                             </label>
                             <textarea
                                 name='deskripsi'
-                                placeholder='Masukkan deskripsi buku...'
                                 value={formData.deskripsi}
                                 onChange={handleChange}
+                                placeholder='Masukkan deskripsi buku...'
                                 rows={3}
                                 className='w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white'
                             />
@@ -218,8 +208,8 @@ const EditBookModal = ({ isOpen, onClose, onSubmit, initialData }) => {
                                     onChange={handleChange}
                                     className='w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white'
                                 >
-                                    <option value='tersedia'>Tersedia</option>
-                                    <option value='dipinjam'>Dipinjam</option>
+                                    <option value='Tersedia'>Tersedia</option>
+                                    <option value='Tidak Tersedia'>Tidak Tersedia</option>
                                 </select>
                             </div>
 
@@ -235,7 +225,7 @@ const EditBookModal = ({ isOpen, onClose, onSubmit, initialData }) => {
                                     className='w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white'
                                 >
                                     <option value=''>Pilih Kategori</option>
-                                    {category.map((item) => (
+                                    {kategoriList.map((item) => (
                                         <option
                                             key={item.id}
                                             value={item.id}
@@ -248,7 +238,6 @@ const EditBookModal = ({ isOpen, onClose, onSubmit, initialData }) => {
                         </div>
                     </div>
 
-                    {/* Tombol Simpan */}
                     <div className='mt-8 flex justify-end gap-3'>
                         <Button
                             onClick={handleSubmit}
