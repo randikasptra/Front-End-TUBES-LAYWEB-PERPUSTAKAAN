@@ -5,7 +5,7 @@ import { getAllUsers, editUser } from "@/services/userService"
 import { Input } from "@/component/ui/input"
 import { Button } from "@/component/ui/buttons"
 import SidebarAdmin from "@/component/ui/SidebarAdmin"
-// LoadingScreen telah dihapus
+import { User2, Mail, KeyRound, BadgeCheck, ShieldCheck } from "lucide-react"
 
 const EditUserPage = () => {
     const { id } = useParams()
@@ -52,62 +52,94 @@ const EditUserPage = () => {
         }
     }
 
-    if (!formData) return null // Hindari render sebelum data ada
+    if (!formData) return null
 
     return (
-        <div className="flex bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 min-h-screen text-white">
+        <div className="flex min-h-screen bg-gradient-to-r from-slate-800 via-slate-700 to-blue-900 text-white">
             <SidebarAdmin />
             <main className="flex-1 p-8 sm:ml-64">
-                <h1 className="text-2xl font-bold mb-6">Edit Akun Pengguna</h1>
-                <form onSubmit={handleUpdate} className="space-y-4 max-w-xl">
-                    <InputGroup label="Nama" value={formData.nama} onChange={(v) => setFormData({ ...formData, nama: v })} />
-                    <InputGroup label="Email" type="email" value={formData.email} onChange={(v) => setFormData({ ...formData, email: v })} />
-                    <InputGroup label="Password Baru (opsional)" type="password" value={formData.password} placeholder="Kosongkan jika tidak ingin mengubah" onChange={(v) => setFormData({ ...formData, password: v })} />
+                <div className="max-w-xl mx-auto bg-slate-800 rounded-xl shadow-lg p-8 border border-slate-700">
+                    <h1 className="text-2xl font-bold mb-6 text-center">Edit Akun Pengguna</h1>
+                    <form onSubmit={handleUpdate} className="space-y-5">
+                        <InputGroup
+                            label="Nama"
+                            icon={<User2 className="w-4 h-4" />}
+                            value={formData.nama}
+                            onChange={(v) => setFormData({ ...formData, nama: v })}
+                        />
+                        <InputGroup
+                            label="Email"
+                            type="email"
+                            icon={<Mail className="w-4 h-4" />}
+                            value={formData.email}
+                            onChange={(v) => setFormData({ ...formData, email: v })}
+                        />
+                        <InputGroup
+                            label="Password Baru (Opsional)"
+                            type="password"
+                            icon={<KeyRound className="w-4 h-4" />}
+                            value={formData.password}
+                            placeholder="Kosongkan jika tidak ingin mengubah"
+                            onChange={(v) => setFormData({ ...formData, password: v })}
+                        />
 
-                    {formData.role === "mahasiswa" && (
-                        <InputGroup label="NIM" value={formData.nim} onChange={(v) => setFormData({ ...formData, nim: v })} />
-                    )}
-                    {formData.role === "dosen" && (
-                        <InputGroup label="NID" value={formData.nid} onChange={(v) => setFormData({ ...formData, nid: v })} />
-                    )}
+                        {formData.role === "mahasiswa" && (
+                            <InputGroup
+                                label="NIM"
+                                icon={<BadgeCheck className="w-4 h-4" />}
+                                value={formData.nim}
+                                onChange={(v) => setFormData({ ...formData, nim: v })}
+                            />
+                        )}
+                        {formData.role === "dosen" && (
+                            <InputGroup
+                                label="NID"
+                                icon={<BadgeCheck className="w-4 h-4" />}
+                                value={formData.nid}
+                                onChange={(v) => setFormData({ ...formData, nid: v })}
+                            />
+                        )}
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm mb-1">Role</label>
-                            <select
-                                name="role"
+                        <div className="space-y-4">
+                            <SelectGroup
+                                label="Role"
                                 value={formData.role}
                                 onChange={(e) =>
-                                    setFormData({ ...formData, role: e.target.value, nim: "", nid: "" })
+                                    setFormData({
+                                        ...formData,
+                                        role: e.target.value,
+                                        nim: "",
+                                        nid: "",
+                                    })
                                 }
-                                className="w-full bg-blue-800 text-white rounded-lg p-2 border border-blue-600"
-                            >
-                                <option value="mahasiswa">Mahasiswa</option>
-                                <option value="dosen">Dosen</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label className="block text-sm mb-1">Status</label>
-                            <select
-                                name="status"
+                                options={[
+                                    { label: "Mahasiswa", value: "mahasiswa" },
+                                    { label: "Dosen", value: "dosen" },
+                                ]}
+                            />
+                            <SelectGroup
+                                label="Status"
                                 value={formData.status}
                                 onChange={(e) =>
                                     setFormData({ ...formData, status: e.target.value })
                                 }
-                                className="w-full bg-blue-800 text-white rounded-lg p-2 border border-blue-600"
-                            >
-                                <option value="aktif">Aktif</option>
-                                <option value="nonaktif">Nonaktif</option>
-                            </select>
+                                options={[
+                                    { label: "Aktif", value: "aktif" },
+                                    { label: "Nonaktif", value: "nonaktif" },
+                                ]}
+                            />
                         </div>
-                    </div>
 
-                    <div className="flex justify-end">
-                        <Button type="submit" className="bg-yellow-500 hover:bg-yellow-400 text-white px-4 py-2 rounded-lg">
-                            Simpan Perubahan
-                        </Button>
-                    </div>
-                </form>
+                        <div className="flex justify-end pt-4">
+                            <Button
+                                type="submit"
+                                className="bg-yellow-500 hover:bg-yellow-400 text-white px-5 py-2 rounded-lg shadow transition"
+                            >
+                                Simpan Perubahan
+                            </Button>
+                        </div>
+                    </form>
+                </div>
             </main>
         </div>
     )
@@ -115,16 +147,37 @@ const EditUserPage = () => {
 
 export default EditUserPage
 
-// ✅ Reusable input group
-const InputGroup = ({ label, value, onChange, type = "text", placeholder = "" }) => (
+// ✅ InputGroup modern dengan icon support
+const InputGroup = ({ label, value, onChange, type = "text", placeholder = "", icon = null }) => (
     <div>
-        <label className="block text-sm mb-1">{label}</label>
-        <Input
-            type={type}
+        <label className="block text-sm mb-1 font-medium text-slate-300">{label}</label>
+        <div className="flex items-center bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-500">
+            {icon && <div className="mr-2 text-slate-400">{icon}</div>}
+            <Input
+                type={type}
+                value={value}
+                placeholder={placeholder}
+                onChange={(e) => onChange(e.target.value)}
+                className="bg-transparent border-none p-0 focus:outline-none focus:ring-0 text-white w-full"
+            />
+        </div>
+    </div>
+)
+
+// ✅ Select group modern
+const SelectGroup = ({ label, value, onChange, options }) => (
+    <div>
+        <label className="block text-sm mb-1 font-medium text-slate-300">{label}</label>
+        <select
             value={value}
-            placeholder={placeholder}
-            onChange={(e) => onChange(e.target.value)}
-            className="bg-blue-800 border-blue-600 text-white"
-        />
+            onChange={onChange}
+            className="w-full bg-slate-700 border border-slate-600 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+            {options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                </option>
+            ))}
+        </select>
     </div>
 )
