@@ -2,7 +2,7 @@ import api from '../utils/api'
 
 export const getAllUsers = async () => {
     const response = await api.get('/user')
-    return response.data.data || [] 
+    return response.data.data || []
 }
 
 export const createUser = async (userData) => {
@@ -23,7 +23,7 @@ export const editUser = async (id, userData) => {
     const payload = {
         nama: userData.nama,
         email: userData.email,
-        password: userData.password?.trim() || '', 
+        password: userData.password?.trim() || '',
         role: userData.role,
         status: userData.status,
         nim: userData.role === 'mahasiswa' ? userData.nim || '' : '',
@@ -41,7 +41,11 @@ export const deleteUser = async (id) => {
 }
 
 export const updateUser = async (id, payload) => {
-  const response = await api.put(`/user/edit/${id}`, payload)
-  return response.data
+    const response = await api.put(`/user/edit/${id}`, payload)
+    return response.data
 }
 
+export const getTotalMahasiswaDanDosen = async () => {
+    const response = await api.get('/user/total')
+    return response.data.total || 0
+}

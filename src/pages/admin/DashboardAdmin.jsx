@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import SidebarAdmin from '../../component/ui/SidebarAdmin'
 import { BarChart2, BookOpen, Users, Clock } from 'lucide-react'
 import { getTotalBuku } from '../../services/bookService'
+import { getTotalPeminjamanDikembalikan, getTotalPeminjamanDipinjam } from '../../services/peminjamanService'
+import { getTotalMahasiswaDanDosen } from '../../services/userService'
 
 
 const recentActivities = [
@@ -20,38 +22,59 @@ const recentActivities = [
 ]
 
 const DashboardAdmin = () => {
-    const [total, setTotal] = useState(0)
+    const [totalUser, setTotalUser] = useState(0)
+    const [totalBuku, setTotalBuku] = useState(0)
+    const [totalDipinjam, setTotalDipinjam] = useState(0)
+    const [totalDikembalikan, setTotalDikembalikan] = useState(0)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const fetchTotalBuku = async () => {
+        const fetchTotals = async () => {
             try {
-                const total = await getTotalBuku()
-                setTotal(total)
+                const [buku, dipinjam, dikembalikan, user] = await Promise.all([
+                    getTotalBuku(),
+                    getTotalPeminjamanDipinjam(),
+                    getTotalPeminjamanDikembalikan(),
+                    getTotalMahasiswaDanDosen()
+                ])
+                setTotalBuku(buku)
+                setTotalDipinjam(dipinjam)
+                setTotalDikembalikan(dikembalikan)
+                setTotalUser(user)
             } catch (error) {
-                console.error('Gagal mengambil total buku:', error)
+                console.error('Gagal mengambil data total:', error)
             } finally {
                 setLoading(false)
             }
         }
 
-        fetchTotalBuku()
+        fetchTotals()
     }, [])
+
 
     const statCards = [
         {
-            title: 'Total Buku',
-            value: loading ? 'Loading...' : total,
-            icon: <BookOpen size={20} />,
+            title: 'Total Pengguna',
+            value: loading ? 'Loading...' : totalUser,
+            icon: <Users size={20} className="text-blue-400" />,
         },
-        { title: 'Buku di Pinjam', value: 57, icon: <Clock size={20} /> },
         {
-            title: 'Buku di Kembalikan',
-            value: 76,
-            icon: <BarChart2 size={20} />,
+            title: 'Total Buku',
+            value: loading ? 'Loading...' : totalBuku,
+            icon: <BookOpen size={20} className="text-green-400" />,
         },
-        { title: 'Belum Kembali', value: 11, icon: <Clock size={20} /> },
+        {
+            title: 'Buku Dipinjam',
+            value: loading ? 'Loading...' : totalDipinjam,
+            icon: <Clock size={20} className="text-yellow-400" />,
+        },
+        {
+            title: 'Buku Dikembalikan',
+            value: loading ? 'Loading...' : totalDikembalikan,
+            icon: <BarChart2 size={20} className="text-purple-400" />,
+        },
     ]
+
 
 
 
@@ -107,9 +130,9 @@ const DashboardAdmin = () => {
                                         <td className='p-2'>
                                             <span
                                                 className={`font-semibold ${item.status ===
-                                                        'Di Kembalikan'
-                                                        ? 'text-green-400'
-                                                        : 'text-yellow-400'
+                                                    'Di Kembalikan'
+                                                    ? 'text-green-400'
+                                                    : 'text-yellow-400'
                                                     }`}
                                             >
                                                 {item.status}
