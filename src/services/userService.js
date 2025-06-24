@@ -19,7 +19,7 @@ export const createUser = async (userData) => {
 }
 
 
-export const updateUser = async (id, userData) => {
+export const editUser = async (id, userData) => {
     const payload = {
         nama: userData.nama,
         email: userData.email,
