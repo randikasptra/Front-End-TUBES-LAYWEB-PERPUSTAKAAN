@@ -78,7 +78,7 @@ const Footer = () => {
                     </h3>
                     <ul className="space-y-3 text-sm">
                         <li>
-                            <Link to="/dashboard" className="flex items-center gap-3 text-slate-300 hover:text-teal-300 transition-colors">
+                            <Link to="/dashboard/mahasiswa" className="flex items-center gap-3 text-slate-300 hover:text-teal-300 transition-colors">
                                 <Home size={16} className="text-blue-400" />
                                 Beranda
                             </Link>
@@ -90,7 +90,7 @@ const Footer = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/riwayat" className="flex items-center gap-3 text-slate-300 hover:text-teal-300 transition-colors">
+                            <Link to="/sejarah" className="flex items-center gap-3 text-slate-300 hover:text-teal-300 transition-colors">
                                 <History size={16} className="text-blue-400" />
                                 Riwayat Peminjaman
                             </Link>
