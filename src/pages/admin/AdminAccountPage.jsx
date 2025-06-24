@@ -6,6 +6,7 @@ import { Eye, Edit, Trash2, Plus, X } from "lucide-react"
 import { toast } from "react-toastify"
 import { getAllUsers, createUser } from "@/services/userService"
 import { useNavigate } from "react-router-dom"
+import LoadingScreen from "@/component/ui/LoadingScreen"
 
 const statusColor = {
     Aktif: "bg-green-500",
@@ -16,6 +17,7 @@ const capitalize = (text) => {
     if (!text) return ""
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
 }
+
 
 const AdminAccountPage = () => {
     const [search, setSearch] = useState("")
@@ -86,6 +88,8 @@ const AdminAccountPage = () => {
             user.nama.toLowerCase().includes(search.toLowerCase()) ||
             user.email.toLowerCase().includes(search.toLowerCase())
     )
+
+    if (loading) return <LoadingScreen />
 
     return (
         <div className="flex bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 min-h-screen text-white">

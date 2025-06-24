@@ -5,45 +5,39 @@ import { getAllUsers, editUser } from "@/services/userService"
 import { Input } from "@/component/ui/input"
 import { Button } from "@/component/ui/buttons"
 import SidebarAdmin from "@/component/ui/SidebarAdmin"
+import LoadingScreen from "@/component/ui/LoadingScreen"
 
 const EditUserPage = () => {
     const { id } = useParams()
     const navigate = useNavigate()
-    const [userData, setUserData] = useState(null)
-    const [formData, setFormData] = useState({
-        nama: "",
-        email: "",
-        password: "",
-        role: "mahasiswa",
-        status: "aktif",
-        nim: "",
-        nid: "",
-    })
+    const [loading, setLoading] = useState(true)
+    const [formData, setFormData] = useState(null)
 
     useEffect(() => {
         const fetchUser = async () => {
+            setLoading(true)
             try {
                 const allUsers = await getAllUsers()
                 const user = allUsers.find((u) => u.id === id)
                 if (!user) {
                     toast.error("❌ Pengguna tidak ditemukan")
-                    navigate("/admin/accounts")
-                    return
+                    return navigate("/dashboard/admin/data-pengguna")
                 }
 
-                setUserData(user)
                 setFormData({
-                    nama: user.nama,
-                    email: user.email,
-                    password: "", // Kosongkan untuk jaga-jaga
-                    role: user.role,
-                    status: user.status,
+                    nama: user.nama || "",
+                    email: user.email || "",
+                    password: "",
+                    role: user.role || "mahasiswa",
+                    status: user.status || "aktif",
                     nim: user.nim || "",
                     nid: user.nid || "",
                 })
             } catch (err) {
                 console.error(err)
                 toast.error("❌ Gagal mengambil data pengguna")
+            } finally {
+                setLoading(false)
             }
         }
 
@@ -62,8 +56,8 @@ const EditUserPage = () => {
         }
     }
 
-    if (!userData) {
-        return <div className="text-white p-8">Memuat data pengguna...</div>
+    if (loading || !formData) {
+        return <LoadingScreen />
     }
 
     return (
@@ -72,61 +66,15 @@ const EditUserPage = () => {
             <main className="flex-1 p-8 sm:ml-64">
                 <h1 className="text-2xl font-bold mb-6">Edit Akun Pengguna</h1>
                 <form onSubmit={handleUpdate} className="space-y-4 max-w-xl">
-                    <div>
-                        <label className="block text-sm mb-1">Nama</label>
-                        <Input
-                            name="nama"
-                            value={formData.nama}
-                            onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
-                            required
-                            className="bg-blue-800 border-blue-600 text-white"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm mb-1">Email</label>
-                        <Input
-                            name="email"
-                            type="email"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            required
-                            className="bg-blue-800 border-blue-600 text-white"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm mb-1">Password Baru (opsional)</label>
-                        <Input
-                            name="password"
-                            type="password"
-                            value={formData.password}
-                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            placeholder="Kosongkan jika tidak ingin mengubah"
-                            className="bg-blue-800 border-blue-600 text-white"
-                        />
-                    </div>
+                    <InputGroup label="Nama" value={formData.nama} onChange={(v) => setFormData({ ...formData, nama: v })} />
+                    <InputGroup label="Email" type="email" value={formData.email} onChange={(v) => setFormData({ ...formData, email: v })} />
+                    <InputGroup label="Password Baru (opsional)" type="password" value={formData.password} placeholder="Kosongkan jika tidak ingin mengubah" onChange={(v) => setFormData({ ...formData, password: v })} />
 
-                    {/* NIM / NID */}
                     {formData.role === "mahasiswa" && (
-                        <div>
-                            <label className="block text-sm mb-1">NIM</label>
-                            <Input
-                                name="nim"
-                                value={formData.nim}
-                                onChange={(e) => setFormData({ ...formData, nim: e.target.value })}
-                                className="bg-blue-800 border-blue-600 text-white"
-                            />
-                        </div>
+                        <InputGroup label="NIM" value={formData.nim} onChange={(v) => setFormData({ ...formData, nim: v })} />
                     )}
                     {formData.role === "dosen" && (
-                        <div>
-                            <label className="block text-sm mb-1">NID</label>
-                            <Input
-                                name="nid"
-                                value={formData.nid}
-                                onChange={(e) => setFormData({ ...formData, nid: e.target.value })}
-                                className="bg-blue-800 border-blue-600 text-white"
-                            />
-                        </div>
+                        <InputGroup label="NID" value={formData.nid} onChange={(v) => setFormData({ ...formData, nid: v })} />
                     )}
 
                     <div className="grid grid-cols-2 gap-4">
@@ -135,9 +83,7 @@ const EditUserPage = () => {
                             <select
                                 name="role"
                                 value={formData.role}
-                                onChange={(e) =>
-                                    setFormData({ ...formData, role: e.target.value, nim: "", nid: "" })
-                                }
+                                onChange={(e) => setFormData({ ...formData, role: e.target.value, nim: "", nid: "" })}
                                 className="w-full bg-blue-800 text-white rounded-lg p-2 border border-blue-600"
                             >
                                 <option value="mahasiswa">Mahasiswa</option>
@@ -149,9 +95,7 @@ const EditUserPage = () => {
                             <select
                                 name="status"
                                 value={formData.status}
-                                onChange={(e) =>
-                                    setFormData({ ...formData, status: e.target.value })
-                                }
+                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                                 className="w-full bg-blue-800 text-white rounded-lg p-2 border border-blue-600"
                             >
                                 <option value="aktif">Aktif</option>
@@ -172,3 +116,17 @@ const EditUserPage = () => {
 }
 
 export default EditUserPage
+
+// ✅ Reusable input group
+const InputGroup = ({ label, value, onChange, type = "text", placeholder = "" }) => (
+    <div>
+        <label className="block text-sm mb-1">{label}</label>
+        <Input
+            type={type}
+            value={value}
+            placeholder={placeholder}
+            onChange={(e) => onChange(e.target.value)}
+            className="bg-blue-800 border-blue-600 text-white"
+        />
+    </div>
+)

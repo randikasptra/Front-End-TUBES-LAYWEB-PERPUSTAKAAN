@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import SidebarAdmin from '../../component/ui/SidebarAdmin'
 import { BarChart2, BookOpen, Users, Clock } from 'lucide-react'
 import { getTotalBuku } from '../../services/bookService'
+import LoadingScreen from "@/component/ui/LoadingScreen"
+
 
 const recentActivities = [
     {
@@ -51,6 +53,9 @@ const DashboardAdmin = () => {
         },
         { title: 'Belum Kembali', value: 11, icon: <Clock size={20} /> },
     ]
+
+    if (loading) return <LoadingScreen />
+
 
     return (
         <div className='min-h-screen bg-[#0f172a] text-white flex'>
@@ -103,12 +108,11 @@ const DashboardAdmin = () => {
                                         <td className='p-2'>{item.judul}</td>
                                         <td className='p-2'>
                                             <span
-                                                className={`font-semibold ${
-                                                    item.status ===
-                                                    'Di Kembalikan'
+                                                className={`font-semibold ${item.status ===
+                                                        'Di Kembalikan'
                                                         ? 'text-green-400'
                                                         : 'text-yellow-400'
-                                                }`}
+                                                    }`}
                                             >
                                                 {item.status}
                                             </span>
