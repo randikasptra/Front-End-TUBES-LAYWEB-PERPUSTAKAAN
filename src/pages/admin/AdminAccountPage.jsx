@@ -6,7 +6,6 @@ import { Eye, Edit, Trash2, Plus, X } from "lucide-react"
 import { toast } from "react-toastify"
 import { getAllUsers, createUser } from "@/services/userService"
 import { useNavigate } from "react-router-dom"
-import LoadingScreen from "@/component/ui/LoadingScreen"
 
 const statusColor = {
     Aktif: "bg-green-500",
