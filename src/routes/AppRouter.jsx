@@ -3,7 +3,7 @@ import Login from '../pages/Login'
 import DashboardMahasiswa from '../pages/user/DashboardMahasiswa'
 import DashboardAdmin from '../pages/admin/DashboardAdmin'
 import Reservation from '../pages/user/Reservation'
-import PerpustakaanPages from '../pages/user/PerpustakaanPages' 
+import PerpustakaanPages from '../pages/user/PerpustakaanPages'
 import PrivateRoute from '../component/PrivateRoute'
 import HistoryPage from '../pages/user/HistoryPage'
 import SettingsPage from '../pages/user/SettingsPage'
@@ -24,7 +24,11 @@ const AppRouter = () => {
                 <Route path='/dashboard/mahasiswa' element={<PrivateRoute><DashboardMahasiswa /></PrivateRoute>} />
                 <Route path='/reservation' element={<PrivateRoute><Reservation /></PrivateRoute>} />
                 <Route path='/perpustakaan' element={<PrivateRoute><PerpustakaanPages /></PrivateRoute>} />
+                {/* <Route path='/sejarah' element={<PrivateRoute><HistoryPage /></PrivateRoute>}
+                 />
+                 */}
                 <Route path='/sejarah' element={<PrivateRoute><HistoryPage /></PrivateRoute>} />
+
                 <Route path='/settings' element={<PrivateRoute><SettingsPage /></PrivateRoute>} />
 
                 <Route path='/dashboard/admin' element={<PrivateRoute><DashboardAdmin /></PrivateRoute>} />
