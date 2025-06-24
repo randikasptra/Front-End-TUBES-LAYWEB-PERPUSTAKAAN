@@ -9,7 +9,6 @@ import {
 } from '../../services/reservationService'
 import { Check, Trash2, X } from 'lucide-react'
 
-
 const AdminReservationPage = () => {
     const [reservasi, setReservasi] = useState([])
     const [loading, setLoading] = useState(true)
@@ -66,8 +65,17 @@ const AdminReservationPage = () => {
                 prev.filter((item) => item.id !== selectedIdToDelete)
             )
         } catch (error) {
-            toast.error('Gagal menghapus reservasi')
-            console.error('❌ Error hapus:', error)
+            console.error('Error hapus:', error)
+
+            const backendMessage = error?.response?.data?.message
+
+            if (backendMessage) {
+                toast.error(`${backendMessage}`)
+            } else if (error.message) {
+                toast.error(`Error: ${error.message}`)
+            } else {
+                toast.error('Terjadi kesalahan saat menghapus reservasi.')
+            }
         }
     }
 
@@ -111,153 +119,167 @@ const AdminReservationPage = () => {
                     Permintaan Reservasi Buku
                 </h1>
 
-                {loading ? (
-                    <p>Memuat data...</p>
-                ) : error ? (
-                    <p className='text-red-500'>Error: {error}</p>
-                ) : (
-                    <div className='overflow-x-auto'>
-                        <table className='w-full border-collapse rounded-xl overflow-hidden text-sm'>
-                            <thead className='bg-blue-900 text-left'>
+                <div className='overflow-x-auto'>
+                    <table className='w-full border-collapse rounded-xl overflow-hidden text-sm'>
+                        <thead className='bg-blue-900 text-left'>
+                            <tr>
+                                <th className='px-4 py-3'>No</th>
+                                <th className='px-4 py-3'>Nama Pengguna</th>
+                                <th className='px-4 py-3'>Judul Buku</th>
+                                <th className='px-4 py-3'>Tanggal Ambil</th>
+                                <th className='px-4 py-3'>Jam Ambil</th>
+                                <th className='px-4 py-3'>Catatan</th>
+                                <th className='px-4 py-3'>Status</th>
+                                <th className='px-4 py-3'>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody className='bg-[#2a2d3d] divide-y divide-gray-700'>
+                            {loading ? (
                                 <tr>
-                                    <th className='px-4 py-3'>No</th>
-                                    <th className='px-4 py-3'>Nama Pengguna</th>
-                                    <th className='px-4 py-3'>Judul Buku</th>
-                                    <th className='px-4 py-3'>Tanggal Ambil</th>
-                                    <th className='px-4 py-3'>Jam Ambil</th>
-                                    <th className='px-4 py-3'>Catatan</th>
-                                    <th className='px-4 py-3'>Status</th>
-                                    <th className='px-4 py-3'>Aksi</th>
+                                    <td
+                                        colSpan='10'
+                                        className='p-8 text-center'
+                                    >
+                                        <div className='flex flex-col items-center justify-center space-y-3'>
+                                            <div className='w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin'></div>
+                                            <p className='text-gray-600 font-medium'>
+                                                Memuat data reservasi...
+                                            </p>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody className='bg-[#2a2d3d] divide-y divide-gray-700'>
-                                {reservasi.length > 0 ? (
-                                    reservasi.map((res, index) => (
-                                        <tr key={res.id}>
-                                            <td className='px-4 py-2'>
-                                                {index + 1}
-                                            </td>
-                                            <td className='px-4 py-2'>
-                                                {res.user?.nama || '-'}
-                                            </td>
-                                            <td className='px-4 py-2'>
-                                                {res.book?.judul || '-'}
-                                            </td>
-                                            <td className='px-4 py-2'>
-                                                {res.tanggalAmbil?.slice(0, 10)}
-                                            </td>
-                                            <td className='px-4 py-2'>
-                                                {res.jamAmbil || '-'}
-                                            </td>
-                                            <td className='px-4 py-2 text-slate-300'>
-                                                {res.catatan || '-'}
-                                            </td>
-                                            <td className='px-4 py-2'>
-                                                <span
-                                                    className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                                        res.status ===
+                            ) : error ? (
+                                <tr>
+                                    <td
+                                        colSpan='8'
+                                        className='text-center text-red-500 py-6'
+                                    >
+                                        Error: {error}
+                                    </td>
+                                </tr>
+                            ) : reservasi.length > 0 ? (
+                                reservasi.map((res, index) => (
+                                    <tr key={res.id}>
+                                        <td className='px-4 py-2'>
+                                            {index + 1}
+                                        </td>
+                                        <td className='px-4 py-2'>
+                                            {res.user?.nama || '-'}
+                                        </td>
+                                        <td className='px-4 py-2'>
+                                            {res.book?.judul || '-'}
+                                        </td>
+                                        <td className='px-4 py-2'>
+                                            {res.tanggalAmbil?.slice(0, 10)}
+                                        </td>
+                                        <td className='px-4 py-2'>
+                                            {res.jamAmbil || '-'}
+                                        </td>
+                                        <td className='px-4 py-2 text-slate-300'>
+                                            {res.catatan || '-'}
+                                        </td>
+                                        <td className='px-4 py-2'>
+                                            <span
+                                                className={`px-3 py-1 rounded-full text-sm font-medium ${
+                                                    res.status === 'Disetujui'
+                                                        ? 'bg-green-600 text-white'
+                                                        : res.status ===
+                                                          'Ditolak'
+                                                        ? 'bg-red-600 text-white'
+                                                        : 'bg-yellow-500 text-black'
+                                                }`}
+                                            >
+                                                {res.status}
+                                            </span>
+                                        </td>
+                                        <td className='px-4 py-2 space-x-2'>
+                                            <Button
+                                                onClick={() =>
+                                                    handleAction(
+                                                        res.id,
                                                         'Disetujui'
-                                                            ? 'bg-green-600 text-white'
-                                                            : res.status ===
-                                                              'Ditolak'
-                                                            ? 'bg-red-600 text-white'
-                                                            : 'bg-yellow-500 text-black'
-                                                    }`}
-                                                >
-                                                    {res.status}
-                                                </span>
-                                            </td>
-                                            <td className='px-4 py-2 space-x-2'>
-                                                <Button
-                                                    onClick={() =>
-                                                        handleAction(
-                                                            res.id,
-                                                            'Disetujui'
-                                                        )
-                                                    }
-                                                    disabled={
-                                                        res.status ===
-                                                            'Disetujui' ||
-                                                        res.status === 'Ditolak'
-                                                    }
-                                                    className={`px-3 py-1 text-sm font-bold text-white ${
-                                                        res.status ===
-                                                            'Disetujui' ||
-                                                        res.status === 'Ditolak'
-                                                            ? 'bg-gray-400 cursor-not-allowed'
-                                                            : 'bg-green-600 hover:bg-green-700'
-                                                    }`}
-                                                    title={
-                                                        res.status ===
-                                                        'Disetujui'
-                                                            ? 'Sudah disetujui'
-                                                            : res.status ===
-                                                              'Ditolak'
-                                                            ? 'Reservasi sudah ditolak'
-                                                            : 'Setujui'
-                                                    }
-                                                >
-                                                    <Check className='w-4 h-4' />
-                                                </Button>
+                                                    )
+                                                }
+                                                disabled={
+                                                    res.status ===
+                                                        'Disetujui' ||
+                                                    res.status === 'Ditolak'
+                                                }
+                                                className={`px-3 py-1 text-sm font-bold text-white ${
+                                                    res.status ===
+                                                        'Disetujui' ||
+                                                    res.status === 'Ditolak'
+                                                        ? 'bg-gray-400 cursor-not-allowed'
+                                                        : 'bg-green-600 hover:bg-green-700'
+                                                }`}
+                                                title={
+                                                    res.status === 'Disetujui'
+                                                        ? 'Sudah disetujui'
+                                                        : res.status ===
+                                                          'Ditolak'
+                                                        ? 'Reservasi sudah ditolak'
+                                                        : 'Setujui'
+                                                }
+                                            >
+                                                <Check className='w-4 h-4' />
+                                            </Button>
 
-                                                <Button
-                                                    onClick={() =>
-                                                        handleAction(
-                                                            res.id,
-                                                            'Ditolak'
-                                                        )
-                                                    }
-                                                    disabled={
-                                                        res.status ===
-                                                            'Disetujui' ||
-                                                        res.status === 'Ditolak'
-                                                    }
-                                                    className={`px-3 py-1 text-sm font-bold text-white ${
-                                                        res.status ===
-                                                            'Disetujui' ||
-                                                        res.status === 'Ditolak'
-                                                            ? 'bg-gray-400 cursor-not-allowed'
-                                                            : 'bg-red-600 hover:bg-red-700'
-                                                    }`}
-                                                    title={
-                                                        res.status ===
-                                                        'Disetujui'
-                                                            ? 'Reservasi sudah disetujui'
-                                                            : res.status ===
-                                                              'Ditolak'
-                                                            ? 'Sudah ditolak'
-                                                            : 'Tolak'
-                                                    }
-                                                >
-                                                    <X className='w-4 h-4' />
-                                                </Button>
+                                            <Button
+                                                onClick={() =>
+                                                    handleAction(
+                                                        res.id,
+                                                        'Ditolak'
+                                                    )
+                                                }
+                                                disabled={
+                                                    res.status ===
+                                                        'Disetujui' ||
+                                                    res.status === 'Ditolak'
+                                                }
+                                                className={`px-3 py-1 text-sm font-bold text-white ${
+                                                    res.status ===
+                                                        'Disetujui' ||
+                                                    res.status === 'Ditolak'
+                                                        ? 'bg-gray-400 cursor-not-allowed'
+                                                        : 'bg-red-600 hover:bg-red-700'
+                                                }`}
+                                                title={
+                                                    res.status === 'Disetujui'
+                                                        ? 'Reservasi sudah disetujui'
+                                                        : res.status ===
+                                                          'Ditolak'
+                                                        ? 'Sudah ditolak'
+                                                        : 'Tolak'
+                                                }
+                                            >
+                                                <X className='w-4 h-4' />
+                                            </Button>
 
-                                                <Button
-                                                    onClick={() =>
-                                                        handleHapusClick(res.id)
-                                                    }
-                                                    className='bg-red-500 hover:bg-red-600 text-red-400 hover:text-red-300 px-3 py-1 text-sm font-bold'
-                                                    title='Hapus Reservasi'
-                                                >
-                                                    <Trash2 className='w-4 h-4' />
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td
-                                            colSpan='8'
-                                            className='text-center text-gray-400 py-6'
-                                        >
-                                            Tidak ada reservasi ditemukan.
+                                            <Button
+                                                onClick={() =>
+                                                    handleHapusClick(res.id)
+                                                }
+                                                className='bg-red-500 hover:bg-red-600 text-red-400 hover:text-red-300 px-3 py-1 text-sm font-bold'
+                                                title='Hapus Reservasi'
+                                            >
+                                                <Trash2 className='w-4 h-4' />
+                                            </Button>
                                         </td>
                                     </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                                ))
+                            ) : (
+                                <tr>
+                                    <td
+                                        colSpan='8'
+                                        className='text-center text-gray-400 py-6'
+                                    >
+                                        Tidak ada reservasi ditemukan.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </>
     )

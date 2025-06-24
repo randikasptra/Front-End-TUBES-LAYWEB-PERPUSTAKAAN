@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react'
 import { Input } from '@/component/ui/input'
 import SidebarAdmin from '../../component/ui/SidebarAdmin'
@@ -24,6 +23,7 @@ const formatDate = (dateStr) => {
 }
 
 const AdminBorrowPage = () => {
+    const [loading, setLoading] = useState(false)
     const [searchTerm, setSearchTerm] = useState('')
     const [peminjaman, setPeminjaman] = useState([])
     const [modalOpen, setModalOpen] = useState(false)
@@ -32,9 +32,8 @@ const AdminBorrowPage = () => {
     const [showModal, setShowModal] = useState(false)
     const [selectedId, setSelectedId] = useState(null)
 
-    const [data, setData] = useState([])
-
     useEffect(() => {
+        setLoading(true)
         const fetchPeminjaman = async () => {
             try {
                 const result = await getAllPeminjaman()
@@ -42,6 +41,8 @@ const AdminBorrowPage = () => {
                 console.log('Data peminjaman:', result)
             } catch (error) {
                 console.error('Gagal mengambil data peminjaman:', error)
+            } finally {
+                setLoading(false)
             }
         }
 
@@ -265,7 +266,7 @@ const AdminBorrowPage = () => {
                     <div className='mb-6'>
                         <Input
                             type='text'
-                            placeholder='Cari berdasarkan nama atau NIM'
+                            placeholder='Cari Nama Peminjam'
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className='w-full max-w-md'
@@ -290,105 +291,135 @@ const AdminBorrowPage = () => {
                                 </tr>
                             </thead>
                             <tbody className='bg-slate-900 divide-y divide-slate-700'>
-                                {filteredBorrowings.map((item, index) => (
-                                    <tr
-                                        key={item.id}
-                                        className={`hover:bg-slate-700 ${
-                                            item.status === 'Terlambat'
-                                                ? 'text-red-400'
-                                                : item.status ===
-                                                  'Sudah Dikembalikan'
-                                                ? 'text-green-400'
-                                                : 'text-white'
-                                        }`}
-                                    >
-                                        <td className='py-2 px-4'>
-                                            {index + 1}
-                                        </td>
-                                        <td className='py-2 px-4 font-medium'>
-                                            {item.reservasi?.user?.nama ||
-                                                'Tidak diketahui'}
-                                        </td>
-                                        <td className='py-2 px-4 italic'>
-                                            {item.reservasi?.book?.judul ||
-                                                'Tidak diketahui'}
-                                        </td>
-                                        <td className='py-2 px-4'>
-                                            {formatDate(item.tanggalPinjam)}
-                                        </td>
-                                        <td className='py-2 px-4'>
-                                            {formatDate(item.tanggalJatuhTempo)}
-                                        </td>
-                                        <td className='py-2 px-4'>
-                                            {formatDate(item.tanggalKembali)}
-                                        </td>
-
-                                        <td className='py-2 px-4'>
-                                            <span
-                                                className={`px-3 py-1 rounded-full text-xs font-semibold capitalize
-            ${
-                item.status.toLowerCase() === 'dikembalikan'
-                    ? 'bg-teal-500/20 text-teal-400'
-                    : 'bg-yellow-500/20 text-yellow-400'
-            }
-        `}
-                                            >
-                                                {item.status.toLowerCase()}
-                                            </span>
-                                        </td>
-
-                                        <td className='py-2 px-4'>
-                                            {item.denda
-                                                ? `Rp${item.denda.toLocaleString(
-                                                      'id-ID'
-                                                  )}`
-                                                : '-'}
-                                        </td>
-                                        <td className='py-2 px-4 flex gap-2'>
-                                            {!item.tanggalKembali && (
-                                                <button
-                                                    onClick={() => {
-                                                        setSelectedPeminjaman({
-                                                            id: item.id,
-                                                            user:
-                                                                item.reservasi
-                                                                    ?.user
-                                                                    ?.nama ||
-                                                                'Tidak diketahui',
-                                                            judul:
-                                                                item.reservasi
-                                                                    ?.book
-                                                                    ?.judul ||
-                                                                'Tidak diketahui',
-                                                            tanggalPinjam:
-                                                                item.tanggalPinjam,
-                                                            tanggalJatuhTempo:
-                                                                item.tanggalJatuhTempo,
-                                                            tanggalKembali:
-                                                                item.tanggalKembali ||
-                                                                '',
-                                                        })
-                                                        setModalOpen(true)
-                                                    }}
-                                                    className='bg-emerald-600/20 hover:bg-emerald-600/30 h-10 w-10 rounded-full flex items-center justify-center transition text-emerald-400 hover:text-emerald-300'
-                                                    title='Kembalikan Buku'
-                                                >
-                                                    <RotateCcw className='w-5 h-5' />
-                                                </button>
-                                            )}
-                                            <button
-                                                onClick={() => {
-                                                    setSelectedId(item.id)
-                                                    setShowModal(true)
-                                                }}
-                                                className='bg-red-600/20 hover:bg-red-600/30 h-10 w-10 rounded-full flex items-center justify-center transition text-red-400 hover:text-red-300'
-                                                title='Hapus Peminjaman'
-                                            >
-                                                <Trash2 className='w-5 h-5' />
-                                            </button>
+                                {loading ? (
+                                    <tr>
+                                        <td
+                                            colSpan='10'
+                                            className='p-8 text-center'
+                                        >
+                                            <div className='flex flex-col items-center justify-center space-y-3'>
+                                                <div className='w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin'></div>
+                                                <p className='text-gray-600 font-medium'>
+                                                    Memuat data peminjaman...
+                                                </p>
+                                            </div>
                                         </td>
                                     </tr>
-                                ))}
+                                ) : filteredBorrowings.length > 0 ? (
+                                    filteredBorrowings.map((item, index) => (
+                                        <tr
+                                            key={item.id}
+                                            className={`hover:bg-slate-700 ${
+                                                item.status === 'Terlambat'
+                                                    ? 'text-red-400'
+                                                    : item.status ===
+                                                      'Sudah Dikembalikan'
+                                                    ? 'text-green-400'
+                                                    : 'text-white'
+                                            }`}
+                                        >
+                                            <td className='py-2 px-4'>
+                                                {index + 1}
+                                            </td>
+                                            <td className='py-2 px-4 font-medium'>
+                                                {item.reservasi?.user?.nama ||
+                                                    'Tidak diketahui'}
+                                            </td>
+                                            <td className='py-2 px-4 italic'>
+                                                {item.reservasi?.book?.judul ||
+                                                    'Tidak diketahui'}
+                                            </td>
+                                            <td className='py-2 px-4'>
+                                                {formatDate(item.tanggalPinjam)}
+                                            </td>
+                                            <td className='py-2 px-4'>
+                                                {formatDate(
+                                                    item.tanggalJatuhTempo
+                                                )}
+                                            </td>
+                                            <td className='py-2 px-4'>
+                                                {formatDate(
+                                                    item.tanggalKembali
+                                                )}
+                                            </td>
+                                            <td className='py-2 px-4'>
+                                                <span
+                                                    className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${
+                                                        item.status.toLowerCase() ===
+                                                        'dikembalikan'
+                                                            ? 'bg-teal-500/20 text-teal-400'
+                                                            : 'bg-yellow-500/20 text-yellow-400'
+                                                    }`}
+                                                >
+                                                    {item.status.toLowerCase()}
+                                                </span>
+                                            </td>
+                                            <td className='py-2 px-4'>
+                                                {item.denda
+                                                    ? `Rp${item.denda.toLocaleString(
+                                                          'id-ID'
+                                                      )}`
+                                                    : '-'}
+                                            </td>
+                                            <td className='py-2 px-4 flex gap-2'>
+                                                {!item.tanggalKembali && (
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedPeminjaman(
+                                                                {
+                                                                    id: item.id,
+                                                                    user:
+                                                                        item
+                                                                            .reservasi
+                                                                            ?.user
+                                                                            ?.nama ||
+                                                                        'Tidak diketahui',
+                                                                    judul:
+                                                                        item
+                                                                            .reservasi
+                                                                            ?.book
+                                                                            ?.judul ||
+                                                                        'Tidak diketahui',
+                                                                    tanggalPinjam:
+                                                                        item.tanggalPinjam,
+                                                                    tanggalJatuhTempo:
+                                                                        item.tanggalJatuhTempo,
+                                                                    tanggalKembali:
+                                                                        item.tanggalKembali ||
+                                                                        '',
+                                                                }
+                                                            )
+                                                            setModalOpen(true)
+                                                        }}
+                                                        className='bg-emerald-600/20 hover:bg-emerald-600/30 h-10 w-10 rounded-full flex items-center justify-center transition text-emerald-400 hover:text-emerald-300'
+                                                        title='Kembalikan Buku'
+                                                    >
+                                                        <RotateCcw className='w-5 h-5' />
+                                                    </button>
+                                                )}
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedId(item.id)
+                                                        setShowModal(true)
+                                                    }}
+                                                    className='bg-red-600/20 hover:bg-red-600/30 h-10 w-10 rounded-full flex items-center justify-center transition text-red-400 hover:text-red-300'
+                                                    title='Hapus Peminjaman'
+                                                >
+                                                    <Trash2 className='w-5 h-5' />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td
+                                            colSpan='9'
+                                            className='text-center py-6 text-slate-400 italic'
+                                        >
+                                            Tidak ada data peminjaman ditemukan.
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>

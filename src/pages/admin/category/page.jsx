@@ -153,10 +153,15 @@ const CategoryPage = () => {
                             {loading ? (
                                 <tr>
                                     <td
-                                        colSpan='5'
-                                        className='p-6 text-center'
+                                        colSpan='10'
+                                        className='p-8 text-center'
                                     >
-                                        Memuat data...
+                                        <div className='flex flex-col items-center justify-center space-y-3'>
+                                            <div className='w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin'></div>
+                                            <p className='text-gray-600 font-medium'>
+                                                Memuat data kategori...
+                                            </p>
+                                        </div>
                                     </td>
                                 </tr>
                             ) : filteredKategori.length > 0 ? (
