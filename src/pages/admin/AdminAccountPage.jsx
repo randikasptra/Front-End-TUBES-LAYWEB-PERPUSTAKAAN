@@ -7,24 +7,46 @@ import { toast } from "react-toastify"
 import { getAllUsers, createUser } from "@/services/userService"
 import { useNavigate } from "react-router-dom"
 
-const statusColor = {
-    Aktif: "bg-green-500",
-    Nonaktif: "bg-red-500",
-}
-
-const capitalize = (text) => {
-    if (!text) return ""
-    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
-}
 
 
 const AdminAccountPage = () => {
-    const [search, setSearch] = useState("")
+    const [search, setSearch] = useState('')
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isDetailOpen, setIsDetailOpen] = useState(false)
     const [selectedUser, setSelectedUser] = useState(null)
     const [users, setUsers] = useState([])
     const [loading, setLoading] = useState(false)
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+    const [selectedUser, setSelectedUser] = useState(null)
+
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+    const [editFormData, setEditFormData] = useState({})
+
+    const openEditModal = (user) => {
+        setEditFormData({
+            id: user.id,
+            nama: user.nama,
+            email: user.email,
+            role: user.role,
+            status: user.status,
+            nim: user.nim || '',
+            nid: user.nid || '',
+        })
+        setIsEditModalOpen(true)
+    }
+
+    const handleEditUser = async (e) => {
+        e.preventDefault()
+        try {
+            await updateUser(editFormData.id, editFormData) // Pastikan ada di userService
+            toast.success('✅ Akun berhasil diperbarui')
+            setIsEditModalOpen(false)
+            fetchUsers()
+        } catch (error) {
+            toast.error('❌ Gagal memperbarui akun')
+            console.error(error)
+        }
+    }
 
     const [formData, setFormData] = useState({
         nama: "",
@@ -47,9 +69,10 @@ const AdminAccountPage = () => {
         try {
             const result = await getAllUsers()
             setUsers(result)
+            console.log(result)
         } catch (err) {
-            console.error("Gagal memuat pengguna:", err)
-            toast.error("❌ Gagal memuat data user")
+            console.error('Gagal memuat pengguna:', err)
+            toast.error('❌ Gagal memuat data user')
         } finally {
             setLoading(false)
         }
@@ -59,7 +82,7 @@ const AdminAccountPage = () => {
         e.preventDefault()
         try {
             await createUser(formData)
-            toast.success("✅ Akun berhasil ditambahkan")
+            toast.success('✅ Akun berhasil ditambahkan')
             setFormData({
                 nama: "",
                 email: "",
@@ -72,8 +95,8 @@ const AdminAccountPage = () => {
             setIsModalOpen(false)
             fetchUsers()
         } catch (err) {
-            console.error("Gagal menambahkan user:", err)
-            toast.error("❌ Gagal menambahkan user")
+            console.error('Gagal menambahkan user:', err)
+            toast.error('❌ Gagal menambahkan user')
         }
     }
 
@@ -88,7 +111,6 @@ const AdminAccountPage = () => {
             user.email.toLowerCase().includes(search.toLowerCase())
     )
 
-    if (loading) return <LoadingScreen />
 
     return (
         <div className="flex bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 min-h-screen text-white">
@@ -164,7 +186,7 @@ const AdminAccountPage = () => {
                         </tbody>
                     </table>
                 </div>
-            </main>
+            )}
 
             {/* Modal Tambah */}
             {isModalOpen && (
@@ -173,16 +195,23 @@ const AdminAccountPage = () => {
                         <button className="absolute top-4 right-4 text-blue-300 hover:text-white" onClick={() => setIsModalOpen(false)}>
                             <X size={20} />
                         </button>
-                        <h2 className="text-xl font-semibold mb-4">Tambah Akun Pengguna</h2>
-                        <form onSubmit={handleAddUser} className="space-y-4">
+                        <h2 className='text-xl font-semibold mb-4'>
+                            Edit Akun Pengguna
+                        </h2>
+                        <form
+                            onSubmit={handleEditUser}
+                            className='space-y-4'
+                        >
                             <div>
                                 <label className="block text-sm mb-1">Nama</label>
                                 <Input name="nama" value={formData.nama} onChange={(e) => setFormData({ ...formData, nama: e.target.value })} required className="bg-blue-800 border-blue-600 text-white" />
                             </div>
+
                             <div>
                                 <label className="block text-sm mb-1">Email</label>
                                 <Input name="email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required className="bg-blue-800 border-blue-600 text-white" />
                             </div>
+
                             <div>
                                 <label className="block text-sm mb-1">Password</label>
                                 <Input name="password" type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required className="bg-blue-800 border-blue-600 text-white" />
@@ -193,7 +222,7 @@ const AdminAccountPage = () => {
                                     <Input name="nim" value={formData.nim} onChange={(e) => setFormData({ ...formData, nim: e.target.value })} required className="bg-blue-800 border-blue-600 text-white" />
                                 </div>
                             )}
-                            {formData.role === "dosen" && (
+                            {editFormData.role === 'dosen' && (
                                 <div>
                                     <label className="block text-sm mb-1">NID</label>
                                     <Input name="nid" value={formData.nid} onChange={(e) => setFormData({ ...formData, nid: e.target.value })} required className="bg-blue-800 border-blue-600 text-white" />
