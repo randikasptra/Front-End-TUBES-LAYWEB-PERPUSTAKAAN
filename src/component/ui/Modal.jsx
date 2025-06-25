@@ -164,7 +164,7 @@ const Modal = ({ isOpen, onClose, book }) => {
                                     setTanggalAmbil(e.target.value)
                                 }
                                 className='w-full bg-slate-700 border border-slate-600 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-400'
-                                min={new Date().toISOString().split('T')[0]} // ⬅️ ini kuncinya
+                                min={new Date().toISOString().split('T')[0]}
                             />
                         </div>
                     </div>

@@ -98,7 +98,7 @@ const AdminBookPage = () => {
             await deleteBook(id)
             toast.success('Buku berhasil dihapus')
             setBooks((prev) => prev.filter((book) => book.id !== id))
-        } catch (error) {
+        } catch {
             toast.error('Gagal menghapus buku')
         }
     }
@@ -126,7 +126,7 @@ const AdminBookPage = () => {
                                 weekday: 'long',
                                 day: 'numeric',
                                 month: 'long',
-                                year: 'numeric'
+                                year: 'numeric',
                             })}
                         </span>
                     </div>
@@ -170,34 +170,58 @@ const AdminBookPage = () => {
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <td colSpan='10' className='p-6 text-center text-slate-400'>
+                                    <td
+                                        colSpan='10'
+                                        className='p-6 text-center text-slate-400'
+                                    >
                                         Memuat data buku...
                                     </td>
                                 </tr>
                             ) : filteredBooks.length > 0 ? (
                                 filteredBooks.map((book, index) => (
-                                    <tr key={book.id} className='border-b border-slate-700 hover:bg-slate-700/50 transition-colors'>
+                                    <tr
+                                        key={book.id}
+                                        className='border-b border-slate-700 hover:bg-slate-700/50 transition-colors'
+                                    >
                                         <td className='p-3'>{index + 1}</td>
                                         <td className='p-3'>
                                             {book.image ? (
-                                                <img src={book.image} alt={book.judul} className='w-12 h-16 object-cover rounded' />
+                                                <img
+                                                    src={book.image}
+                                                    alt={book.judul}
+                                                    className='w-12 h-16 object-cover rounded'
+                                                />
                                             ) : (
-                                                <span className='text-slate-400'>-</span>
+                                                <span className='text-slate-400'>
+                                                    -
+                                                </span>
                                             )}
                                         </td>
                                         <td className='p-3'>{book.judul}</td>
-                                        <td className='p-3'>{book.kategori?.nama || '-'}</td>
-                                        <td className='p-3'>{book.penulis || '-'}</td>
-                                        <td className='p-3'>{book.penerbit || '-'}</td>
-                                        <td className='p-3'>{book.tahunTerbit || '-'}</td>
+                                        <td className='p-3'>
+                                            {book.kategori?.nama || '-'}
+                                        </td>
+                                        <td className='p-3'>
+                                            {book.penulis || '-'}
+                                        </td>
+                                        <td className='p-3'>
+                                            {book.penerbit || '-'}
+                                        </td>
+                                        <td className='p-3'>
+                                            {book.tahunTerbit || '-'}
+                                        </td>
                                         <td className='p-3'>{book.stok}</td>
                                         <td className='p-3'>
-                                            <span className={`px-2 py-1 rounded-full capitalize text-xs font-medium ${
-                                                book.status === 'tersedia'
-                                                    ? 'bg-green-500/20 text-green-400'
-                                                    : 'bg-red-500/20 text-red-400'
-                                            }`}>
-                                                {book.status}
+                                            <span
+                                                className={`px-2 py-1 rounded-full capitalize text-xs font-medium ${
+                                                    book.stok > 0
+                                                        ? 'bg-green-500/20 text-green-400'
+                                                        : 'bg-red-500/20 text-red-400'
+                                                }`}
+                                            >
+                                                {book.stok > 0
+                                                    ? 'Tersedia'
+                                                    : 'Tidak Tersedia'}
                                             </span>
                                         </td>
                                         <td className='p-3'>
@@ -210,7 +234,9 @@ const AdminBookPage = () => {
                                                     <Eye size={18} />
                                                 </Link>
                                                 <button
-                                                    onClick={() => handleEditClick(book)}
+                                                    onClick={() =>
+                                                        handleEditClick(book)
+                                                    }
                                                     className='bg-blue-600 hover:bg-blue-500 h-10 w-10 rounded-full flex items-center justify-center transition'
                                                     title='Edit Buku'
                                                 >
@@ -218,7 +244,9 @@ const AdminBookPage = () => {
                                                 </button>
                                                 <button
                                                     onClick={() => {
-                                                        setSelectedBookId(book.id)
+                                                        setSelectedBookId(
+                                                            book.id
+                                                        )
                                                         setShowDeleteModal(true)
                                                     }}
                                                     className='bg-red-600 hover:bg-red-500 h-10 w-10 rounded-full flex items-center justify-center transition'
@@ -232,7 +260,10 @@ const AdminBookPage = () => {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan='10' className='p-6 text-center text-slate-400'>
+                                    <td
+                                        colSpan='10'
+                                        className='p-6 text-center text-slate-400'
+                                    >
                                         Tidak ada data buku yang ditemukan
                                     </td>
                                 </tr>
