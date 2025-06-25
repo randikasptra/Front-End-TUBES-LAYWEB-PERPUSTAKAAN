@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Card, CardContent } from './card'
+import { motion } from 'framer-motion'
 import { Button } from './buttons'
 import ReserveModal from './Modal'
-import { motion } from 'framer-motion'
 import { BookOpenText, User, Clock, Library } from 'lucide-react'
 
 const BookCard = ({ book }) => {
@@ -15,16 +15,16 @@ const BookCard = ({ book }) => {
         penulis,
         image,
         kategori,
-        status,
         deskripsi,
-        stok, // ini dari BE
+        stok,
     } = book
 
     const title = judul
     const author = penulis || 'Penulis Tidak Diketahui'
     const category = kategori?.nama || 'Umum'
-    const availability = status?.toLowerCase() === 'tersedia'
     const description = deskripsi || ''
+
+    const availability = stok > 0
 
     const bookData = {
         bookId,
@@ -42,7 +42,7 @@ const BookCard = ({ book }) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
                 whileHover={{ y: -5 }}
-                className="h-full"
+                className='h-full'
             >
                 <Card
                     className={`w-full h-full max-w-sm rounded-2xl overflow-hidden bg-gradient-to-br from-slate-900 to-blue-950/80 border border-slate-700/50 transition-all duration-300 ${
@@ -51,79 +51,96 @@ const BookCard = ({ book }) => {
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                 >
-                    <div className="relative h-56 group overflow-hidden">
+                    <div className='relative h-56 group overflow-hidden'>
                         {image ? (
                             <>
                                 <motion.img
                                     src={image}
                                     alt={title}
-                                    className="absolute inset-0 w-full h-full object-cover"
+                                    className='absolute inset-0 w-full h-full object-cover'
                                     initial={{ scale: 1 }}
-                                    animate={{ 
+                                    animate={{
                                         scale: isHovered ? 1.05 : 1,
-                                        opacity: isHovered ? 0.9 : 0.85
+                                        opacity: isHovered ? 0.9 : 0.85,
                                     }}
                                     transition={{ duration: 0.5 }}
                                 />
-                                <motion.div 
-                                    className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent"
+                                <motion.div
+                                    className='absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent'
                                     initial={{ opacity: 0.7 }}
                                     animate={{ opacity: isHovered ? 0.8 : 0.7 }}
                                 />
                             </>
                         ) : (
-                            <div className="h-full flex items-center justify-center bg-slate-800/50">
-                                <BookOpenText className="text-slate-500" size={40} />
+                            <div className='h-full flex items-center justify-center bg-slate-800/50'>
+                                <BookOpenText
+                                    className='text-slate-500'
+                                    size={40}
+                                />
                             </div>
                         )}
 
-                        <motion.div 
-                            className="absolute top-3 left-3 flex flex-wrap gap-2"
+                        <motion.div
+                            className='absolute top-3 left-3 flex flex-wrap gap-2'
                             initial={{ y: -10, opacity: 0 }}
-                            animate={{ 
-                                y: isHovered ? 0 : -10, 
-                                opacity: isHovered ? 1 : 0 
+                            animate={{
+                                y: isHovered ? 0 : -10,
+                                opacity: isHovered ? 1 : 0,
                             }}
                             transition={{ duration: 0.3 }}
                         >
-                            <span className="bg-slate-800/80 text-slate-200 text-xs px-3 py-1 rounded-full backdrop-blur-sm border border-slate-700/50 flex items-center">
-                                <BookOpenText size={12} className="mr-1" />
+                            <span className='bg-slate-800/80 text-slate-200 text-xs px-3 py-1 rounded-full backdrop-blur-sm border border-slate-700/50 flex items-center'>
+                                <BookOpenText
+                                    size={12}
+                                    className='mr-1'
+                                />
                                 {category}
                             </span>
                             {!availability && (
-                                <span className="bg-red-500/90 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm border border-red-400/20 flex items-center">
-                                    <Clock size={12} className="mr-1" />
+                                <span className='bg-red-500/90 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm border border-red-400/20 flex items-center'>
+                                    <Clock
+                                        size={12}
+                                        className='mr-1'
+                                    />
                                     Dipinjam
                                 </span>
                             )}
                         </motion.div>
                     </div>
 
-                    <CardContent className="p-5 space-y-4">
-                        <motion.div 
-                            className="space-y-2"
+                    <CardContent className='p-5 space-y-4'>
+                        <motion.div
+                            className='space-y-2'
                             initial={{ y: 0 }}
                             animate={{ y: isHovered ? -3 : 0 }}
                             transition={{ duration: 0.3 }}
                         >
                             <h3
-                                className="text-xl font-bold text-white line-clamp-2 leading-tight group-hover:text-blue-300 transition-colors"
+                                className='text-xl font-bold text-white line-clamp-2 leading-tight group-hover:text-blue-300 transition-colors'
                                 title={title}
                             >
                                 {title}
                             </h3>
-                            <p className="text-sm text-slate-400 italic flex items-center">
-                                <User size={14} className="mr-2" />
+                            <p className='text-sm text-slate-400 italic flex items-center'>
+                                <User
+                                    size={14}
+                                    className='mr-2'
+                                />
                                 {author}
                             </p>
-                            <p className="text-sm text-slate-300 flex items-center gap-2">
-                                <Library size={14} className="text-blue-400" />
-                                <span>Stok: <strong>{stok}</strong></span>
+                            <p className='text-sm text-slate-300 flex items-center gap-2'>
+                                <Library
+                                    size={14}
+                                    className='text-blue-400'
+                                />
+                                <span>
+                                    Stok: <strong>{stok}</strong>
+                                </span>
                             </p>
                         </motion.div>
 
                         <motion.div
-                            className="flex justify-between items-center"
+                            className='flex justify-between items-center'
                             initial={{ opacity: 1 }}
                             animate={{ opacity: isHovered ? 0.9 : 1 }}
                         >
@@ -151,7 +168,9 @@ const BookCard = ({ book }) => {
                                         : 'bg-slate-800/50 text-slate-500 cursor-not-allowed border border-slate-700/50'
                                 }`}
                             >
-                                {availability ? 'Reservasi Sekarang' : 'Sedang Dipinjam'}
+                                {availability
+                                    ? 'Reservasi Sekarang'
+                                    : 'Sedang Dipinjam'}
                             </Button>
                         </motion.div>
                     </CardContent>

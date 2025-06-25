@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
 import SideNavbar from '../../component/ui/SideNavbar'
 import BookCard from '../../component/ui/BookCard'
 import Footer from '../../component/ui/Footer'
 import HeaderDashboard from '../../component/ui/HeaderDashboard'
 import { getAllBooks } from '../../services/bookService'
 import { BookOpenText } from 'lucide-react'
+// eslint-disable-next-line no-unused-vars
+import { motion } from 'framer-motion'
 
 const DashboardMahasiswa = () => {
     const [books, setBooks] = useState([])
@@ -42,27 +43,31 @@ const DashboardMahasiswa = () => {
                             <HeaderDashboard />
 
                             {loading ? (
-                                <div className="flex flex-col items-center justify-center min-h-[400px] space-y-6">
-                                    <div className="relative w-20 h-20">
+                                <div className='flex flex-col items-center justify-center min-h-[400px] space-y-6'>
+                                    <div className='relative w-20 h-20'>
                                         {/* Animated gradient spinner */}
-                                        <div className="absolute inset-0 rounded-full border-4 border-blue-500/30"></div>
-                                        <div className="absolute inset-0 rounded-full border-4 border-t-transparent border-l-transparent border-blue-400 animate-spin"></div>
-                                        <div className="absolute inset-1 rounded-full border-4 border-transparent border-t-blue-300 animate-spin-reverse"></div>
+                                        <div className='absolute inset-0 rounded-full border-4 border-blue-500/30'></div>
+                                        <div className='absolute inset-0 rounded-full border-4 border-t-transparent border-l-transparent border-blue-400 animate-spin'></div>
+                                        <div className='absolute inset-1 rounded-full border-4 border-transparent border-t-blue-300 animate-spin-reverse'></div>
 
                                         {/* Book icon in center */}
-                                        <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className='absolute inset-0 flex items-center justify-center'>
                                             <BookOpenText
-                                                className="text-blue-300 animate-pulse"
+                                                className='text-blue-300 animate-pulse'
                                                 size={28}
                                             />
                                         </div>
                                     </div>
 
                                     {/* Loading text with typing animation */}
-                                    <div className="text-center space-y-1">
-                                        <p className="text-blue-100 font-medium text-lg">Memuat Koleksi Buku</p>
-                                        <p className="text-blue-300/80 text-sm">
-                                            <span className="inline-block animate-typing">...</span>
+                                    <div className='text-center space-y-1'>
+                                        <p className='text-blue-100 font-medium text-lg'>
+                                            Memuat Koleksi Buku
+                                        </p>
+                                        <p className='text-blue-300/80 text-sm'>
+                                            <span className='inline-block animate-typing'>
+                                                ...
+                                            </span>
                                         </p>
                                     </div>
                                 </div>
@@ -81,7 +86,7 @@ const DashboardMahasiswa = () => {
                                             transition={{
                                                 duration: 0.4,
                                                 delay: index * 0.05,
-                                                ease: "easeOut"
+                                                ease: 'easeOut',
                                             }}
                                         >
                                             <BookCard book={book} />
